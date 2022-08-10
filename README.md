@@ -13,10 +13,10 @@
          * full
          * pdf
          * timeseries
-         * condition_HR_array.jld (массив из начальных условий. Сохранен в формате для Julia)
-         * condition_HR_array.npy (массив из начальных условий. Сохранен в формате для Python)
-         * spectrum_HR_array.jld (массив из значений спектра Ляпунова. Сохранен в формате для Julia)
-         * spectrum_HR_array.npy (массив из значений спектра Ляпунова. Сохранен в формате для Julia)
+         * condition_HR_array.jld (массив из начальных условий. Julia)
+         * condition_HR_array.npy (массив из начальных условий. Python)
+         * spectrum_HR_array.jld (массив из значений спектра Ляпунова. Julia)
+         * spectrum_HR_array.npy (массив из значений спектра Ляпунова. Python)
          
      * FixedPoints.ipynb (Поиск неподвижных точек для исходной системы)
      * Hindmarsh Rose Benchmark.ipynb ( Оптимизация системы, замеры времени)
