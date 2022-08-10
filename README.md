@@ -7,10 +7,10 @@
    * pouncare map 
      * Hindmarsh Rose poincaremap.ipynb ( блокнот для отображения Пуанкаре)
    * probablity density function
-     * result
-       * full range
-       * HR_small_saved
-       * test sorting
+     * result ( содержит папки в которых сохранены изображения для PDF, timeseries, lyapunov spectrum)
+       * full range (шаг для k = 0.001. Сохранены не все данные.  Неправильные названия изображений.)
+       * HR_small_saved (шаг для k = 0.001. Сохранены все данные)
+       * test sorting (Содержит изображения из full range, которые были переименованы и отсортированы) 
      * Border Hyperchaos and regular.ipynb
      * FixedPoints.ipynb
      * Hindmarsh Rose Benchmark.ipynb
