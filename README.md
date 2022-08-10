@@ -8,10 +8,16 @@
      * Hindmarsh Rose poincaremap.ipynb (для отображения Пуанкаре)
    * probablity density function
      * result ( содержит папки в которых сохранены изображения для PDF, timeseries, lyapunov spectrum)
-       * full range (шаг для k = 0.001. Сохранены не все данные.  Неправильные названия изображений.)
-       * HR_small_saved (шаг для k = 0.001. Сохранены все данные)
-       * test sorting (Содержит изображения из full range, которые были переименованы и отсортированы) 
-     * Border Hyperchaos and regular.ipynb
+       * small_step_0.001
+         * dots
+         * full
+         * pdf
+         * timeseries
+         * condition_HR_array.jld (массив из начальных условий. Сохранен в формате для Julia)
+         * condition_HR_array.npy (массив из начальных условий. Сохранен в формате для Python)
+         * spectrum_HR_array.jld (массив из значений спектра Ляпунова. Сохранен в формате для Julia)
+         * spectrum_HR_array.npy (массив из значений спектра Ляпунова. Сохранен в формате для Julia)
+         
      * FixedPoints.ipynb (Поиск неподвижных точек для исходной системы)
      * Hindmarsh Rose Benchmark.ipynb ( Оптимизация системы, замеры времени)
      * Hindmarsh Rose PDF three value k.ipynb ( детальное рассмотрение 3 значений k из папки HR_small_saved)
