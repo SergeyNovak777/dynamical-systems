@@ -2,7 +2,10 @@
 
 ## Containt repository:
  * Hindmarrh Rose (папка для системы Hindmarrh Rose)
-   * chaos_EV_map 
+   * chaos_EV_map
+     * EVA_spikes.npy (массив ЭС. std, mean принимают спайки x_sum)
+     * EVA_without_spikes.npy (массив ЭС. std, mean принимают x_sum)
+     * LE.npy (Массив старшего ляпуновского показателя)
      * Hindmarsh–Rose Map Lyapunov.ipynb (для карт ЭС и старшего ляпуновского показателя)
    * pouncare map 
      * Hindmarsh Rose poincaremap.ipynb (для отображения Пуанкаре)
