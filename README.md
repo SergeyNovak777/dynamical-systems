@@ -15,4 +15,9 @@
      * FixedPoints.ipynb (Поиск неподвижных точек для исходной системы)
      * Hindmarsh Rose Benchmark.ipynb ( Оптимизация системы, замеры времени)
      * Hindmarsh Rose PDF three value k.ipynb ( детальное рассмотрение 3 значений k из папки HR_small_saved)
+<<<<<<< HEAD
      * Hindmarsh Rose PDF.ipynb ( вычисление PDF, lyapunov specrtrum с их сохранением)
+=======
+     * Hindmarsh Rose PDF.ipynb ( вычисление PDF, lyapunov specrtrum с их сохранением)
+    
+>>>>>>> 2f069599657619c894be314ef029a6e3fd1472fa
