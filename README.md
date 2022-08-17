@@ -9,6 +9,13 @@
      * Hindmarsh–Rose Map Lyapunov.ipynb (для карт ЭС и старшего ляпуновского показателя)
    * attractors 
      * Hindmarsh Rose poincaremap.ipynb (для отображения Пуанкаре)
+     * FixedPoints solo element.ipynb (Неподвижные точки для одиночного элемента)
+     * FixedPoints.ipynb (Неподвижные точки для двух связанных HR)
+     * Modes.ipynb (Режимы)
+     * basins code from doc ( бассейны аттракторов, примеры из документации)
+     * basins of attractors chaos.ipynb ( бассейны аттракторов в хаосе)
+     * basins of attractors quasi.ipynb ( бассейны аттракторов при k = 0.0)
+     * mode comparison.ipynb ( сравнение квазипериодического и хаотического режима)
    * probablity density function
      * result ( содержит папки в которых сохранены изображения для PDF, timeseries, lyapunov spectrum)
        * small_step_0.001
