@@ -7,6 +7,7 @@
      * EVA_without_spikes.npy (массив ЭС. std, mean принимают x_sum)
      * LE.npy (Массив старшего ляпуновского показателя)
      * Hindmarsh–Rose Map Lyapunov.ipynb (для карт ЭС и старшего ляпуновского показателя)
+     
    * attractors 
      * Hindmarsh Rose poincaremap.ipynb (для отображения Пуанкаре)
      * FixedPoints solo element.ipynb (Неподвижные точки для одиночного элемента)
@@ -16,6 +17,7 @@
      * basins of attractors chaos.ipynb ( бассейны аттракторов в хаосе)
      * basins of attractors quasi.ipynb ( бассейны аттракторов при k = 0.0)
      * mode comparison.ipynb ( сравнение квазипериодического и хаотического режима)
+     
    * probablity density function
      * result ( содержит папки в которых сохранены изображения для PDF, timeseries, lyapunov spectrum)
        * small_step_0.001
