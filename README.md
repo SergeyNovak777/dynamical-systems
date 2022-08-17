@@ -7,7 +7,7 @@
      * EVA_without_spikes.npy (массив ЭС. std, mean принимают x_sum)
      * LE.npy (Массив старшего ляпуновского показателя)
      * Hindmarsh–Rose Map Lyapunov.ipynb (для карт ЭС и старшего ляпуновского показателя)
-   * pouncare map 
+   * attractors 
      * Hindmarsh Rose poincaremap.ipynb (для отображения Пуанкаре)
    * probablity density function
      * result ( содержит папки в которых сохранены изображения для PDF, timeseries, lyapunov spectrum)
