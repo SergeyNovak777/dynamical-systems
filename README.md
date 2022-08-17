@@ -33,6 +33,7 @@
      * Hindmarsh Rose PDF.ipynb ( вычисление PDF, lyapunov specrtrum с их сохранением)
      * Benchmark.ipynb ( Оптимизация системы, замеры времени)
      * PDF three value k.ipynb ( детальное рассмотрение 3 значений k из папки small_step_0.001)
+  * Rulkov (Папка для системы Рулькова)
     
 #### Система в большинстве блокнотов не оптимизирована. Версии оптимизированной системы находятся в "dynamical-systems/Hindmarrh Rose/probablity density function/Benchmark.ipynb".
 #### Рекомендуется использовать вторую версию оптимизации вместе с SA. Для этого необходимо установить пакет StaticArrays.
