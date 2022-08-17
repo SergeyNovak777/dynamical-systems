@@ -21,8 +21,6 @@
          * spectrum_HR_array.jld (массив из значений спектра Ляпунова. Julia)
          * spectrum_HR_array.npy (массив из значений спектра Ляпунова. Python)
          
-     * FixedPoints.ipynb (Поиск неподвижных точек для исходной системы)
-     * Hindmarsh Rose Benchmark.ipynb ( Оптимизация системы, замеры времени)
      * Hindmarsh Rose PDF.ipynb ( вычисление PDF, lyapunov specrtrum с их сохранением)
      * Benchmark.ipynb ( Оптимизация системы, замеры времени)
      * PDF three value k.ipynb ( детальное рассмотрение 3 значений k из папки small_step_0.001)
