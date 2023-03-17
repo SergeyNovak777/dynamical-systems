@@ -2,7 +2,7 @@
 
 julia_version = "1.8.5"
 manifest_format = "2.0"
-project_hash = "226748ddbc121d157b009ca5093a6f5fed65913e"
+project_hash = "7092cf83981ba3c3c4c00595f1f5b521560c967e"
 
 [[deps.AbstractFFTs]]
 deps = ["ChainRulesCore", "LinearAlgebra"]
@@ -1379,9 +1379,9 @@ version = "0.1.2"
 
 [[deps.Polynomials]]
 deps = ["ChainRulesCore", "LinearAlgebra", "MakieCore", "RecipesBase"]
-git-tree-sha1 = "81fbd4a764f580eab174eb7ce410b5ae66cb1336"
+git-tree-sha1 = "86efc6f761df655f8782f50628e45e01a457d5a2"
 uuid = "f27b6e38-b328-58d1-80ce-0feddd5e7a45"
-version = "3.2.7"
+version = "3.2.8"
 
 [[deps.PositiveFactorizations]]
 deps = ["LinearAlgebra"]
