@@ -26,4 +26,13 @@ br = continuation(prob, PALC(), opts_con;
                 bothside = true,
                 detectFold = true)
 
-scene = plot(br, plotfold=false, markersize=3, legend=:topleft)
+
+
+opts_new_ = NewtonPar(maxIter = 10, tol = 1e-6)
+opts_con_ = ContinuationPar(pMin = -3.5, pMax = 0.0,
+                            ds = 0.01, dsmin = 1e-5, dsmax = 0.1,
+                            nev = 3, detectBifurcation = 3, newtonOptions  = opts_new_,
+                            maxSteps  = 400)
+Mt = 40
+br_po = continuation( br, 4, opts_con_, PeriodicOrbitOCollProblem(Mt, 5))
+#scene = plot(br_po, plotfold=false, markersize=2, legend=:topright)
