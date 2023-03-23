@@ -1,12 +1,12 @@
-pathx= "C:\\Users\\Alex\\Desktop\\x.mat"
-pathy= "C:\\Users\\Alex\\Desktop\\y.mat"
+pathx= "I0_double_detailed_1.mat"
+pathy= "U0_double_detailed_1.mat"
 
 file = matopen(pathx)
-I0_ = read(file, "I0")
+I0_ = read(file, "I0_double_")
 close(file)
 
 file = matopen(pathy)
-U0_ = read(file, "U0")
+U0_ = read(file, "U0_double_")
 close(file)
 
-save("I0.jld", "data",I0_); save("U0.jld", "data",U0_)
+save("I0_double_detailed_1.jld", "data",I0_); save("U0_double_detailed_1.jld", "data",U0_)
