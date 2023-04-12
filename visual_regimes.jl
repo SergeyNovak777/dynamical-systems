@@ -1,14 +1,3 @@
-"""
-arguments:
-- model
-- u0
-- parameters
-- times -- array type of [] which include time_integrate, time_transient
-- integ_setting -- settings for method of integration
-- t_int_ts -- time inerval for timeseries
-- t_int_3d -- time inerval for 3d phase portreit
- - labels -- labels for abscissa and ordinate of timeseries
-"""
 function research_regime(model, u0, p, times, integ_setting;
         index_3d = [3, 2, 1], index_ts = 1,
         t_int_ts = nothing, t_int_3d = nothing,
@@ -130,7 +119,7 @@ function interactive_3d_2_traj(data_1, data_2, fp, index, interval)
         data_2[interval[1]:interval[2], index[1]], data_2[interval[1]:interval[2], index[2]],
         data_2[interval[1]:interval[2],index[3]], linewidth = 1.0, color = :black)
 
-    scatter!(axis3, fp[index[1]], fp[index[2]], fp[index[3]], linewidth = 2.0, color = :orange)
+    scatter!(axis3, fp[index[1]], fp[index[2]], fp[index[3]], linewidth = 5.0, color = :orange)
     return f
 end
 
