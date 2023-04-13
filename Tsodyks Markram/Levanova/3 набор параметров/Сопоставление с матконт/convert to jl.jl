@@ -1,12 +1,12 @@
-pathx= "I0doubleext.mat"
-pathy= "U0doubleext.mat"
+pathx= "I0_hom.mat"
+pathy= "u0_hom.mat"
 
 file = matopen(pathx)
-I0_ = read(file, "I0doubleext")
+I0_ = read(file, "I0_hom")
 close(file)
 
 file = matopen(pathy)
-U0_ = read(file, "U0doubleext")
+U0_ = read(file, "u0_hom")
 close(file)
 
-save("I0doubleext.jld", "data",I0_); save("U0doubleext.jld", "data",U0_)
+save("I0_hom.jld", "data",I0_); save("u0_hom.jld", "data",U0_)
