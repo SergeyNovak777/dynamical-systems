@@ -45,3 +45,25 @@ end
         E_x, x_x, y_x,
         E_y, x_y, y_y)
 end
+
+function HR_mem(u, p, t)
+    function sigma(x)
+        return 1.0 / ( 1.0 + exp( -10.0 * ( x  - ( - 0.25 ) ) ) )
+    end
+    memristor(z, k1_me, k2_me) = k1_me + k2_me * z^2
+
+    a, b, c, d, s, xr, r,  I, vs, k1, k2, k1_me, k2_me  = p
+    x1, y1, z1, x2, y2, z2, z = u
+    
+    du1 = y1 + b * x1 ^ 2 - a * x1 ^3 - z1 + I - k1 * ( x1 - vs ) * sigma(x2) + memristor(z, k1_me, k2_me)*(x2 - x1)
+    du2 = c - d * x1 ^2 - y1
+    du3 = r * ( s * ( x1 - xr ) - z1 )
+    
+    du4 = y2 + b * x2 ^ 2 - a * x2 ^3 - z2 + I - k2 * ( x2 - vs ) * sigma(x1) + memristor(z, k1_me, k2_me)*(x1 - x2)
+    du5 = c - d * x2 ^2 - y2
+    du6 = r * ( s * ( x2 - xr ) - z2 )
+
+    du7 = x1 - x2
+    
+    return SVector(du1, du2, du3, du4, du5, du6, du7)
+end
