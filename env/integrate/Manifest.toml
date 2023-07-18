@@ -2,7 +2,7 @@
 
 julia_version = "1.9.1"
 manifest_format = "2.0"
-project_hash = "a6af78740396a1185e7e7024a4018f45962840fc"
+project_hash = "2f1adc8118f4b024864ce317090d02ad7105c796"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "dcfdf328328f2645531c4ddebf841228aef74130"
@@ -1318,6 +1318,24 @@ deps = ["ArrayInterface", "DiffEqBase", "EnumX", "FiniteDiff", "ForwardDiff", "L
 git-tree-sha1 = "2a7f28c62eb2c16b9c375c38f664cdcf22313cf5"
 uuid = "8913a72c-1f9b-4ce2-8d82-65094dcecaec"
 version = "1.8.0"
+
+[[deps.ODEInterface]]
+deps = ["Dates", "Libdl", "LinearAlgebra", "Markdown", "ODEInterface_jll", "Unicode"]
+git-tree-sha1 = "5dfb3d7199de97cfdc81f1971a2727e628ff472b"
+uuid = "54ca160b-1b9f-5127-a996-1867f4bc2a2c"
+version = "0.5.0"
+
+[[deps.ODEInterfaceDiffEq]]
+deps = ["Compat", "DataStructures", "DiffEqBase", "FunctionWrappers", "LinearAlgebra", "ODEInterface", "Reexport", "SciMLBase"]
+git-tree-sha1 = "25b9d973133024009707e7093286d737437b8b5e"
+uuid = "09606e27-ecf5-54fc-bb29-004bd9f985bf"
+version = "3.13.1"
+
+[[deps.ODEInterface_jll]]
+deps = ["Artifacts", "CompilerSupportLibraries_jll", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "3021aa85a1cd566a533635246b7ed31a29c72c93"
+uuid = "c771fb93-2439-5ece-a3b3-58fecce82101"
+version = "0.0.1+0"
 
 [[deps.Observables]]
 git-tree-sha1 = "6862738f9796b3edc1c09d0890afce4eca9e7e93"
