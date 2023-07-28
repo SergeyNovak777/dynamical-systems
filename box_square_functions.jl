@@ -27,7 +27,7 @@ function get_fixed_point(system, jac_system, p, u0)
     return fp
 end
 
-function get_matrix(fixedpoint, p, jac_system, ϵ_box, norm = 2)
+function get_matrix(fixedpoint, p, jac_system, norm = 2)
     jac_fp = jac_system(fixedpoint, p, 0.0)
     
     eigen_val_vec = eigen(jac_fp)
@@ -51,22 +51,23 @@ function get_matrix(fixedpoint, p, jac_system, ϵ_box, norm = 2)
 end
 
 function get_arrays_dots(number_points_on_side, dim)
-        dots_right_side = zeros(number_points_on_side, dim)
-        array_α_vec_right = zeros(number_points_on_side, dim)
+
+    dots_right_side = zeros(number_points_on_side, dim)
+    array_α_vec_right = zeros(number_points_on_side, dim)
     
-        dots_left_side = zeros(number_points_on_side, dim)
-        array_α_vec_left = zeros(number_points_on_side, dim)
+    dots_left_side = zeros(number_points_on_side, dim)
+    array_α_vec_left = zeros(number_points_on_side, dim)
     
-        dots_up_side = zeros(number_points_on_side, dim)
-        array_α_vec_up = zeros(number_points_on_side, dim)
+    dots_up_side = zeros(number_points_on_side, dim)
+    array_α_vec_up = zeros(number_points_on_side, dim)
     
-        dots_down_side = zeros(number_points_on_side, dim)
-        array_α_vec_down = zeros(number_points_on_side, dim)
+    dots_down_side = zeros(number_points_on_side, dim)
+    array_α_vec_down = zeros(number_points_on_side, dim)
     
-        return dots_right_side, array_α_vec_right,
-                dots_left_side, array_α_vec_left,
-                dots_up_side, array_α_vec_up,
-                dots_down_side, array_α_vec_down
+    return dots_right_side, array_α_vec_right,
+        dots_left_side, array_α_vec_left,
+        dots_up_side, array_α_vec_up,
+        dots_down_side, array_α_vec_down
 end
 
 function fill_side_square(ϵ_box, fixedpoint, number_points_on_side, A,
@@ -143,10 +144,10 @@ function fill_side_square(ϵ_box, fixedpoint, number_points_on_side, A,
 end
 
 function trajectory_from_sides(p, A, dots_from_sides, number_points, fixedpoint, cb, index = 1)
-    internalindex = 1
+    index_points = 1
     while index <= number_points
 
-        u0 = SA[dots_from_sides[internalindex, 1], dots_from_sides[internalindex, 2], dots_from_sides[internalindex, 3]]
+        u0 = SA[dots_from_sides[index_points, 1], dots_from_sides[index_points, 2], dots_from_sides[index_points, 3]]
         prob = ODEProblem(TM, u0, tspan, p)
         sol = solve(prob, alg = Vern9(), abstol = 1e-14, reltol = 1e-14, callback = cb)
         norm_, linsolve = get_norm_αs(sol[end], fixedpoint, A)
@@ -165,7 +166,7 @@ function trajectory_from_sides(p, A, dots_from_sides, number_points, fixedpoint,
         end
 
         index+=1
-        internalindex+=1
+        index_points+=1
         
     end
     return index    

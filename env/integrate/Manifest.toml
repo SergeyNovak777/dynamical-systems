@@ -2,7 +2,7 @@
 
 julia_version = "1.9.1"
 manifest_format = "2.0"
-project_hash = "9bc974202a402866295d1210e0353de96917bb5b"
+project_hash = "75eac1a78b5e3d2b88a710617f58d4e7dd18129d"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "dcfdf328328f2645531c4ddebf841228aef74130"
@@ -935,6 +935,12 @@ deps = ["Compat", "FileIO", "H5Zblosc", "HDF5", "Printf"]
 git-tree-sha1 = "ec6afa4fd3402e4dd5b15b3e5dd2f7dd52043ce8"
 uuid = "4138dd39-2aa7-5051-a626-17a0bb65d9c8"
 version = "0.13.3"
+
+[[deps.JLD2]]
+deps = ["FileIO", "MacroTools", "Mmap", "OrderedCollections", "Pkg", "Printf", "Reexport", "Requires", "TranscodingStreams", "UUIDs"]
+git-tree-sha1 = "aa6ffef1fd85657f4999030c52eaeec22a279738"
+uuid = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
+version = "0.4.33"
 
 [[deps.JLLWrappers]]
 deps = ["Preferences"]
