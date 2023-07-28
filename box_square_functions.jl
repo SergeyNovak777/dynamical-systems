@@ -142,11 +142,11 @@ function fill_side_square(ϵ_box, fixedpoint, number_points_on_side, A,
     end
 end
 
-function trajectory_from_side(p, A, dots_from_side, number_points, fixedpoint,  cb, data)
-    data = [dots_u0, check_events, time_events, dots_on_event, αs, norms]
-    for index in range(1, number_points, step = 1)
-    
-        u0 = SA[dots_from_side[index, 1], dots_from_side[index, 2], dots_from_side[index, 3]]
+function trajectory_from_sides(p, A, dots_from_sides, number_points, fixedpoint, cb, index = 1)
+    internalindex = 1
+    while index <= number_points
+
+        u0 = SA[dots_from_sides[internalindex, 1], dots_from_sides[internalindex, 2], dots_from_sides[internalindex, 3]]
         prob = ODEProblem(TM, u0, tspan, p)
         sol = solve(prob, alg = Vern9(), abstol = 1e-14, reltol = 1e-14, callback = cb)
         norm_, linsolve = get_norm_αs(sol[end], fixedpoint, A)
@@ -163,6 +163,10 @@ function trajectory_from_side(p, A, dots_from_side, number_points, fixedpoint,  
         else
             check_events[index] =  false
         end
-    end
 
+        index+=1
+        internalindex+=1
+        
+    end
+    return index    
 end
