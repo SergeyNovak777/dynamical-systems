@@ -2,7 +2,7 @@
 
 julia_version = "1.9.1"
 manifest_format = "2.0"
-project_hash = "9207c11f8afc3e8118a970dc92b709306f5fa487"
+project_hash = "645896e6c3cccdb8f6372199028d32ef5845512a"
 
 [[deps.Adapt]]
 deps = ["LinearAlgebra", "Requires"]
@@ -430,6 +430,20 @@ deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll",
 git-tree-sha1 = "129acf094d168394e80ee1dc4bc06ec835e510a3"
 uuid = "2e76f6c2-a576-52d4-95c1-20adfe4de566"
 version = "2.8.1+1"
+
+[[deps.HclinicBifurcationKit]]
+deps = ["BifurcationKit", "DocStringExtensions", "ForwardDiff", "Infiltrator", "LinearAlgebra", "Parameters", "RecursiveArrayTools", "SciMLBase", "Setfield"]
+git-tree-sha1 = "b77ecf7a102b26b590d1e1ad92035a11b18923ad"
+repo-rev = "main"
+repo-url = "https://github.com/bifurcationkit/HclinicBifurcationKit.jl"
+uuid = "0e751702-a6d5-4e4e-bf0f-194619fbec56"
+version = "0.1.0"
+
+[[deps.Infiltrator]]
+deps = ["InteractiveUtils", "Markdown", "REPL", "UUIDs"]
+git-tree-sha1 = "04de041e4590428cccbb026d86e5d670513be2e3"
+uuid = "5903a43b-9cc3-4c30-8d17-598619ec4e9b"
+version = "1.6.4"
 
 [[deps.IniFile]]
 git-tree-sha1 = "f550e6e32074c939295eb5ea6de31849ac2c9625"
