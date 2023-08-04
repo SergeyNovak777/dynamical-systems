@@ -1,3 +1,30 @@
+function plot2d(data; type = "lines", width = 400, height = 400,
+labels = ["x", "y"], title_ = "")
+    f = Figure(resolution = (width, height))
+    ax = Axis(f[1, 1], xlabel = labels[1], ylabel = labels[2], title = title_)
+    if type == "lines"
+        lines!(ax, data[1, :], data[2, :])
+    elseif type == "scatter"
+        scatter!(ax, data[1, :], data[2, :], markersize = 5)
+    end
+    display(GLMakie.Screen(), f)
+end
+function plot3d(data; indexs = [1, 2, 3],
+width = 500, height = 500, labels = ["x", "y", "z"])
+    f = Figure(resolution = (width, height))
+    ax = Axis3(f[1, 1], xlabel = labels[1], ylabel = labels[2], zlabel = labels[3])
+    lines!(ax, data[indexs[1], :], data[indexs[2], :], data[indexs[3], :], linewidth = 1.0)
+    display(GLMakie.Screen(), f)
+end
+function plot3d_inter(data; indexs = [1, 2, 3],
+width = 500, height = 500, scales = [1, 1, 1])
+    
+       f = Figure(resolution = (width, height))
+       ax = ax = LScene(f[1, 1], show_axis = true)
+       scale!(ax.scene, scales[1], scales[2], scales[3])
+       lines!(ax, data[indexs[1], :], data[indexs[2], :], data[indexs[3], :], linewidth = 1.0)
+       display(GLMakie.Screen(), f)
+   end
 function load_hom_curve()
     pathtofile = "C:\\Users\\" *username *  "\\Desktop\\dynamical-systems\\Tsodyks Markram\\Levanova\\3 набор параметров\\Сопоставление с матконт\\файлы matlab\\";
     I0 = load(pathtofile * "I0_hom_hom.jld")["data"];
@@ -121,3 +148,38 @@ end
 
 
 affect!(integrator) = terminate!(integrator)
+
+function get_range(ϵ_shift, index_point_from_hom, p_len; param = "I0", direction_shift  = "increase")
+    
+    I0_hom, U0_hom = load_hom_curve();
+
+    if param == "I0"
+        pstart = I0_hom[index_point_from_hom];
+    elseif param == "U0"
+        pstart = I0_hom[index_point_from_hom];
+    end
+
+    if direction_shift == "increase"
+        pend = pstart + ϵ_shift;
+    elseif direction == "decrease"
+        pend = pstart - ϵ_shift;
+    end
+    
+    prange = range(pstart, pend, length = p_len);
+
+    if param == "I0"
+        return prange, U0_hom[index_point_from_hom];
+    elseif param == "U0"
+        return prange, I0_hom[index_point_from_hom];
+    end
+end
+
+function get_set_p(pcontrol, pfix, pcontrolname)
+
+    if pcontrolname == "I0"
+        p = SA[α, τ, τD, τy, J, xthr, ythr, pfix, ΔU0, β, pcontrol];
+    elseif pcontrolname == "U0"
+        p = SA[α, τ, τD, τy, J, xthr, ythr, pcontrol, ΔU0, β, pfix];
+    end
+
+end
