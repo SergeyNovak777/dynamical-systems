@@ -145,8 +145,6 @@ function make_event(fp, ϵ_box, A)
     end
     return condition
 end
-
-
 affect!(integrator) = terminate!(integrator)
 
 function get_range(ϵ_shift, index_point_from_hom, p_len; param = "I0", direction_shift  = "increase")
