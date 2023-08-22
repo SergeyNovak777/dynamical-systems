@@ -38,7 +38,7 @@ end
 
 function main()
     tstart = 0.0;
-    tfinish = -200.0;
+    tfinish = 200.0;
     tspan = (tstart, tfinish);
 
     I0 = -1.7064; U0 = 0.265;
