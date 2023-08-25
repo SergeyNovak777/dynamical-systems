@@ -1,4 +1,4 @@
-username = "admin";
+username = "Alex";
 env = "integrate";
 pathtorepo = "C:\\Users\\" *username *  "\\Desktop\\";
 using Pkg;
@@ -8,7 +8,7 @@ include(pathtorepo * "dynamical-systems\\system.jl");
 using TaylorIntegration, GLMakie, JLD, StaticArrays, DynamicalSystems, LinearAlgebra;
 
 function get_hom_curve()
-    cd("C:\\Users\\admin\\Desktop\\dynamical-systems\\Tsodyks Markram\\Levanova\\3 набор параметров\\Сопоставление с матконт\\файлы matlab");
+    cd("C:\\Users\\Alex\\Desktop\\dynamical-systems\\Tsodyks Markram\\Levanova\\3 набор параметров\\Сопоставление с матконт\\файлы matlab");
     I0_hom = load("I0_hom_hom.jld")["data"];
     u0_hom = load("U0_hom_hom.jld")["data"];
     I0_hom = I0_hom[:];
@@ -27,7 +27,7 @@ end
     du[3] = (-u[3])/p[4] + p[10] * σ(u[2], p);
 end
 
-function get_shift(p)
+function get_fp(p)
 
     intervalstart = -100; intervalend = 100;
     Ei = interval(intervalstart, intervalend);
@@ -38,6 +38,12 @@ function get_shift(p)
     ds = CoupledODEs(TM, [0.0, 0.0, 0.0], p);
     fp, ei, _ = fixedpoints(ds, box, jacob_TM_);
 
+    return fp
+end
+
+function get_shift(p)
+
+    fp = get_fp(p);
     index_fp = 1;
     index_vec = 1;
     ϵ = 1e-11;
@@ -67,7 +73,6 @@ function main(order::Int64, ts::Int64 = 1, tf::Int64 = 50000)
     
     t, sol = taylorinteg(TM!, u0, tstart, tfinish, order, 1e-20, p, maxsteps = 100000);
 
-    #ts = 1; tf = 25000;
     indexx,indexy,indexz = 2, 3, 1
 
     GLMakie.activate!();

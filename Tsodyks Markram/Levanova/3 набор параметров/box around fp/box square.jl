@@ -7,7 +7,7 @@ pathtorepo = "C:\\Users\\" *username *  "\\Desktop\\";
 using Pkg;
 Pkg.activate(pathtorepo * "dynamical-systems\\env\\" * env * "\\");
 include(pathtorepo * "dynamical-systems\\system.jl");
-include(pathtorepo * "dynamical-systems\\header.jl");
+include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\Tsodyks Markram\\Levanova\\3 набор параметров\\box around fp\\header.jl");
 
 using StaticArrays, DifferentialEquations, DynamicalSystems, JLD2, GLMakie, LinearAlgebra, LinearSolve;
 
@@ -20,7 +20,7 @@ function tr_square(index_point_from_curve, number_point)
     p = SA[α, τ, τD, τy, J, xthr, ythr, U0, ΔU0, β, I0];
 
     tstart = 0.0; tfinish = 1000.0; tspan = [tstart; tfinish];
-    ϵ_box = 1.0e-5; ϵ_shift = 1.0e-4;
+    ϵ_box = 1.0e-2; ϵ_shift = 1.0e-4;
     E = interval(-40, 40); x = interval(-5, 5); y = x;
     box = IntervalBox(E, x, y);
 
@@ -40,11 +40,12 @@ function tr_square(index_point_from_curve, number_point)
     points_up_side, points_down_side = up_down_side(ϵ_box, count_points_on_side, fp, A, 3);
 
     # points_left_side, points_right_side;
-    points = cat(points_up_side, points_down_side,  dims = 1);
-
-    #norms, αs = get_norm_αs_(points, fp, A);
+    points = cat(points_left_side, points_right_side, points_up_side, points_down_side,  dims = 1);
+    
+    norms, αs = get_norm_αs_(points, fp, A);
+    plot2d(αs, type = "scatter");
     #number_point = 1
-
+    """
     condition = make_event(fp, ϵ_box, A);
     cb = ContinuousCallback(condition, nothing, affect!);
     u0 = SA[points_left_side[number_point, 1], points_left_side[number_point, 2],
@@ -52,6 +53,6 @@ function tr_square(index_point_from_curve, number_point)
 
     prob = ODEProblem(TM, u0, tspan, p);    
     sol = solve(prob, alg = Vern9(), abstol = 1e-12, reltol = 1e-10, callback = cb);
-    return sol
+    return sol"""
 end
 

@@ -1,3 +1,5 @@
+#---------------------------------------------------------------------------------------------
+# Tsodyks Markram
 @inbounds function TM(u, p, t)
     U(y, p) = p[8] + p[9] / ( 1.0 + exp( -50.0 * (y - p[7]) ) )
     σ(x, p) = 1.0 / ( 1.0 + exp( -20.0 * (x-p[6]) ) )
@@ -10,7 +12,7 @@
     
     return SVector(du1, du2, du3)
 end
-
+# for bifurcationkit
 @inbounds function TM_bk(u, p)
     U(y, p) = p[8] + p[9] / ( 1.0 + exp( -50.0 * (y - p[7]) ) )
     σ(x, p) = 1.0 / ( 1.0 + exp( -20.0 * (x-p[6]) ) )
@@ -23,7 +25,20 @@ end
     
     return [du1, du2, du3]
 end
-
+# for DAE
+@inbounds function TM_DAE(du, u, p, t)
+    U(y, p) = p[8] + p[9] / ( 1.0 + exp( -50.0 * (y - p[7]) ) )
+    σ(x, p) = 1.0 / ( 1.0 + exp( -20.0 * (x-p[6]) ) )
+    g(E, x, y, p, U_) = log( 1.0 + exp( (p[5] * U_ * x * E + p[11]  ) / (p[1]) ) )
+    
+    U_ = U(u[3], p)
+    du[1] = (-u[1] + p[1] * g(u[1], u[2], u[3], p, U_) )
+    du[2] = (1.0 - u[2]) / p[3] - U_*u[2]*u[1]
+    du[3] = (-u[3])/p[4] + p[10] * σ(u[2], p)
+    
+    nothing
+end
+# Jacobian
 @inbounds function jacob_TM_(u, p, t)
     
     U(y, p, exp50) = p[8] + p[9] / ( 1.0 + exp50 )
@@ -43,7 +58,7 @@ end
     u1p5 = p[5] * u[1]
     Uyu2 = Uy * u[2]
     
-    E_E = (-1.0 + ((J * u[2] * g_mult)) / (g_plus) ) / p[2]
+    E_E = (-1.0 + ((p[5] * u[2] * g_mult)) / (g_plus) ) / p[2]
     E_x = (u1p5 * g_mult) / (g_plus_mult)
     E_y = (u1p5 * Uyu2 * g_) / (g_plus_mult)
     
@@ -59,6 +74,8 @@ end
         E_y, x_y, y_y)
 end
 
+#---------------------------------------------------------------------------------------------
+# Hindmarsh Rose with memristor
 function HR_mem(u, p, t)
     function sigma(x)
         return 1.0 / ( 1.0 + exp( -10.0 * ( x  - ( - 0.25 ) ) ) )
