@@ -97,8 +97,9 @@ function HR_mem(u, p, t)
     
     return SVector(du1, du2, du3, du4, du5, du6, du7)
 end
-
-function model_braint_rhythms(u, p, t)
+# ---------------------------------------------------------------------------------------------
+# rate model
+function rate_model(u, p, t)
 
     sE, sI, rE, rI, Y = u
     τsE, γE, s0E, τsI, γI, s0I, τrE, kE, IE, wEE, wIE, θE, τrI, kI, II, wEI, wII, θI, τY, βY, gammaY, ythr, sEthr, kY = p
@@ -116,7 +117,8 @@ function model_braint_rhythms(u, p, t)
     
     return SVector(dsEdt, dsIdt, drEdt, drIdt, dYdt)
 end
-function model_braint_rhythms(u, p)
+# rate model for bifurcationkit
+function rate_model(u, p)
 
     sE, sI, rE, rI, Y = u
     τsE, γE, s0E, τsI, γI, s0I, τrE, kE, IE, wEE, wIE, θE, τrI, kI, II, wEI, wII, θI, τY, βY, gammaY, ythr, sEthr, kY = p
@@ -134,6 +136,7 @@ function model_braint_rhythms(u, p)
     
     return [dsEdt, dsIdt, drEdt, drIdt, dYdt]
 end
+# jacobian rate model
 function rate_jac(u, p , t)
     
     #sE, sI, rE, rI, Y = u
