@@ -1,17 +1,21 @@
-include("C:\\Users\\admin\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\src\\header.jl");
+include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\src\\header.jl");
+
+#include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\src\\main.jl");
 
 function main()
 
-    time_LSE = 500;
-    time_attract = 500;
+    time_LSE = 1000;
+    time_attract = 1000;
     tstep = 0.001;
     integ_set = (alg = Vern9(), adaptive = false, dt = tstep);
 
-    τsE = 3.0; γE = 4.0; s0E = 0.15;
+    τsE = 3.0; γE = 2.0; s0E = 0.15;
     τsI = 10.0; γI = 8.0; s0I = 0.1;
+
     τrE = 2.0; kE = 5.0; IE = 0.9; wEE = 3.5; wIE = 5.0; θE = 0.2;
     τrI = 6.0; kI = 5.0; II = 0.0; wEI = 5.0; wII = 3.0; θI = 0.4;
-    τY = 0.01;  βY = 0.01;
+
+    τY = 10.0;  βY = 1.0;
     ythr = 0.5; sEthr = 0.5; kY = 0.01
     γY = 0.0;
 
@@ -34,7 +38,7 @@ function main()
     global u0s = zeros(len, len, dim);
 
     map_dim = " $(len)x$(len) ";
-    name = " $(p1name) $(p2name) rate_model";
+    name = " $(p1name) $(p2name) rate_model params from article";
     format = ".jld2";
     namefile_LSE = "LSE" * map_dim * name * format;
     namefile_u0s = "u0s" * map_dim * name * format;
@@ -56,7 +60,7 @@ function main()
             global u0_lc = u0
         end
         
-        output(p2name, p2_loc_index,p2_loc, u0_lc)
+        #output(p2name, p2_loc_index,p2_loc, u0_lc)
         
         ds = init_ds_(rate_model, p, index_control, p2_loc,
         index_fix, var_fix, u0_lc, integ_set)
@@ -68,11 +72,12 @@ function main()
         
         ΛΛ = spectrum(ds, time_LSE)
         
-        output_end_iter(ΛΛ, u0_lc)
+        #output_end_iter(ΛΛ, u0_lc)
         
         save_output(p2_loc_index, ΛΛ, u0_lc)
         save_tofile(namefile_LSE, namefile_u0s)
-        separate()
+        
+        #separate()
     end
    
     println("  "); flush(stdout)
@@ -85,7 +90,7 @@ function main()
             
             u0_lc = u0s[p1_loc_index - 1, p2_loc_index, :]
 
-            output(p1name, p2name, p1_loc_index, p2_loc_index, p1_loc, p2_loc, u0_lc)
+            #output(p1name, p2name, p1_loc_index, p2_loc_index, p1_loc, p2_loc, u0_lc)
             
             ds = init_ds(rate_model, p, index_p2, index_p1, p2_loc, p1_loc, u0_lc, integ_set)
             println("P $(p)");flush(stdout)
@@ -93,11 +98,11 @@ function main()
             ds = init_ds(rate_model, p, index_p2, index_p1, p2_loc, p1_loc, u0_lc, integ_set)
             ΛΛ = spectrum(ds, time_LSE)
             
-            output_end_iter(ΛΛ, u0_lc)
+            #output_end_iter(ΛΛ, u0_lc)
             
             save_output(p1_loc_index, p2_loc_index, ΛΛ, u0_lc)
             
-            separate()
+            #separate()
         end
         save_tofile(namefile_LSE, namefile_u0s)
     end
