@@ -1,13 +1,13 @@
-include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\src\\header.jl");
+include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\params from article\\gammaY IE\\src\\header.jl"
 
-#include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\src\\main.jl");
-
+#include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\params from article\\gammaY IE\\src\\main.jl")
+)
 function main()
 
     time_LSE = 1000;
     time_attract = 1000;
     tstep = 0.001;
-    integ_set = (alg = Vern9(), adaptive = false, dt = tstep);
+    integ_set = (alg = RK4(), adaptive = false, dt = tstep);
 
     τsE = 3.0; γE = 2.0; s0E = 0.15;
     τsI = 10.0; γI = 8.0; s0I = 0.1;
@@ -38,7 +38,7 @@ function main()
     global u0s = zeros(len, len, dim);
 
     map_dim = " $(len)x$(len) ";
-    name = " $(p1name) $(p2name) rate_model params from article";
+    name = " $(p1name) $(p2name) rate_model params from article RK4";
     format = ".jld2";
     namefile_LSE = "LSE" * map_dim * name * format;
     namefile_u0s = "u0s" * map_dim * name * format;
@@ -64,7 +64,6 @@ function main()
         
         ds = init_ds_(rate_model, p, index_control, p2_loc,
         index_fix, var_fix, u0_lc, integ_set)
-
         u0_lc = goto_attractor(ds, time_attract, integ_set)
 
         ds = init_ds_(rate_model, p, index_control, p2_loc,
@@ -76,7 +75,7 @@ function main()
         
         save_output(p2_loc_index, ΛΛ, u0_lc)
         save_tofile(namefile_LSE, namefile_u0s)
-
+        
         #separate()
     end
    
@@ -92,7 +91,7 @@ function main()
             #output(p1name, p2name, p1_loc_index, p2_loc_index, p1_loc, p2_loc, u0_lc)
             
             ds = init_ds(rate_model, p, index_p2, index_p1, p2_loc, p1_loc, u0_lc, integ_set)
-            println("P $(p)");flush(stdout)
+
             u0_lc = goto_attractor(ds, time_attract, integ_set)
             ds = init_ds(rate_model, p, index_p2, index_p1, p2_loc, p1_loc, u0_lc, integ_set)
             ΛΛ = spectrum(ds, time_LSE)
