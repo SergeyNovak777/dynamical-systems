@@ -24,7 +24,7 @@ function main()
     dim = 5
     u0 = zeros(dim);
 
-    len = 3;
+    len = 100;
     p1name = "γY";
     p2name = "IE";
     p1_range = range( 0.0, 10.0, length = len );
@@ -85,7 +85,7 @@ function main()
             
             u0_lc = u0s[p1_loc_index - 1, p2_loc_index, :]
 
-            output(p1name, p2name, p1_loc_index, p2_loc_index, p1_loc, p2_loc, u0)
+            output(p1name, p2name, p1_loc_index, p2_loc_index, p1_loc, p2_loc, u0_lc)
             
             ds = init_ds(rate_model, p, index_p2, index_p1, p2_loc, p1_loc, u0_lc, integ_set)
             println("P $(p)");flush(stdout)
