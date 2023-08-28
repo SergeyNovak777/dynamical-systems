@@ -1,4 +1,4 @@
-include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\src\\header.jl");
+include("C:\\Users\\admin\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\src\\header.jl");
 
 function main()
 
@@ -7,14 +7,13 @@ function main()
     tstep = 0.001;
     integ_set = (alg = Vern9(), adaptive = false, dt = tstep);
 
-    τsE = 3.0; γE = 2.0; s0E = 0.15;
+    τsE = 3.0; γE = 4.0; s0E = 0.15;
     τsI = 10.0; γI = 8.0; s0I = 0.1;
-    
     τrE = 2.0; kE = 5.0; IE = 0.9; wEE = 3.5; wIE = 5.0; θE = 0.2;
     τrI = 6.0; kI = 5.0; II = 0.0; wEI = 5.0; wII = 3.0; θI = 0.4;
-    
-    τY = 10;  βY = 1;
+    τY = 0.01;  βY = 0.01;
     ythr = 0.5; sEthr = 0.5; kY = 0.01
+    γY = 0.0;
 
     p = [τsE, γE, s0E, τsI, γI, s0I, τrE, kE, IE, wEE, wIE, θE, τrI, kI, II,
         wEI, wII, θI, τY, βY, γY, ythr, sEthr, kY];
@@ -22,16 +21,17 @@ function main()
     # wEE - 10, wIE - 11, θE - 12, τrI - 13, kI - 14, II - 15,
     # wEI - 16, wII - 17, θI - 18, τY - 19, βY - 20, γY - 21, ythr - 22, sEthr - 23, kY - 24
 
-    u0 = zeros(5);
+    dim = 5
+    u0 = zeros(dim);
 
-    len = 350;
-    p1name = "";
-    p2name = "";
-    p1_range = range( -1.0, -2.0, length = len );
-    p2_range = range(0.3, 0.16, length = len);
+    len = 3;
+    p1name = "γY";
+    p2name = "IE";
+    p1_range = range( 0.0, 10.0, length = len );
+    p2_range = range(0.0, 2.0, length = len);
 
-    global Λs = zeros(len, len, 3);
-    global u0s = zeros(len, len, 3);
+    global Λs = zeros(len, len, dim);
+    global u0s = zeros(len, len, dim);
 
     map_dim = " $(len)x$(len) ";
     name = " $(p1name) $(p2name) rate_model";
@@ -42,25 +42,25 @@ function main()
     # Индексы фиксируемого и управляющего параметра
     
     # Индексы управляющих параметров
-    index_p1= 11;
-    index_p2 = 8;
+    index_p1= 21;
+    index_p2 = 9;
 
     # для предварительной протяжки
     index_fix = index_p1;
     var_fix = p1_range[1];
     index_control = index_p2;
     
-    for (p2_loc_index, p2_loc) in enumerate(p2range)
+    for (p2_loc_index, p2_loc) in enumerate(p2_range)
     
         if p2_loc_index == 1
             global u0_lc = u0
         end
         
-        #output(idx_U0,U0_, u0_lc)
+        output(p2name, p2_loc_index,p2_loc, u0_lc)
         
         ds = init_ds_(rate_model, p, index_control, p2_loc,
         index_fix, var_fix, u0_lc, integ_set)
-
+        println("P $(p)");flush(stdout)
         u0_lc = goto_attractor(ds, time_attract, integ_set)
 
         ds = init_ds_(rate_model, p, index_control, p2_loc,
@@ -68,14 +68,14 @@ function main()
         
         ΛΛ = spectrum(ds, time_LSE)
         
-        #output_end_iter(ΛΛ, u0_lc)
+        output_end_iter(ΛΛ, u0_lc)
         
         save_output(p2_loc_index, ΛΛ, u0_lc)
         save_tofile(namefile_LSE, namefile_u0s)
-        #separate()
+        separate()
     end
    
-
+    println("  "); flush(stdout)
     for (p2_loc_index, p2_loc) in enumerate(p2_range)
         for (p1_loc_index, p1_loc) in enumerate(p1_range)
             
@@ -84,18 +84,20 @@ function main()
             end
             
             u0_lc = u0s[p1_loc_index - 1, p2_loc_index, :]
-            #output(idx_I0, idx_U0, I0_, U0_, u0_lc)
+
+            output(p1name, p2name, p1_loc_index, p2_loc_index, p1_loc, p2_loc, u0)
             
             ds = init_ds(rate_model, p, index_p2, index_p1, p2_loc, p1_loc, u0_lc, integ_set)
+            println("P $(p)");flush(stdout)
             u0_lc = goto_attractor(ds, time_attract, integ_set)
             ds = init_ds(rate_model, p, index_p2, index_p1, p2_loc, p1_loc, u0_lc, integ_set)
             ΛΛ = spectrum(ds, time_LSE)
             
-            #output_end_iter(ΛΛ, u0_lc)
+            output_end_iter(ΛΛ, u0_lc)
             
-            save_output(idx_I0, idx_U0, ΛΛ, u0_lc)
+            save_output(p1_loc_index, p2_loc_index, ΛΛ, u0_lc)
             
-            #separate()
+            separate()
         end
         save_tofile(namefile_LSE, namefile_u0s)
     end
