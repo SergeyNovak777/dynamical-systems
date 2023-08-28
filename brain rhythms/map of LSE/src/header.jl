@@ -1,4 +1,4 @@
-username = "Alex";
+username = "admin";
 env = "integrate";
 pathtorepo = "C:\\Users\\" *username *  "\\Desktop\\";
 using Pkg;
@@ -7,17 +7,16 @@ include(pathtorepo * "dynamical-systems\\system.jl");
 
 using StaticArrays, DifferentialEquations, DynamicalSystems, JLD2;
 
-"""function output(idx_I0, idx_U0, I0, U0, u0)
-    println("index I0: $idx_I0; I0: $I0");flush(stdout);
-    println("index U0: $idx_U0; U0: $U0");flush(stdout);
-    println("initial condition: $u0");flush(stdout);
-end
+#function output(idx_I0, idx_U0, I0, U0, u0)
+    #println("index I0: $idx_I0; I0: $I0");flush(stdout);
+    #println("index U0: $idx_U0; U0: $U0");flush(stdout);
+    #println("initial condition: $u0");flush(stdout);
+#end
 
-function output(idx_U0,U0, u0)
-    println("index U0: $idx_U0; U0: $U0");flush(stdout);
-    println("initial condition: $u0");flush(stdout);
-end
-"""
+#function output(idx_U0,U0, u0)
+    #println("index U0: $idx_U0; U0: $U0");flush(stdout);
+    #println("initial condition: $u0");flush(stdout);
+#end
 
 function output(p1_name, p2_name, index_p1, index_p2, p1, p2, u0)
     println("index $(p1_name): $(index_p1); $(p1_name) value: $(p1)");flush(stdout);
@@ -68,9 +67,9 @@ function spectrum(ds_, t)
     return ΛΛ
 end
 
-function save_output(idx_U0, ΛΛ, u0_lc)
-    Λs[1, idx_U0, :] = ΛΛ
-    u0s[1, idx_U0, :] = u0_lc
+function save_output(index_p2, ΛΛ, u0_lc)
+    Λs[1, index_p2, :] = ΛΛ
+    u0s[1, index_p2, :] = u0_lc
 end
 
 function save_output(index_p1, index_p2, ΛΛ, u0_lc)
