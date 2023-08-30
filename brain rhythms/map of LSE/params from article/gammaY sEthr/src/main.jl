@@ -1,6 +1,6 @@
-include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\params from article\\gammaY ythr\\src\\header.jl"
+include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\params from article\\gammaY sEthr\\src\\header.jl"
 
-#include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\params from article\\gammaY ythr\\src\\main.jl")
+#include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\params from article\\gammaY sEthr\\src\\main.jl")
 )
 function main()
 
@@ -30,7 +30,7 @@ function main()
 
     len = 100;
     p1name = "γY";
-    p2name = "ythr";
+    p2name = "sEthr";
     p1_range = range( 0.1, 10.0, length = len );
     p2_range = range(0.0, 0.9, length = len);
 
@@ -47,7 +47,7 @@ function main()
     
     # Индексы управляющих параметров
     index_p1= 21;
-    index_p2 = 22;
+    index_p2 = 23;
 
     # для предварительной протяжки
     index_fix = index_p1;
@@ -72,6 +72,7 @@ function main()
         ΛΛ = spectrum(ds, time_LSE)
         
         #output_end_iter(ΛΛ, u0_lc)
+        
         save_output(p2_loc_index, ΛΛ, u0_lc)
         save_tofile(namefile_LSE, namefile_u0s)
         
