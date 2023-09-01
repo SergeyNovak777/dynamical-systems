@@ -14,11 +14,9 @@ function main()
     p = [α, τ, τD, τy, J, xthr, ythr, 0.0, ΔU0, β, 0.0]
     u0 = [10.870367054955267, 0.6670395183801261, 0.44434050730193664];
 
-    #len = 350;
-    stepI0 = -0.0005730659025787732;
-    stepU0 = -0.00010315186246417918;
-    I0range = range( -1.58, -1.78, step = stepI0 );
-    U0range = range(0.2682292263610315, 0.264, step = stepU0);
+    len = 400;
+    I0range = range( -0.5, -2.0,  length = len );
+    U0range = range( 0.15,  0.55, length = len );
 
     global Λs = zeros(length(I0range), length(U0range), 3);
     global u0s = zeros(length(I0range), length(U0range), 3);
@@ -27,7 +25,7 @@ function main()
     lenU0 = length(U0range)
 
     map_dim = " $(lenI0)x$(lenU0) ";
-    name = " tau_D article2 space with chaos and hom continue";
+    name = " tau_D article2 first map extended";
     format = ".jld2";
     namefile_LSE = "LSE" * map_dim * name * format;
     namefile_u0s = "u0s" * map_dim * name * format;
@@ -94,8 +92,6 @@ function main()
         end
         save_tofile(namefile_LSE, namefile_u0s)
     end
-
-
 end
 
 """

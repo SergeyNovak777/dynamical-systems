@@ -188,3 +188,18 @@ function rate_jac(u, p , t)
     sEY, 0.0, 0.0, 0.0, YY)
 
 end
+#---------------------------------------------------------------------------------
+
+function arneodo_model(u, p, t)
+    x = u[2];
+    y = u[3];
+    z = -u[2] - p[1] * u[3] + p[2] * u[1] * ( 1 - u[1] );
+    return SVector(x, y ,z);
+end
+
+function jac_arneodo(u, p, t)
+    return SMatrix{3, 3}(
+    0.0, 0.0, p[2]*(1-2*u[1]),
+    1.0, 0.0, -1.0,
+    0.0, 1.0, -p[1];)
+end

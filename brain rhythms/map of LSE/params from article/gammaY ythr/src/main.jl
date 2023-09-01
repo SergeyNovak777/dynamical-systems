@@ -4,10 +4,10 @@ include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\
 )
 function main()
 
-    time_LSE = 100000;
+    time_LSE = 1000;
     time_attract = 1000;
-    #tstep = 0.001;
-    integ_set = (alg = Vern9(), adaptive = true, abstol = 1e-14, reltol = 1e-14);
+    tstep = 0.001;
+    integ_set = (alg = RK4(), adaptive = false, dt = tstep);
 
     τsE = 3.0; γE = 2.0; s0E = 0.15;
     τsI = 10.0; γI = 8.0; s0I = 0.1;
@@ -64,7 +64,7 @@ function main()
         
         ds = init_ds_(rate_model, p, index_control, p2_loc,
         index_fix, var_fix, u0_lc, integ_set)
-        u0_lc = goto_attractor(ds, time_attract)
+        u0_lc = goto_attractor(ds, time_attract, integ_set)
 
         ds = init_ds_(rate_model, p, index_control, p2_loc,
         index_fix, var_fix, u0_lc, integ_set)
@@ -91,7 +91,7 @@ function main()
             
             ds = init_ds(rate_model, p, index_p2, index_p1, p2_loc, p1_loc, u0_lc, integ_set)
 
-            u0_lc = goto_attractor(ds, time_attract)
+            u0_lc = goto_attractor(ds, time_attract, integ_set)
             ds = init_ds(rate_model, p, index_p2, index_p1, p2_loc, p1_loc, u0_lc, integ_set)
             ΛΛ = spectrum(ds, time_LSE)
             

@@ -56,8 +56,8 @@ function init_ds(sys, params, index_p1, index_p2, p1, p2, u0_lc, integ_set)
     return ds
 end
 
-function goto_attractor(ds_, time_attract)
-    tr,_ = trajectory(ds_, time_attract)
+function goto_attractor(ds_, time_attract, integ_set)
+    tr,_ = trajectory(ds_, time_attract, Δt = integ_set.dt)
     u0_lc = tr[end]
     return u0_lc
 end
