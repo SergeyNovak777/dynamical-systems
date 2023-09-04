@@ -14,7 +14,7 @@ function main()
     p = [α, τ, τD, τy, J, xthr, ythr, 0.0, ΔU0, β, 0.0]
     u0 = [10.870367054955267, 0.6670395183801261, 0.44434050730193664];
 
-    len = 400;
+    len = 300;
     I0range = range( -0.5, -2.0,  length = len );
     U0range = range( 0.15,  0.55, length = len );
 
@@ -62,11 +62,10 @@ function main()
         #output_end_iter(ΛΛ, u0_lc)
         
         save_output(idx_U0, ΛΛ, u0_lc)
-        save_tofile(namefile_LSE, namefile_u0s)
         #separate()
     end
+    save_tofile(namefile_LSE, namefile_u0s)
    
-
     for (idx_U0, U0_) in enumerate(U0range)
         for (idx_I0, I0_) in enumerate(I0range)
             
