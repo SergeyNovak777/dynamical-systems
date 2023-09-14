@@ -203,3 +203,27 @@ function jac_arneodo(u, p, t)
     1.0, 0.0, -1.0,
     0.0, 1.0, -p[1];)
 end
+
+# ---------------------------------------------------------------------------------
+# model tetrapartite synapse
+
+function tetrapart_model(var, par, t)
+
+    E, x, u, y, ecm, p  = var;
+    τ, τD, τF, τy, α, αE, αecm, αp, J, U0, I0, ΔU0, β, βecm, βp, γp, ecm0, ecm1, kecm, θecm, p0, p1, θp, kp, ythr, xthr = par;
+
+    g = log( 1 + exp( ( (J + αE * ecm) * u * x * E + I0) / α ) );
+    U = U0 + ΔU0 / ( 1 + exp( -50 * ( y - ythr ) ) );
+    Hy = 1 / ( 1 + exp( -20 * ( x - xthr ) ) );
+    Hecm = ecm0 - (ecm0 - ecm1) / (1 + exp( -(E - θecm) / kecm ) );
+    Hp =  p0 - (p0 - p1) / (1 + exp( -(E - θp) / kp) );
+
+    dE = (-E + α * g) / τ;
+    dx = (1 - x) / τD  -u * x * E;
+    du = (U - u) / τF  + U * (1 - u) * E;
+    dy = (-y) / τy + β * Hy;
+    decm = -( αecm + γp * p ) * ecm + βecm * Hecm;
+    dp = -αp * p + βp * Hp;
+
+    return SVector(dE, dx, du, dy, decm, dp);
+end
