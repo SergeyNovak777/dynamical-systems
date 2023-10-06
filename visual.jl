@@ -1,0 +1,184 @@
+function plot_timesereis(t, x, tstart, tend;
+    plot = false,
+    width = 1000, height = 300, ylab = "x", lbsize = 35, tcksize = 25, lw = 2.0, inter = true, grid = true, color = :black)
+
+    CairoMakie.activate!()
+    f = Figure(resolution = (width, height))
+    ax = Axis(f[1, 1], xlabel = L"time", ylabel = ylab,
+    xlabelsize = lbsize, ylabelsize = lbsize,
+    xticklabelsize = tcksize, yticklabelsize = tcksize,
+    xgridvisible = grid, ygridvisible = grid)
+    
+    lines!(ax, t[tstart:tend], x[tstart:tend], linewidth = lw, color = color);
+    if plot == true
+        if inter == true
+            display(GLMakie.Screen(), f)
+        else
+            display(f)
+        end
+    end
+    return f;
+end
+
+function plot_timesereis_2c(t1, t2, x1, x2, tstart, tend;
+    plot = false,
+    width = 1000, height = 300, ylab = "x", lbsize = 35, tcksize = 25, lw = 2.0, inter = true, grid = true, color1 = :blue, color2 = :red)
+
+    CairoMakie.activate!()
+    f = Figure(resolution = (width, height))
+    ax = Axis(f[1, 1], xlabel = L"time", ylabel = ylab,
+    xlabelsize = lbsize, ylabelsize = lbsize,
+    xticklabelsize = tcksize, yticklabelsize = tcksize,
+    xgridvisible = grid, ygridvisible = grid)
+    
+    lines!(ax, t1[tstart:tend], x1[tstart:tend], linewidth = lw, color = color1);
+    lines!(ax, t2[tstart:tend], x2[tstart:tend], linewidth = lw, color = color2);
+
+    if plot == true
+        if inter == true
+            display(GLMakie.Screen(), f)
+        else
+            display(f)
+        end
+    end
+
+    return f;
+end
+    
+function plot_3d(data, ts, tf;
+    plot = false,
+    width = 900, height = 600,
+    lb_size = 30, tck_size = 25, color = :black, lw = 1.0,
+    xl = "v1", yl = "v2", zl = "v3",
+    azim = 1.275pi, elev = pi/8, prot = 30, disx = 40, disy = 40, disz = 40,
+    grid = true, inter = false)
+
+    x, y, z = data
+
+    CairoMakie.activate!()
+    f = Figure(resolution = (width, height))
+    ax = Axis3(f[1, 1], azimuth = azim, elevation = elev,
+                xlabel = xl, ylabel = yl, zlabel = zl,
+                xlabelsize = lb_size, ylabelsize = lb_size, zlabelsize = lb_size,
+                xticklabelsize = tck_size, yticklabelsize = tck_size, zticklabelsize = tck_size,
+                xgridvisible = false, ygridvisible = false, zgridvisible = false,
+                protrusions = prot, xlabeloffset = disx, ylabeloffset = disy, zlabeloffset = disz)
+
+    lines!(x[ts:tf], y[ts:tf], z[ts:tf], linewidth = lw, color = color)
+
+
+    if plot == true
+        if inter == true
+            display(GLMakie.Screen(), f)
+        else
+            display(f)
+        end
+    end
+
+    return f;
+end
+
+function plot_3d_fp(data, fp, ts, tf;
+    plot = false,
+    width = 900, height = 600,
+    lb_size = 30, tck_size = 25, color = :black, lw = 1.0,
+    xl = "v1", yl = "v2", zl = "v3",
+    azim = 1.275pi, elev = pi/8, prot = 30, disx = 40, disy = 40, disz = 40,
+    grid = true, inter = false)
+
+    x, y, z = data
+
+    CairoMakie.activate!()
+    f = Figure(resolution = (width, height))
+    ax = Axis3(f[1, 1], azimuth = azim, elevation = elev,
+                xlabel = xl, ylabel = yl, zlabel = zl,
+                xlabelsize = lb_size, ylabelsize = lb_size, zlabelsize = lb_size,
+                xticklabelsize = tck_size, yticklabelsize = tck_size, zticklabelsize = tck_size,
+                xgridvisible = false, ygridvisible = false, zgridvisible = false,
+                protrusions = prot, xlabeloffset = disx, ylabeloffset = disy, zlabeloffset = disz)
+
+    lines!(x[ts:tf], y[ts:tf], z[ts:tf], linewidth = lw, color = color)
+    for fp_ in fp
+        scatter!(ax, fp_[idx], fp_[idy], fp_[idz], color = :black);
+    end
+
+    if plot == true
+        if inter == true
+            display(GLMakie.Screen(), f)
+        else
+            display(f)
+        end
+    end
+
+    return f;
+end
+
+function plot_3d_2c(data, ts, tf;
+    plot = false,
+    width = 900, height = 600,
+    lb_size = 30, tck_size = 25, c1 = :red, c2 = :blue, lw = 1.0,
+    xl = "v1", yl = "v2", zl = "v3",
+    azim = 1.275pi, elev = pi/8, prot = 30, disx = 40, disy = 40, disz = 40,
+    grid = true, inter = false)
+
+    x1, x2, y1, y2, z1, z2 = data
+    
+    CairoMakie.activate!()
+    f = Figure(resolution = (width, height))
+    ax = Axis3(f[1, 1], azimuth = azim, elevation = elev,
+                xlabel = xl, ylabel = yl, zlabel = zl,
+                xlabelsize = lb_size, ylabelsize = lb_size, zlabelsize = lb_size,
+                xticklabelsize = tck_size, yticklabelsize = tck_size, zticklabelsize = tck_size,
+                xgridvisible = false, ygridvisible = false, zgridvisible = false,
+                protrusions = prot, xlabeloffset = disx, ylabeloffset = disy, zlabeloffset = disz)
+
+    lines!(x1[ts:tf], y1[ts:tf], z1[ts:tf], linewidth = lw, color = c1)
+    lines!(x2[ts:tf], y2[ts:tf], z2[ts:tf], linewidth = lw, color = c2)
+
+    if plot == true
+        if inter == true
+            display(GLMakie.Screen(), f)
+        else
+            display(f)
+        end
+    end
+
+    return f;
+end
+
+function plot_3d_2c_fp(data, fixedpoint, ts, tf;
+    plot = false,
+    width = 900, height = 600,
+    lb_size = 30, tck_size = 25, c1 = :red, c2 = :blue, lw = 1.0,
+    xl = "v1", yl = "v2", zl = "v3",
+    azim = 1.275pi, elev = pi/8, prot = 30, disx = 40, disy = 40, disz = 40,
+    grid = true, inter = false)
+
+    x1, x2, y1, y2, z1, z2 = data
+    fp, idx, idy, idz = fixedpoint;
+    CairoMakie.activate!()
+    f = Figure(resolution = (width, height))
+    ax = Axis3(f[1, 1], azimuth = azim, elevation = elev,
+                xlabel = xl, ylabel = yl, zlabel = zl,
+                xlabelsize = lb_size, ylabelsize = lb_size, zlabelsize = lb_size,
+                xticklabelsize = tck_size, yticklabelsize = tck_size, zticklabelsize = tck_size,
+                xgridvisible = false, ygridvisible = false, zgridvisible = false,
+                protrusions = prot, xlabeloffset = disx, ylabeloffset = disy, zlabeloffset = disz)
+
+    lines!(x1[ts:tf], y1[ts:tf], z1[ts:tf], linewidth = lw, color = c1)
+    lines!(x2[ts:tf], y2[ts:tf], z2[ts:tf], linewidth = lw, color = c2)
+
+    for fp_ in fp
+        scatter!(ax, fp_[idx], fp_[idy], fp_[idz], color = :black);
+    end
+
+    if plot == true
+        if inter == true
+            display(GLMakie.Screen(), f)
+        else
+            display(f)
+        end
+    end
+
+    return f;
+end
