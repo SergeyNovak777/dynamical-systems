@@ -290,12 +290,16 @@ function TM6_glial_ECM_get_params()
     param = [τ, τD, τF, τy, α, αE, αecm, αp, J, U0, I0, ΔU0, β, βecm, βp, γp, ecm0, ecm1, kecm, θecm, p0, p1, θp, kp, ythr, xthr];
     return param;
 end
-function TM6_glial_ECM_help()
-    params = "
+function TM6_glial_ECM_help(params)
+    
+    indexparams = "
     τ - 1, τD - 2, τF - 3, τy - 4, α - 5, αE - 6, αecm - 7, αp - 8,
     J - 9, U0 - 10, I0 - 11, ΔU0 - 12, β - 13, βecm  -14, βp - 15,
     γp - 16, ecm0 - 17, ecm1 - 18, kecm - 19, θecm - 20, p0 - 21, p1 - 22, θp - 23, kp - 24, ythr - 25, xthr - 26";
-    vars = "E - 1, x - 2, u - 3, y - 4, ECM - 5, P - 6";
 
-    return vars, params
+    nameparams = "τ, τD, τF, τy, α, αE, αecm, αp, J, U0, I0, ΔU0, β, βecm, βp, γp, ecm0, ecm1, kecm, θecm, p0, p1, θp, kp, ythr, xthr";
+    keyp = split(nameparams, ", ");
+    dict = Dict(zip(keyp, params));
+    
+    return dict, indexparams;
 end
