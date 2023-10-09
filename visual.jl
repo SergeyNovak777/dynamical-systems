@@ -41,6 +41,35 @@ function plot_timesereis_2c(t1, t2, x1, x2, tstart, tend;
         end
     end
 end
+
+
+function plot_timesereis_2f(t1, t2, x1, x2, tstart, tend;
+    plot = true,
+    width = 1000, height = 300, ylab = "x", lbsize = 35, tcksize = 25, lw = 2.0, inter = true, grid = true, color1 = :blue, color2 = :red)
+
+    CairoMakie.activate!()
+    f = Figure(resolution = (width, height))
+    ax1 = Axis(f[1, 1], xlabel = L"time", ylabel = ylab,
+    xlabelsize = lbsize, ylabelsize = lbsize,
+    xticklabelsize = tcksize, yticklabelsize = tcksize,
+    xgridvisible = grid, ygridvisible = grid)
+    
+    ax2 = Axis(f[2, 1], xlabel = L"time", ylabel = ylab,
+    xlabelsize = lbsize, ylabelsize = lbsize,
+    xticklabelsize = tcksize, yticklabelsize = tcksize,
+    xgridvisible = grid, ygridvisible = grid)
+    
+    lines!(ax1, t1[tstart:tend], x1[tstart:tend], linewidth = lw, color = color1);
+    lines!(ax2, t2[tstart:tend], x2[tstart:tend], linewidth = lw, color = color2);
+
+    if plot == true
+        if inter == true
+            display(GLMakie.Screen(), f)
+        else
+            display(f)
+        end
+    end
+end
     
 function plot_3d(data, ts, tf;
     plot = true,
@@ -141,7 +170,7 @@ end
 function plot_3d_2c(data, ts, tf;
     plot = true,
     width = 900, height = 600,
-    lb_size = 30, tck_size = 25, c1 = :red, c2 = :blue, lw = 1.0,
+    lb_size = 30, tck_size = 25, color1 = :red, color2 = :blue, lw = 1.0,
     xl = "v1", yl = "v2", zl = "v3",
     azim = 1.275pi, elev = pi/8, prot = 30, disx = 40, disy = 40, disz = 40,
     grid = true, inter = false)
@@ -157,8 +186,8 @@ function plot_3d_2c(data, ts, tf;
                 xgridvisible = false, ygridvisible = false, zgridvisible = false,
                 protrusions = prot, xlabeloffset = disx, ylabeloffset = disy, zlabeloffset = disz)
 
-    lines!(x1[ts:tf], y1[ts:tf], z1[ts:tf], linewidth = lw, color = c1)
-    lines!(x2[ts:tf], y2[ts:tf], z2[ts:tf], linewidth = lw, color = c2)
+    lines!(x1[ts:tf], y1[ts:tf], z1[ts:tf], linewidth = lw, color = color1)
+    lines!(x2[ts:tf], y2[ts:tf], z2[ts:tf], linewidth = lw, color = color2)
 
     if plot == true
         if inter == true
@@ -172,7 +201,7 @@ end
 function plot_3d_2c_fp(data, fixedpoint, ts, tf;
     plot = true,
     width = 900, height = 600,
-    lb_size = 30, tck_size = 25, c1 = :red, c2 = :blue, lw = 1.0,
+    lb_size = 30, tck_size = 25, color1 = :red, color2 = :blue, lw = 1.0,
     xl = "v1", yl = "v2", zl = "v3",
     azim = 1.275pi, elev = pi/8, prot = 30, disx = 40, disy = 40, disz = 40,
     grid = true, inter = false)
@@ -188,8 +217,8 @@ function plot_3d_2c_fp(data, fixedpoint, ts, tf;
                 xgridvisible = false, ygridvisible = false, zgridvisible = false,
                 protrusions = prot, xlabeloffset = disx, ylabeloffset = disy, zlabeloffset = disz)
 
-    lines!(x1[ts:tf], y1[ts:tf], z1[ts:tf], linewidth = lw, color = c1)
-    lines!(x2[ts:tf], y2[ts:tf], z2[ts:tf], linewidth = lw, color = c2)
+    lines!(x1[ts:tf], y1[ts:tf], z1[ts:tf], linewidth = lw, color = color1)
+    lines!(x2[ts:tf], y2[ts:tf], z2[ts:tf], linewidth = lw, color = color2)
 
     for fp_ in fp
         scatter!(ax, fp_[idx], fp_[idy], fp_[idz], color = :black);
