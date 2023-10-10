@@ -221,7 +221,7 @@ function plot_3d_2c_fp(data, fixedpoint, ts, tf;
     lines!(x2[ts:tf], y2[ts:tf], z2[ts:tf], linewidth = lw, color = color2)
 
     for fp_ in fp
-        scatter!(ax, fp_[idx], fp_[idy], fp_[idz], color = :black);
+        scatter!(ax, fp_[idx], fp_[idy], fp_[idz], color = :black, markersize = 5.0);
     end
 
     if plot == true
