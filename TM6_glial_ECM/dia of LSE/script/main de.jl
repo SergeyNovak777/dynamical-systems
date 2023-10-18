@@ -1,3 +1,19 @@
+if Sys.iswindows()
+    username = "Alex"
+    pathtorepo = "C:\\Users\\" *username *  "\\Desktop\\"
+    using Pkg
+    Pkg.activate(pathtorepo * "dynamical-systems\\env\\integrate\\")
+    using StaticArrays, DifferentialEquations, DynamicalSystems, JLD2
+        include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\system.jl");
+else
+    username = "nova"
+    pathtorepo = "/home/nova/work/repo_ds/dynamical-systems"
+    using Pkg
+    Pkg.activate(pathtorepo * "/env/integrate/")
+    using StaticArrays, DifferentialEquations, DynamicalSystems, JLD2
+    include("/home/nova/work/repo_ds/dynamical-systems/system.jl")
+end
+
 function save_logs(file_logs,
     index, name_p, p_range, p_value,
     u0_st, u0_ed)
@@ -29,8 +45,10 @@ function save_logs(file_logs,
 end
 
 function solve_(sys)
+
     alg = Vern9();
     adapt = true; tol = 1e-12; abstol = tol; reltol = tol;
+
     sol = solve(sys, alg = alg,
     adaptive = adapt, abstol = abstol, reltol = reltol);
     return sol;
@@ -46,17 +64,19 @@ end
 
 function map2d_u0()
 
-    #u0start = SA[0.9445509341100914, 0.74116702856987, 0.7361196042973006, 0.0646914552140727, 0.15145764079879162, 0.0009327645775731449];
+    u0start = SA[0.9445509341100914, 0.74116702856987, 0.7361196042973006, 0.0646914552140727, 0.15145764079879162, 0.0009327645775731449];
 
-    global exitcode = 0;
-    global u0_loc_2d = zeros(6);
+    D = length(u0start)
+    exitcode = 0;
+    u0_local_prep = zeros(D);
+    u0_loc_2d = zeros(D);
 
-    #tstart = 0.0; tend = 3000.0; tspan = (tstart, tend);
-    #name_p1, name_p2, index_p1, index_p2 = get_control_param();
+    tstart = 0.0; tend = 3000.0; tspan = (tstart, tend);
+    name_p1, name_p2, index_p1, index_p2 = get_control_param();
 
-    #len = 250;
-    #range_p1 = range(-1.741, -1.6, length = len);
-    #range_p2 = range(0.067, 5.0, length = len);
+    len = 50;
+    range_p1 = range(-1.741, -1.6, length = len);
+    range_p2 = range(0.067, 5.0, length = len);
     
     total_file_names = "map u0s $(name_p1) $(name_p2) $(length(range_p1))*$(length(range_p2))";
     file_logs_p2 = total_file_names * " change p2 logs.txt";
@@ -64,10 +84,11 @@ function map2d_u0()
 
     u0s = zeros(length(range_p1), length(range_p2), length(u0start));
 
+    # preparation inheritance
     for index in eachindex(range_p2)
 
         if index == 1
-            global u0_local_prep = u0start;
+            u0_local_prep = u0start;
         end
 
         u0_st = u0_local_prep;
@@ -75,7 +96,7 @@ function map2d_u0()
         params = TM6_glial_ECM_get_params();
         params[index_p2] = range_p2[index];
         
-        system = ODEProblem(sys, u0_local_prep, tspan, params);
+        system = ODEProblem(TM6_glial_ECM, u0_local_prep, tspan, params);
         sol = solve_(system);
 
         if sol.retcode == ReturnCode.MaxIters
@@ -88,12 +109,14 @@ function map2d_u0()
         save_logs(file_logs_p2, index,
         name_p2, range_p2, system.p[index_p2],
         u0_st, u0_local_prep);
+
         if exitcode == 1
             exit();
         end;
     end;
-
-    Threads.@threads for index_ext in eachindex(range_p2)
+    #return u0s;
+    #inheritance in map
+    for index_ext in eachindex(range_p2)
         for index_int in eachindex(range_p1)
 
             if index_int == 1
@@ -101,6 +124,8 @@ function map2d_u0()
             end
 
             u0_loc_2d = u0s[index_int - 1, index_ext, :];
+            u0_loc_2d = SVector{D}(u0_loc_2d);
+
             u0_loc_2d_st = u0_loc_2d;
 
             params = TM6_glial_ECM_get_params();
@@ -108,7 +133,7 @@ function map2d_u0()
             params[index_p1] = range_p1[index_int];
             params[index_p2] = range_p2[index_ext];
             
-            system = ODEProblem(sys, u0_local_prep, tspan, params);
+            system = ODEProblem(TM6_glial_ECM, u0_loc_2d, tspan, params);
             sol = solve_(system);
 
             if sol.retcode == ReturnCode.MaxIters
