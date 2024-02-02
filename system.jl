@@ -102,9 +102,9 @@ end
 function rate_model(u, p, t)
 
     sE, sI, rE, rI, Y = u
-    τsE, γE, s0E, τsI, γI, s0I, τrE, kE, IE, wEE, wIE, θE, τrI, kI, II, wEI, wII, θI, τY, βY, gammaY, ythr, sEthr, kY = p
+    τsE, γE, s0E, τsI, γI, s0I, τrE, kE, IE, wEE, wIE, θE, τrI, kI, II, wEI, wII, θI, τY, βY, γY, ythr, sEthr, kY = p
 
-    g(Y) = 1 + gammaY / (1 + exp(-Y + ythr))
+    g(Y) = 1 + γY / (1 + exp(-Y + ythr))
     HevY(sE) = 1/(1 + exp(-(sE - sEthr)/kY))
 
     dsEdt = (1/τsE) *(-sE + γE*rE*(1-sE)*g(Y) + s0E)
@@ -117,6 +117,33 @@ function rate_model(u, p, t)
     
     return SVector(dsEdt, dsIdt, drEdt, drIdt, dYdt)
 end
+
+function rate_model_get_params()
+    s0E = 0.15; s0I = 0.1;
+    τrE = 2.0; τrI = 6.0; τsE = 3.0; τsI = 10.0;
+    IE = 0.9; II = 0.0;
+    γE = 4.0; γI = 8.0;
+    θE = 0.2; θI = 0.4;
+    kE = 5.0; kI = 5.0;
+    wEE = 3.5; wEI = 5.0; wII = 3.0; wIE = 5.0;
+    γY = 0.305; βY = 0.01; τY = 0.01; kY = 0.01
+    sEthr = 0.5; ythr = 0.5;
+
+    param = [τsE, γE, s0E, τsI, γI, s0I, τrE, kE, IE, wEE, wIE, θE, τrI, kI, II, wEI, wII, θI, τY, βY, γY, ythr, sEthr, kY];
+    return param
+end
+
+function rate_model_help(param)
+    indexparams = "τsE = 1, γE = 2, s0E = 3, τsI = 4, γI = 5, s0I = 6, τrE = 7, kE = 8, IE = 9, wEE = 10,
+    wIE = 11, θE = 12, τrI = 13, kI = 14, II = 15, wEI = 16, wII = 17, θI = 18, τY = 19, βY = 20, γY = 21, ythr = 22, sEthr = 23, kY = 24";
+    nameparam = "τsE, γE, s0E, τsI, γI, s0I, τrE, kE, IE, wEE, wIE, θE, τrI, kI, II, wEI, wII, θI, τY, βY, γY, ythr, sEthr, kY";
+    keyp = split(nameparam, ", ");
+    dict = Dict(zip(keyp, param));
+
+    return dict, indexparams;
+
+end
+
 # rate model for bifurcationkit
 function rate_model(u, p)
 
