@@ -1,0 +1,1 @@
+include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\system.jl");
