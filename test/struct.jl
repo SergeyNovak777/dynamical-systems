@@ -9,5 +9,3 @@ end
 struct Integrator_setting
     alg
 end
-
-debil?
