@@ -167,9 +167,9 @@ end
 function rate_jac(u, p , t)
     
     #sE, sI, rE, rI, Y = u
-    τsE, γE, s0E, τsI, γI, s0I, τrE, kE, IE, wEE, wIE, θE, τrI, kI, II, wEI, wII, θI, τY, βY, gammaY, ythr, sEthr, kY = p
+    τsE, γE, s0E, τsI, γI, s0I, τrE, kE, IE, wEE, wIE, θE, τrI, kI, II, wEI, wII, θI, τY, βY, γY, ythr, sEthr, kY = p
 
-    gY = 1.0 + gammaY / (1.0 + exp(-u[5] + ythr))
+    gY = 1.0 + γY / (1.0 + exp(-u[5] + ythr))
     HevY = 1.0/(1.0 + exp(-(u[1] - sEthr)/kY))
 
     expE = exp(-kE*( (IE + wEE*u[1]-wIE*u[2]) - θE) )
