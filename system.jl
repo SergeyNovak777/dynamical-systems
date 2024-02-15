@@ -118,6 +118,24 @@ function rate_model(u, p, t)
     return SVector(dsEdt, dsIdt, drEdt, drIdt, dYdt)
 end
 
+function optim_rate_model(u, p, t)
+    sE, sI, rE, rI, Y = u
+    τsE, γE, s0E, τsI, γI, s0I, τrE, kE, IE, wEE, wIE, θE, τrI, kI, II, wEI, wII, θI, τY, βY, γY, ythr, sEthr, kY = p
+
+    g(Y) = 1.0 + γY / (1.0 + exp(-Y + ythr))
+    HevY(sE) = 1.0 / (1.0 + exp(-(sE - sEthr) / kY))
+
+    dsEdt = (1.0 / τsE) * (-sE + γE * rE * (1.0 - sE) * g(Y) + s0E)
+    dsIdt = (1.0 / τsI) * (-sI + γI * rI * (1.0 - sI) + s0I)
+
+    drEdt = (1.0 / τrE) * (-rE + 1.0 / (1.0 + exp(-kE * ((IE + wEE * sE - wIE * sI) - θE))))
+    drIdt = (1.0 / τrI) * (-rI + 1.0/(1.0 + exp(-kI * ((II + wEI * sE - wII * sI) - θI))))
+    
+    dYdt = -Y / τY + βY * HevY(sE)
+    
+    return SVector(dsEdt, dsIdt, drEdt, drIdt, dYdt)
+end
+
 function rate_model_get_params()
     s0E = 0.15; s0I = 0.1;
     τrE = 2.0; τrI = 6.0; τsE = 3.0; τsI = 10.0;

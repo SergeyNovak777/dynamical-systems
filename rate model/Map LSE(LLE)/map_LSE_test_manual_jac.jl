@@ -11,25 +11,26 @@ else
     include(pathtorepo * "/system.jl");
 end
 
-include("/home/sergey/work/repo/dynamical-systems/rate model/map LLE/main.jl")
+include("/home/sergey/work/repo/dynamical-systems/rate model/Map LSE src/main.jl")
 
 using DifferentialEquations, DynamicalSystems, StaticArrays, JLD2
 
 
 struct Time_setting
 
-    time_calculate_LLE::Int64
+    time_calculate_LSE::Int64
     time_attract::Int64
     tstep::Float64
 
 end
 
-cd("/home/sergey/work/repo/dynamical-systems/rate model/map LLE/u0_zero/")
+cd("/home/sergey/work/repo/dynamical-systems/rate model/Map LSE\LLE/files_test_manual_jac/")
 
 sys = rate_model;
+jacsys = rate_jac
 params = rate_model_get_params();
 values, index_params = rate_model_help(params);
-u0 = zeros(5); #ones(5) * 0.25;
+u0 = zeros(5);
 
 length_range = 100;
 range_parameter_1 = range( 0.0, 10.0, length = length_range);
@@ -42,21 +43,12 @@ name_parameter_1 = "γY";
 name_parameter_2 = "IE";
 
 time_attract = 1000
-time_calculate_LLE = 1000
+time_calculate_LSE = 1000
 Δt = 1e-3
-time_setting = Time_setting(time_attract, time_calculate_LLE, Δt);
+time_setting = Time_setting(time_attract, time_calculate_LSE, Δt);
 integrator_setting = (alg = RK4(), adaptive = false, dt = Δt, maxiters = 5.0e7);
 
-
-
-#=
-ARGUMENTS
-sys, params, u0,
-range_p1, range_p2, index_p1, index_p2, name_p1, name_p2,
-time_setting, integrator_setting, printing = false
-=#
-
-map_LLE(sys, params, u0,
+map_LSE(sys, jacsys, params, u0,
 range_parameter_1, range_parameter_2, index_parameter_1, index_parameter_2,
 name_parameter_1, name_parameter_2,
 time_setting, integrator_setting; printing = true)

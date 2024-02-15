@@ -1,6 +1,6 @@
-include("/home/sergey/work/repo/dynamical-systems/rate model/map LSE/header.jl")
+include("/home/sergey/work/repo/dynamical-systems/rate model/Map LSE src/header.jl")
 
-function map_LLE(sys, params, u0,
+function map_LSE(sys, jacsys, params, u0,
     range_p1, range_p2, index_p1, index_p2, name_p1, name_p2,
     time_setting, integrator_setting; printing = false)
 
@@ -10,11 +10,11 @@ function map_LLE(sys, params, u0,
     dim = length(u0)
 
     #---------------------------------------
-    global λs = zeros(len_p1, len_p2, 1)
+    global λs = zeros(len_p1, len_p2, dim)
     global u0s = zeros(len_p1, len_p2, dim*2)
 
     #---------------------------------------
-    namefile_LLE, namefile_u0s = get_file_name(len_p1, len_p2,
+    namefile_LSE, namefile_u0s = get_file_name(len_p1, len_p2,
      name_p1, name_p2)
     
     #---------------------------------------
@@ -23,33 +23,33 @@ function map_LLE(sys, params, u0,
     index_control_parameter = index_p2
 
     if printing == false
-        pre_broaching_without_print(sys, params, u0, time_setting, integrator_setting,
+        pre_broaching_without_print(sys, jacsys, params, u0, time_setting, integrator_setting,
           index_fixed_parameter, value_fixed_parameter, index_control_parameter, range_p2,
-          namefile_LLE, namefile_u0s)
+          namefile_LSE, namefile_u0s)
     else
-        pre_broaching_with_print(sys, params, u0, time_setting, integrator_setting,
+        pre_broaching_with_print(sys, jacsys, params, u0, time_setting, integrator_setting,
         index_fixed_parameter, value_fixed_parameter, index_control_parameter, range_p2,
         name_p1, name_p2,
-        namefile_LLE, namefile_u0s)
+        namefile_LSE, namefile_u0s)
     end
 
     #---------------------------------------
     if printing == false
-        calculate_map_without_print(sys, params, u0, time_setting, integrator_setting,
+        calculate_map_without_print(sys, jacsys, params, u0, time_setting, integrator_setting,
             index_parameter_1, index_parameter_2, range_p1, range_p2,
-            namefile_LLE, namefile_u0s)
+            namefile_LSE, namefile_u0s)
     else
-        calculate_map_with_print(sys, params, u0, time_setting, integrator_setting,
+        calculate_map_with_print(sys, jacsys, params, u0, time_setting, integrator_setting,
             index_parameter_1, index_parameter_2, range_p1, range_p2,
             name_p1, name_p2,
-            namefile_LLE, namefile_u0s)
+            namefile_LSE, namefile_u0s)
     end
 
 end
 
-function calculate_map_without_print(sys, params, u0, time_setting, integrator_setting,
+function calculate_map_without_print(sys, jacsys, params, u0, time_setting, integrator_setting,
     index_parameter_1, index_parameter_2, range_p1, range_p2,
-    namefile_LLE, namefile_u0s, dim = length(u0))
+    namefile_LSE, namefile_u0s, dim = length(u0))
 
     for (index_cycle_parameter_2, value_parameter_2) in enumerate(range_p2)
         for (index_cycle_parameter_1, value_parameter_1) in enumerate(range_p1)
@@ -68,15 +68,15 @@ function calculate_map_without_print(sys, params, u0, time_setting, integrator_s
             ds = init_Coupled_ODE(sys, params, point_from_attractor, integrator_setting,
             index_parameter_2, value_parameter_2, index_parameter_1, value_parameter_1)
 
-            LLE = calculate_LLE(ds, time_setting.time_calculate_LLE)
+            LSE = calculate_LSE(ds, jacsys, time_setting.time_calculate_LSE)
 
             save_in_matrix(index_cycle_parameter_1, index_cycle_parameter_2, dim,
-                LLE, u0_local_pre_broach, point_from_attractor)
+                LSE, u0_local_pre_broach, point_from_attractor)
         
                 u0_local_map = point_from_attractor
     
             if mod(local_index_p2, 10) == 0
-                save_in_files(namefile_LLE, namefile_u0s, dim)
+                save_in_files(namefile_LSE, namefile_u0s, dim)
             end
 
         end
@@ -84,7 +84,7 @@ function calculate_map_without_print(sys, params, u0, time_setting, integrator_s
 
 end
 
-function calculate_map_with_print(sys, params, u0, time_setting, integrator_setting,
+function calculate_map_with_print(sys, jacsys, params, u0, time_setting, integrator_setting,
     index_parameter_1, index_parameter_2, range_p1, range_p2,
     name_p1, name_p2,
     namefile_LLE, namefile_u0s, dim = length(u0))
@@ -106,7 +106,7 @@ function calculate_map_with_print(sys, params, u0, time_setting, integrator_sett
             ds = init_Coupled_ODE(sys, params, point_from_attractor, integrator_setting,
             index_parameter_2, value_parameter_2, index_parameter_1, value_parameter_1)
 
-            LLE = calculate_LLE(ds, time_setting.time_calculate_LLE)
+            LLE = calculate_LSE(ds, jacsys, time_setting.time_calculate_LSE)
 
             save_in_matrix(index_cycle_parameter_1, index_cycle_parameter_2, dim,
                 LLE, u0_local_map, point_from_attractor)
@@ -129,7 +129,7 @@ function calculate_map_with_print(sys, params, u0, time_setting, integrator_sett
 
 end
 
-function pre_broaching_without_print(sys, params, u0, time_setting, integrator_setting,
+function pre_broaching_without_print(sys, jacsys, params, u0, time_setting, integrator_setting,
     index_fixed_parameter, value_fixed_parameter, index_control_parameter, range_p2,
     namefile_LLE, namefile_u0s, dim = length(u0))
 
@@ -149,10 +149,10 @@ function pre_broaching_without_print(sys, params, u0, time_setting, integrator_s
         index_control_parameter, value_p2,
         index_fixed_parameter, value_fixed_parameter)
     
-        LLE = calculate_LLE(ds, time_setting.time_calculate_LLE)
+        LSE = calculate_LSE(ds, jacsys, time_setting.time_calculate_LSE)
     
         save_in_matrix(1, local_index_p2, dim,
-        LLE, u0_local_pre_broach, point_from_attractor)
+        LSE, u0_local_pre_broach, point_from_attractor)
         
         u0_local_pre_broach = point_from_attractor
     
@@ -164,7 +164,7 @@ function pre_broaching_without_print(sys, params, u0, time_setting, integrator_s
 
 end
 
-function pre_broaching_with_print(sys, params, u0, time_setting, integrator_setting,
+function pre_broaching_with_print(sys, jacsys, params, u0, time_setting, integrator_setting,
     index_fixed_parameter, value_fixed_parameter, index_control_parameter, range_p2,
     name_p1, name_p2,
     namefile_LLE, namefile_u0s, dim = length(u0))
@@ -185,7 +185,7 @@ function pre_broaching_with_print(sys, params, u0, time_setting, integrator_sett
         index_control_parameter, value_p2,
         index_fixed_parameter, value_fixed_parameter)
     
-        LLE = calculate_LLE(ds, time_setting.time_calculate_LLE)
+        LLE = calculate_LSE(ds, jacsys, time_setting.time_calculate_LSE)
     
         save_in_matrix(1,local_index_p2, dim,
         LLE, u0_local_pre_broach, point_from_attractor)
