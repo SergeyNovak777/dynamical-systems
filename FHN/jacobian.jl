@@ -2,7 +2,7 @@ function two_FHN_jac(u, p, t)
     x1, y1, x2, y2, z = u
     ϵ, a, α, g, σ, k, k1, k2 = p
 
-    ρz = k1 + k2 * z
+    ρz = k1 + k2 * z ^2
 
     # f1 derivative
     ϕ2 = rad2deg(atan(y2, x2))
@@ -14,7 +14,7 @@ function two_FHN_jac(u, p, t)
     f1y1 = -1.0 / ϵ
     f1x2 = (I_ϕ2_x2 + ρz) / ϵ
     f1y2 = I_ϕ2_y2 / ϵ
-    f1z = (k2 * ( x2 -x1 )) / ϵ
+    f1z = (2 * k2 * z * ( x2 -x1 )) / ϵ
     # -----------------------------------------------
 
     # f2 derivative
@@ -32,7 +32,7 @@ function two_FHN_jac(u, p, t)
     f3y1 = I_ϕ1_y1 / ϵ
     f3x2 = (1.0 - x2 ^ 2 - ρz) / ϵ
     f3y2  = -1.0 / ϵ
-    f3z = (k2 * ( x1 - x2 )) / ϵ
+    f3z = (2 * k2 * z * ( x1 - x2 )) / ϵ
     # -----------------------------------------------
 
     # f4 derivative
