@@ -418,11 +418,11 @@ function two_coupled_fhn(u, p ,t)
     ϵ, a, α, g, σ, k, k1, k2 = p
 
     ϕ2 = rad2deg(atan(y2, x2))
-    dx1dt = (x1 - x1 ^ 3 / 3 - y1 + I(ϕ2, g, σ, α, k) + ρ(z, k1, k2) * ( x2 -x1 )) / ϵ
+    dx1dt = ( x1 - x1 ^ 3 / 3 - y1 + I(ϕ2, g, σ, α, k) + ρ(z, k1, k2) * ( x2 -x1 ) ) / ϵ
     dy1dt = x1 - a
 
     ϕ1= rad2deg(atan(y1, x1))
-    dx2dt = (x2 - x2 ^ 3 / 3 - y2 + I(ϕ1, g, σ, α, k) + ρ(z, k1, k2) * (x1 - x2)) / ϵ
+    dx2dt = ( x2 - x2 ^ 3 / 3 - y2 + I(ϕ1, g, σ, α, k) + ρ(z, k1, k2) * (x1 - x2) ) / ϵ
     dy2dt = x2 - a
     
     dzdt = x1 - x2
