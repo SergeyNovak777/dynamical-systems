@@ -10,7 +10,7 @@ else
     Pkg.activate(pathtorepo * "/env/integrate/")
 end
 
-using DifferentialEquations, DynamicalSystems, StaticArrays, GLMakie
+using DifferentialEquations, DynamicalSystems, StaticArrays, GLMakie, JLD2
 
 function FHN2_try3(u, p ,t)
     x1, y1, x2, y2, z= u
@@ -38,10 +38,10 @@ function FHN2_try3_params()
 end
 
 function plot_bifurcation_diagram(output, rangek1)
-    markersize = 5.0;
-    lbsize = 40;
-    ticksize = 35;
-    fig = Figure(resolution = (1200, 700))
+    markersize = 0.5;
+    lbsize = 30;
+    ticksize = 30;
+    fig = Figure(size = (1200, 350))
     axis = Axis(fig[1,1],
     xlabel = L"k_1",  ylabel = L"x_1",
     xlabelsize = lbsize, ylabelsize = lbsize,
@@ -49,25 +49,26 @@ function plot_bifurcation_diagram(output, rangek1)
     
     for (j, p) in enumerate(rangek1)
         scatter!(axis, fill(p, length(output[j])), output[j];
-         color = ("blue", 1.0), markersize = markersize)
+         color = ("black", 0.5), markersize = markersize)
     end
-    display(GLMakie.Screen(), f)
+    display(GLMakie.Screen(), fig)
 end
 function bifurcation_diagram()
 
-    u0 = [1.0, 0.0, 0.01, -1.0, 0.0]
+    #u0 = [1.0, 0.0, 0.01, -1.0, 0.0]
+    u0 = [-1.0, 0.0, 0.01, -1.0, 0.0]
     params = FHN2_try3_params()
     integ_set = (alg = RK4(), adaptive = false, dt = 0.001)
 
     ds = CoupledODEs(FHN2_try3, u0, params, diffeq = integ_set)
    
     t = 1000
-    ttr = 500
+    ttr = 250
 
     k1_start = 0.0
-    k2_end = 0.099
-    len = 100
-    rangek1 = range(k1_start, k2_end, length = len)
+    k1_end = 0.094
+    len = 2500
+    rangek1 = range(k1_start, k1_end, length = len)
     index_control_param = 7
 
     index_saving_var = 1
@@ -84,10 +85,12 @@ function bifurcation_diagram()
 end
 
 k1_start = 0.0
-k2_end = 0.095
-len = 100
-rangek1 = range(k1_start, k2_end, length = len)
+k1_end = 0.094
+len = 2000
+rangek1 = range(k1_start, k1_end, length = len)
 
 output = bifurcation_diagram()
 
 plot_bifurcation_diagram(output, rangek1)
+
+jld2save("figure5_length_2000.jld2";output)
