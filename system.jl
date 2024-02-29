@@ -409,29 +409,27 @@ end
 
 # ---------------------------------------------------------------------------------
 # model two coupled FHN memristor
-function two_coupled_fhn(u, p ,t)
+function FHN2_try3(u, p ,t)
+    x1, y1, x2, y2, z= u
+    ϵ, a, g, k, σ, α, k1, k2 = p
 
-    I(ϕ, g, σ, α, k) = (g / ( 1 + exp( k * ( cosd( σ / 2 ) - cosd( ϕ - α - σ / 2 ) ))))
-    ρ(z, k1, k2) = k1 + k2 * z ^ 2
+    I(ϕ_i) = g * (1.0/(1.0 + exp(k*(cos(σ/2) - cos(ϕ_i - α - σ/2)))))
+    ρz = k1 + k2 * z ^ 2
 
-    x1, y1, x2, y2, z = u
-    ϵ, a, α, g, σ, k, k1, k2 = p
+    ϕ2 = atan(y2, x2)
+    ϕ1 = atan(y1, x1)
 
-    ϕ2 = rad2deg(atan(y2, x2))
-    dx1dt = ( x1 - x1 ^ 3 / 3 - y1 + I(ϕ2, g, σ, α, k) + ρ(z, k1, k2) * ( x2 -x1 ) ) / ϵ
+    dx1dt = (x1 - x1 ^ 3 / 3 - y1 + I(ϕ2) + ρz * (x2 - x1) ) / ϵ
     dy1dt = x1 - a
-
-    ϕ1= rad2deg(atan(y1, x1))
-    dx2dt = ( x2 - x2 ^ 3 / 3 - y2 + I(ϕ1, g, σ, α, k) + ρ(z, k1, k2) * (x1 - x2) ) / ϵ
+    dx2dt = (x2 - x2 ^ 3 / 3 - y2 + I(ϕ1) + ρz * (x1 - x2) ) / ϵ
     dy2dt = x2 - a
-    
     dzdt = x1 - x2
-
     return SVector(dx1dt, dy1dt, dx2dt, dy2dt, dzdt)
 end
 
-function two_coupled_fhn_get_params()
-    ϵ = 0.01; a = -1.01; α = 160; g = 0.1; σ = 50.0; k = 50.0; k1 = 0.0; k2 = 0.0
-    params = [ϵ, a, α, g, σ, k, k1, k2]
-    return params
+function FHN2_try3_params()
+    ϵ = 0.01; a = -1.01;
+    g = 0.1; k = 50.0; σ = 50.0 * pi / 180; α = 160.0 * pi / 180;
+    k1 = 0.0; k2 = 0.0
+    return [ ϵ, a, g, k, σ, α, k1, k2]
 end
