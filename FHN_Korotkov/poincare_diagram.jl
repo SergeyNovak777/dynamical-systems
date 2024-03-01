@@ -63,11 +63,11 @@ function bifurcation_diagram()
     ds = CoupledODEs(FHN2_try3, u0, params, diffeq = integ_set)
    
     t = 1000
-    ttr = 250
+    ttr = 500
 
     k1_start = 0.0
     k1_end = 0.094
-    len = 2500
+    len = 3000
     rangek1 = range(k1_start, k1_end, length = len)
     index_control_param = 7
 
@@ -86,11 +86,11 @@ end
 
 k1_start = 0.0
 k1_end = 0.094
-len = 2000
+len = 3000
 rangek1 = range(k1_start, k1_end, length = len)
 
 output = bifurcation_diagram()
 
 plot_bifurcation_diagram(output, rangek1)
 
-jld2save("figure5_length_2000.jld2";output)
+jld2save("bif_dia_k1_length_3000.jld2";output)
