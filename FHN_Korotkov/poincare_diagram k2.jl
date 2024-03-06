@@ -55,19 +55,19 @@ function plot_bifurcation_diagram(output, rangek1)
 end
 function bifurcation_diagram()
 
-    u0 = [-1.1382298569118672, -0.5764456626766896, -1.1174132892040585, -0.5815510078806045, 0.011803345489675595]
+    u0 = [-1.0099720067534301, -0.6379550713256545, -1.0103795313749988, -0.635237400779188, -0.007823015750248142]
     params = FHN2_try3_params()
     params[7] = 0.09
     integ_set = (alg = RK4(), adaptive = false, dt = 0.001)
 
     ds = CoupledODEs(FHN2_try3, u0, params, diffeq = integ_set)
    
-    t = 1000
+    t = 2000
     ttr = 500
 
     k2_start = 0.0
     k2_end = 100.0
-    len = 1000
+    len = 2000
     rangek2 = range(k2_start, k2_end, length = len)
     index_control_param = 8
 
@@ -76,7 +76,7 @@ function bifurcation_diagram()
     value_fixed_var = -1.01
     surface = (index_fixed_var, value_fixed_var)
 
-    pmap = PoincareMap(ds, surface; Tmax = 1e6)
+    pmap = PoincareMap(ds, surface, direction = 1)# Tmax = 1e6)
     
     output = orbitdiagram(pmap, index_saving_var, index_control_param, rangek2;
      n = t, Ttr = ttr, show_progress = true)
@@ -86,11 +86,11 @@ end
 
 k2_start = 0.0
 k2_end = 100.0
-len = 1000
+len = 2000
 rangek2 = range(k2_start, k2_end, length = len)
 
 output = bifurcation_diagram()
 
 plot_bifurcation_diagram(output, rangek2)
 
-jld2save("bif_dia_k2_length_1000.jld2";output)
+jldsave("bif_dia_k2_length_2000_2000_secant_x2_-101_direction_1.jld2";output)

@@ -56,7 +56,8 @@ end
 function bifurcation_diagram()
 
     #u0 = [1.0, 0.0, 0.01, -1.0, 0.0]
-    u0 = [-1.0, 0.0, 0.01, -1.0, 0.0]
+    #u0 = [-1.0, 0.0, 0.01, -1.0, 0.0]
+    u0 = [-1.08225553176395, -0.6298657851709651, -0.9197053871119998, -0.636195556934695, 0.0012244265598242365]
     params = FHN2_try3_params()
     integ_set = (alg = RK4(), adaptive = false, dt = 0.001)
 
@@ -67,7 +68,7 @@ function bifurcation_diagram()
 
     k1_start = 0.0
     k1_end = 0.094
-    len = 3000
+    len = 1000
     rangek1 = range(k1_start, k1_end, length = len)
     index_control_param = 7
 
@@ -86,11 +87,11 @@ end
 
 k1_start = 0.0
 k1_end = 0.094
-len = 3000
+len = 1000
 rangek1 = range(k1_start, k1_end, length = len)
 
 output = bifurcation_diagram()
 
 plot_bifurcation_diagram(output, rangek1)
 
-jld2save("bif_dia_k1_length_3000.jld2";output)
+jldsave("bif_dia_k1_length_1000_z_zero.jld2";output)

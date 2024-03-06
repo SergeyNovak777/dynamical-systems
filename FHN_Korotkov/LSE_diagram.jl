@@ -45,7 +45,7 @@ end
 
 function inheritance_limit_cycle(index_p, range_param, tspan, time_calculate_LLE)
 
-    u0 = SVector{5}([-1.0, 0.0, 0.01, -1.0, 0.0])
+    u0 = SVector{5}([-1.08225553176395, -0.6298657851709651, -0.9197053871119998, -0.636195556934695, 0.0012244265598242365])
     parameters = FHN2_try3_params()
     
     for index in range(1,length(range_param))
@@ -79,15 +79,15 @@ time_calculate_LLE = 5000
 
 k1_start = 0.0
 k1_end = 0.094
-len = 3000
+len = 1000
 index_param = 7
 range_param = range(k1_start, k1_end, length = len)
 
 u0ss = zeros(len, 5)
 LSEs = zeros(len, 5)
 
-filenameu0s = "u0s_k1_length_3000.jld2"
-filenameLSEs = "LSEs_k1_length_3000.jld2"
+filenameu0s = "u0s_k1_length_1000_z_zero.jld2"
+filenameLSEs = "LSEs_k1_length_1000_z_zero.jld2"
 
 inheritance_limit_cycle(index_param, range_param, tspan, time_calculate_LLE)
 
