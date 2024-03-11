@@ -55,19 +55,17 @@ function plot_bifurcation_diagram(output, rangek1)
 end
 function bifurcation_diagram()
 
-    #u0 = [1.0, 0.0, 0.01, -1.0, 0.0]
-    #u0 = [-1.0, 0.0, 0.01, -1.0, 0.0]
-    u0 = [-1.08225553176395, -0.6298657851709651, -0.9197053871119998, -0.636195556934695, 0.0012244265598242365]
+    u0 = [-1.0099720067534301, -0.6379550713256545, -1.0103795313749988, -0.635237400779188, -0.007823015750248142]
     params = FHN2_try3_params()
     integ_set = (alg = RK4(), adaptive = false, dt = 0.001)
 
     ds = CoupledODEs(FHN2_try3, u0, params, diffeq = integ_set)
    
-    t = 1000
-    ttr = 500
+    t = 500
+    ttr = 250
 
-    k1_start = 0.0
-    k1_end = 0.094
+    k1_start = 0.090
+    k1_end = 0.0
     len = 1000
     rangek1 = range(k1_start, k1_end, length = len)
     index_control_param = 7
@@ -85,8 +83,8 @@ function bifurcation_diagram()
      return output
 end
 
-k1_start = 0.0
-k1_end = 0.094
+k1_start = 0.090
+k1_end = 0.0
 len = 1000
 rangek1 = range(k1_start, k1_end, length = len)
 
@@ -94,4 +92,5 @@ output = bifurcation_diagram()
 
 plot_bifurcation_diagram(output, rangek1)
 
-jldsave("bif_dia_k1_length_1000_z_zero.jld2";output)
+pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/"
+jldsave(pathtosave * "bifurcation_diagram_k1_from_0_90_to_0.jld2";output)

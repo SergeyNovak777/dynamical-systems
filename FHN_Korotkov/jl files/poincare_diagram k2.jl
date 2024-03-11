@@ -65,8 +65,8 @@ function bifurcation_diagram()
     t = 2000
     ttr = 500
 
-    k2_start = 0.0
-    k2_end = 100.0
+    k2_start = 60.03001500750375
+    k2_end = 80.0
     len = 2000
     rangek2 = range(k2_start, k2_end, length = len)
     index_control_param = 8
@@ -84,8 +84,8 @@ function bifurcation_diagram()
      return output
 end
 
-k2_start = 0.0
-k2_end = 100.0
+k2_start = 60.03001500750375
+k2_end = 80.0
 len = 2000
 rangek2 = range(k2_start, k2_end, length = len)
 
@@ -93,4 +93,5 @@ output = bifurcation_diagram()
 
 plot_bifurcation_diagram(output, rangek2)
 
-jldsave("bif_dia_k2_length_2000_2000_secant_x2_-101_direction_1.jld2";output)
+pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/"
+jldsave(pathtosave*"bif_dia_k2_length_2000_2000_from_60_to_80.jld2";output)

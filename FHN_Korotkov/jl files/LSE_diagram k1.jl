@@ -23,8 +23,8 @@ function goto_attractor(u0_loc, parameters, tspan)
 end
 
 function save_files(filenameu0s, filenameLSEs)
-    jldsave(filenameu0s; u0ss)
-    jldsave(filenameLSEs; LSEs)
+    jldsave(pathtosave * filenameu0s; u0ss)
+    jldsave(pathtosave * filenameLSEs; LSEs)
 end
 
 function calculate_LSE(u0_lc, params, time_calculate_LLE)
@@ -45,7 +45,7 @@ end
 
 function inheritance_limit_cycle(index_p, range_param, tspan, time_calculate_LLE)
 
-    u0 = SVector{5}([-1.08225553176395, -0.6298657851709651, -0.9197053871119998, -0.636195556934695, 0.0012244265598242365])
+    u0 = SVector{5}([-1.0099720067534301, -0.6379550713256545, -1.0103795313749988, -0.635237400779188, -0.007823015750248142])
     parameters = FHN2_try3_params()
     
     for index in range(1,length(range_param))
@@ -72,13 +72,11 @@ function inheritance_limit_cycle(index_p, range_param, tspan, time_calculate_LLE
     end
 end
 
-cd("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/data")
-
-tspan = (0.0, 500)
+tspan = (0.0, 250)
 time_calculate_LLE = 5000
 
-k1_start = 0.0
-k1_end = 0.094
+k1_start = 0.090
+k1_end = 0.0
 len = 1000
 index_param = 7
 range_param = range(k1_start, k1_end, length = len)
@@ -86,8 +84,10 @@ range_param = range(k1_start, k1_end, length = len)
 u0ss = zeros(len, 5)
 LSEs = zeros(len, 5)
 
-filenameu0s = "u0s_k1_length_1000_z_zero.jld2"
-filenameLSEs = "LSEs_k1_length_1000_z_zero.jld2"
+pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/"
+
+filenameu0s = "u0s_k1_from_0_90_to_0.jld2"
+filenameLSEs = "LSEs_k1_from_0_90_to_0.jld2"
 
 inheritance_limit_cycle(index_param, range_param, tspan, time_calculate_LLE)
 
