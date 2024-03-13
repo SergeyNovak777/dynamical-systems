@@ -83,7 +83,7 @@ function main()
     t_attract = 1000.0
     t_LSE = 5000
     integrator_setting = (alg = RK4(), adaptive = false, dt = 0.001, maxiters = 3e6)
-    len_array_u0 = 100000
+    len_array_u0 = 50000
     array_u0 = generate_u0(parameters, len_array_u0)
 
     for index in range(1, len_array_u0, step = 1)
@@ -92,15 +92,27 @@ function main()
         last_point = goto_attractor(prob, integrator_setting)
         ds = init_Coupled_ODE(system, parameters, last_point, integrator_setting)
         LSE = calculate_LSE(ds, t_LSE)
-        push!(info_traj, (array_u0[index, :], last_point, LSE))
-    
+
+        sE_sv, sI_sv, rE_sv, rI_sv, Y_sv = array_u0[index, :]
+        sE_ev, sI_ev, rE_ev, rI_ev, Y_ev = last_point
+        l1, l2, l3, l4, l5 = LSE
+        
+        if index == 1
+            global df = DataFrame("sE_start" => sE_sv, "sI_start" => sI_sv, "rE_start" => rE_sv, "rI_start" => rI_sv, "Y_start" => Y_sv,
+                "sE_end" => sE_ev, "sI_end" => sI_ev, "rE_end" => rE_ev, "rI_end" => rI_ev, "Y_end" => Y_ev,
+                "LE1" => l1, "LE2" => l2, "LE3" => l3, "LE4" => l4, "LE5" => l5)
+        else
+            push!(df, (sE_sv, sI_sv, rE_sv, rI_sv, Y_sv, sE_ev, sI_ev, rE_ev, rI_ev, Y_ev, l1, l2, l3, l4, l5))
+        end
+
+
+
         if mod(index, 10) == 0
-            CSV.write("/home/sergey/work/repo/dynamical-systems/rate model/randomizer/output.csv", info_traj)
+            pathtofile = "/home/sergey/work/repo/dynamical-systems/rate model/randomizer/"
+            namefile = "50000_u0s.csv"
+            fullpath = pathtofile*namefile
+            CSV.write(fullpath, df)
         end
     end
          
 end
-
-
-#CSV.write("/home/sergey/work/repo/dynamical-systems/rate model/randomizer/output.csv",
-# (u0 = [[0.0, 0.0, 0.0, 0.0, 0.0]], lastpont = [[0.0, 0.0, 0.0, 0.0, 0.0]], LSE = [[0.0, 0.0, 0.0, 0.0, 0.0]]))
