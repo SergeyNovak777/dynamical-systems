@@ -25,7 +25,7 @@ function main()
     lenU0 = length(U0range)
 
     map_dim = " $(lenI0)x$(lenU0) ";
-    name = " tauD_article2_zoom_for_curve";
+    name = " tauD_article2_map_distance";
     format = ".jld2";
     namefile_dis = "LSE" * map_dim * name * format;
     # Индексы фиксируемого и управляющего параметра
@@ -39,38 +39,18 @@ function main()
     index_p1 = 8; #U0
     
     for (idx_U0, U0_) in enumerate(U0range)
-    
-        u0_lc = u0s[1, idx_U0, :]
-
-        ds = init_ds_(p, index_control, U0_,
-        index_fix, var_fix, u0_lc, integ_set)
-        
-        dis = calculate_distance(ds, time_integrate)
-        
-        save_output(idx_U0, dis)
-    end
-    save_tofile(namefile_LSE)
-   
-    for (idx_U0, U0_) in enumerate(U0range)
         for (idx_I0, I0_) in enumerate(I0range)
             
-            if idx_I0 == 1 # Если использовать while условие не нужно!
-                continue
-            end
-            
-            u0_lc = # load from file
-            
+            u0_lc = u0s[idx_I0, idx_U0, :]
+
             ds = init_ds(p, index_p1, index_p2, U0_, I0_, u0_lc, integ_set)
             dis = calculate_distance(ds, time_integrate)
             
-            save_output(idx_I0, idx_U0, ΛΛ)
+            #output(idx_I0, idx_U0, I0_, U0_, u0_lc, dis)
+            #separate()
+
+            save_output(idx_I0, idx_U0, dis)
         end
         save_tofile(namefile_dis)
     end
 end
-
-"""
-α -- 1, τ -- 2, τD -- 3, τy -- 4, J -- 5,
-xthr -- 6, ythr -- 7, U0 -- 8, ΔU0 -- 9, β -- 10
-I0 -- 11
-"""

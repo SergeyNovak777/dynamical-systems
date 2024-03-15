@@ -11,25 +11,16 @@ else
 end
 include("/home/sergey/work/repo/dynamical-systems/system.jl");
 
+using StaticArrays, DifferentialEquations, DynamicalSystems, JLD2;
+
 E, x, y = 0..30, 0..1, 0..1
 box = E × x × y
 
-using StaticArrays, DifferentialEquations, DynamicalSystems, JLD2;
-
-function output(idx_I0, idx_U0, I0, U0, u0)
+function output(idx_I0, idx_U0, I0, U0, u0, distance)
     println("index I0: $idx_I0; I0: $I0");flush(stdout);
     println("index U0: $idx_U0; U0: $U0");flush(stdout);
     println("initial condition: $u0");flush(stdout);
-end
-
-function output(idx_U0,U0, u0)
-    println("index U0: $idx_U0; U0: $U0");flush(stdout);
-    println("initial condition: $u0");flush(stdout);
-end
-
-function output_end_iter(distance, u0_lc)
     println("distance: $(distance)");flush(stdout);
-    println("last point: $(u0_lc)");flush(stdout);
 end
 
 function separate()
