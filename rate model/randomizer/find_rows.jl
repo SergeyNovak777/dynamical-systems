@@ -13,7 +13,13 @@ end
 
 using DataFrames, CSV
 
-df = DataFrame(CSV.File("/home/sergey/work/repo/dynamical-systems/rate model/randomizer/50000_u0s.csv"))
-df_filter = filter(r -> r.LE1 >= 0, df)
+function preproc_df()
+    
+    df = DataFrame(CSV.File("/home/sergey/work/repo/dynamical-systems/rate model/randomizer/50000_u0s.csv"))
+    df_filter = filter(r -> r.LE1 >= 0, df)
 
-u0s = df_filter[:,[:"sE_start",:"sI_start", :"rE_start", :"rI_start", :"Y_start"]]
+    u0s = df_filter[:,[:"sE_start",:"sI_start", :"rE_start", :"rI_start", :"Y_start"]]
+
+    return u0s
+end
+
