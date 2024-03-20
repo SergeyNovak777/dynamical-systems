@@ -38,6 +38,17 @@ end
     
     nothing
 end
+function TM_model_get_params()
+    #fixed parameters
+    τ = 0.013; τD = 0.07993; τy = 3.3; J = 3.07; β = 0.300
+    xthr = 0.75; ythr = 0.4
+    α = 1.58; ΔU0 = 0.305;
+    # control parameters
+    I0 = 0.0; U0 = 0.0
+    params = [α, τ, τD, τy, J, xthr, ythr, U0, ΔU0, β, I0]
+
+    return params
+end
 # Jacobian
 @inbounds function jacob_TM_(u, p, t)
     
