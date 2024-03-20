@@ -26,8 +26,8 @@ u0_hom_st = u0_hom_st[:];
 
 Λs = load("/home/sergey/work/repo/dynamical-systems/Tsodyks Markram/Levanova/3 набор параметров/Map LSE/chaos_homoclinic_center/LSE_50x50_I_0_U_0.jld2")["λs"]
 
-I0range = range(-1.7, -1.73, length = 50);
-U0range = range(0.27, 0.264, length = 50);
+I0range = range( -1.7, -1.73, length = 400);
+U0range = range(0.27, 0.2635, length = 400);
 
 cd("/home/sergey/work/repo/dynamical-systems/Tsodyks Markram/Levanova/3 набор параметров/Сопоставление с матконт/файлы matlab")
 

@@ -23,3 +23,7 @@ function preproc_df()
     return u0s
 end
 
+
+u0s = preproc_df()
+
+u0s_matrix = Matrix{Float64}(u0s) 
