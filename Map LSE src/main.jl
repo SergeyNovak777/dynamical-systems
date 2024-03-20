@@ -1,6 +1,8 @@
-include("/home/sergey/work/repo/dynamical-systems/rate model/Map LSE src/header.jl")
+#---------------------------------------
+#INCLUDE
+include("/home/sergey/work/repo/dynamical-systems/Map LSE src/header.jl")
 
-function map_LSE(sys, jacsys, params, u0,
+function map_LSE(sys, params, u0,
     range_p1, range_p2, index_p1, index_p2, name_p1, name_p2,
     time_setting, integrator_setting; printing = false)
 
@@ -23,11 +25,11 @@ function map_LSE(sys, jacsys, params, u0,
     index_control_parameter = index_p2
 
     if printing == false
-        pre_broaching_without_print(sys, jacsys, params, u0, time_setting, integrator_setting,
+        pre_broaching_without_print(sys, params, u0, time_setting, integrator_setting,
           index_fixed_parameter, value_fixed_parameter, index_control_parameter, range_p2,
           namefile_LSE, namefile_u0s)
     else
-        pre_broaching_with_print(sys, jacsys, params, u0, time_setting, integrator_setting,
+        pre_broaching_with_print(sys, params, u0, time_setting, integrator_setting,
         index_fixed_parameter, value_fixed_parameter, index_control_parameter, range_p2,
         name_p1, name_p2,
         namefile_LSE, namefile_u0s)
@@ -35,19 +37,19 @@ function map_LSE(sys, jacsys, params, u0,
 
     #---------------------------------------
     if printing == false
-        calculate_map_without_print(sys, jacsys, params, u0, time_setting, integrator_setting,
-            index_parameter_1, index_parameter_2, range_p1, range_p2,
+        calculate_map_without_print(sys, params, u0, time_setting, integrator_setting,
+            index_p1, index_p2, range_p1, range_p2,
             namefile_LSE, namefile_u0s)
     else
-        calculate_map_with_print(sys, jacsys, params, u0, time_setting, integrator_setting,
-            index_parameter_1, index_parameter_2, range_p1, range_p2,
+        calculate_map_with_print(sys, params, u0, time_setting, integrator_setting,
+            index_p1, index_p2, range_p1, range_p2,
             name_p1, name_p2,
             namefile_LSE, namefile_u0s)
     end
 
 end
 
-function calculate_map_without_print(sys, jacsys, params, u0, time_setting, integrator_setting,
+function calculate_map_without_print(sys, params, u0, time_setting, integrator_setting,
     index_parameter_1, index_parameter_2, range_p1, range_p2,
     namefile_LSE, namefile_u0s, dim = length(u0))
 
@@ -68,7 +70,7 @@ function calculate_map_without_print(sys, jacsys, params, u0, time_setting, inte
             ds = init_Coupled_ODE(sys, params, point_from_attractor, integrator_setting,
             index_parameter_2, value_parameter_2, index_parameter_1, value_parameter_1)
 
-            LSE = calculate_LSE(ds, jacsys, time_setting.time_calculate_LSE)
+            LSE = calculate_LSE(ds, time_setting.time_calculate_LSE)
 
             save_in_matrix(index_cycle_parameter_1, index_cycle_parameter_2, dim,
                 LSE, u0_local_pre_broach, point_from_attractor)
@@ -84,7 +86,7 @@ function calculate_map_without_print(sys, jacsys, params, u0, time_setting, inte
 
 end
 
-function calculate_map_with_print(sys, jacsys, params, u0, time_setting, integrator_setting,
+function calculate_map_with_print(sys, params, u0, time_setting, integrator_setting,
     index_parameter_1, index_parameter_2, range_p1, range_p2,
     name_p1, name_p2,
     namefile_LLE, namefile_u0s, dim = length(u0))
@@ -106,7 +108,7 @@ function calculate_map_with_print(sys, jacsys, params, u0, time_setting, integra
             ds = init_Coupled_ODE(sys, params, point_from_attractor, integrator_setting,
             index_parameter_2, value_parameter_2, index_parameter_1, value_parameter_1)
 
-            LLE = calculate_LSE(ds, jacsys, time_setting.time_calculate_LSE)
+            LLE = calculate_LSE(ds, time_setting.time_calculate_LSE)
 
             save_in_matrix(index_cycle_parameter_1, index_cycle_parameter_2, dim,
                 LLE, u0_local_map, point_from_attractor)
@@ -129,7 +131,7 @@ function calculate_map_with_print(sys, jacsys, params, u0, time_setting, integra
 
 end
 
-function pre_broaching_without_print(sys, jacsys, params, u0, time_setting, integrator_setting,
+function pre_broaching_without_print(sys, params, u0, time_setting, integrator_setting,
     index_fixed_parameter, value_fixed_parameter, index_control_parameter, range_p2,
     namefile_LLE, namefile_u0s, dim = length(u0))
 
@@ -149,7 +151,7 @@ function pre_broaching_without_print(sys, jacsys, params, u0, time_setting, inte
         index_control_parameter, value_p2,
         index_fixed_parameter, value_fixed_parameter)
     
-        LSE = calculate_LSE(ds, jacsys, time_setting.time_calculate_LSE)
+        LSE = calculate_LSE(ds, time_setting.time_calculate_LSE)
     
         save_in_matrix(1, local_index_p2, dim,
         LSE, u0_local_pre_broach, point_from_attractor)
@@ -164,7 +166,7 @@ function pre_broaching_without_print(sys, jacsys, params, u0, time_setting, inte
 
 end
 
-function pre_broaching_with_print(sys, jacsys, params, u0, time_setting, integrator_setting,
+function pre_broaching_with_print(sys, params, u0, time_setting, integrator_setting,
     index_fixed_parameter, value_fixed_parameter, index_control_parameter, range_p2,
     name_p1, name_p2,
     namefile_LLE, namefile_u0s, dim = length(u0))
@@ -185,7 +187,7 @@ function pre_broaching_with_print(sys, jacsys, params, u0, time_setting, integra
         index_control_parameter, value_p2,
         index_fixed_parameter, value_fixed_parameter)
     
-        LLE = calculate_LSE(ds, jacsys, time_setting.time_calculate_LSE)
+        LLE = calculate_LSE(ds, time_setting.time_calculate_LSE)
     
         save_in_matrix(1,local_index_p2, dim,
         LLE, u0_local_pre_broach, point_from_attractor)

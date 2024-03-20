@@ -48,9 +48,8 @@ function goto_attractor(prob, integrator_setting)
     return point_from_attractor[end]
 end
 
-function calculate_LSE(ds, jacsys, time_calculate_LSE)
-    tands = tands = TangentDynamicalSystem(ds; J = jacsys)
-    LSE = lyapunovspectrum(tands, time_calculate_LSE)
+function calculate_LSE(ds, time_calculate_LSE)
+    LSE = lyapunovspectrum(ds, time_calculate_LSE)
     return LSE
 end
 
