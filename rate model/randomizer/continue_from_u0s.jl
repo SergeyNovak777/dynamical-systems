@@ -70,7 +70,7 @@ function main()
     
     u0s = preproc_df()
 
-    for index in range(1, length(u0s), step = 1)
+    for index in range(1, length(u0s[:,1]), step = 1)
         
         prob = init_ODE_prob(system, parameters, u0s[index, :], t_attract)
         last_point = goto_attractor(prob, integrator_setting)

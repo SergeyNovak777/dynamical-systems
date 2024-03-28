@@ -36,7 +36,7 @@ function goto_attractor(prob, integrator_setting)
     if integrator_setting.adaptive == true
         point_from_attractor = solve(prob, alg = integrator_setting.alg,
         adaptive = integrator_setting.adaptive,
-        abstol = integrator_setting.abstol, reltol = integrator_setting.reltol,
+        abstol = integrator_setting.abstol, reltol = integrator_setting.reltol, maxiters = integrator_setting.maxiters,
         save_everystep = false, save_start = false)
     else
         point_from_attractor = solve(prob, alg = integrator_setting.alg,

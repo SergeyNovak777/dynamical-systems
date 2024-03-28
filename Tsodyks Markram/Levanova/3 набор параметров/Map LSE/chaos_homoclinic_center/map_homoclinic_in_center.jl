@@ -34,7 +34,7 @@ function main()
     params = TM_model_get_params();
     u0 = [8.254587677389917, 0.7099299111721875, 0.549798431121074];
     
-    length_range = 400;
+    length_range = 1000;
     range_parameter_1 = range( -1.7, -1.73, length = length_range);
     range_parameter_2 = range(0.27, 0.2635, length = length_range);
     
