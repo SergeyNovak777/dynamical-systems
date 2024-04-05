@@ -28,6 +28,8 @@ function plot_two_timeseries(sol, tstart, tend, indexs, labels, path_to_save)
     indexx, indexy = indexs
     f = Figure(size = (1000, 250))
     ax = Axis(f[1,1], xlabel = L"time", ylabel = labels, xlabelsize = labelsize, ylabelsize = labelsize, xticklabelsize = ticksize, yticklabelsize = ticksize)
+    
+    
     lines!(ax, sol.t[tstart:tend], sol[indexx, tstart:tend], color = :red, linewidth = lw)
     lines!(ax, sol.t[tstart:tend], sol[indexy, tstart:tend], color = :green, linewidth = lw)
     display(f)
@@ -63,11 +65,11 @@ function main(x1, y1, x2, y2)
     abstol = integrator_setting.abstol, reltol = integrator_setting.abstol)
 
     len_sol = length(sol.u[:,1])
-    tstart = floor(Int64, len_sol / 2); tend = len_sol
+    tstart = floor(Int64, len_sol / 1.5); tend = len_sol
 
     pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/figure 4/"
-    filename_timeseries = "timeseries_figure_4.eps"
-    filename_phase_space = "phase_space_figure_4.eps"
+    filename_timeseries = "timeseries_figure_4.pdf"
+    filename_phase_space = "phase_space_figure_4.pdf"
 
     plot_two_timeseries(sol, tstart, tend, [1, 3], L"x_i", pathtosave * filename_timeseries)
     plot_phase_space(sol, tstart, tend, [1,3,4], [L"x_1", L"x_2", L"y_2"], pathtosave * filename_phase_space)
