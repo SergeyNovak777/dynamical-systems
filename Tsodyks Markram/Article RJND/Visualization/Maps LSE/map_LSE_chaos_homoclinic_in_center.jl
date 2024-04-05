@@ -12,7 +12,7 @@ end
 
 using JLD2, CairoMakie, MAT
 
-cd("/home/sergey/work/repo/dynamical-systems/Tsodyks Markram/Levanova/3 набор параметров/Сопоставление с матконт/файлы matlab")
+cd("/home/sergey/work/repo/dynamical-systems/Tsodyks Markram/Article Chaos/Сопоставление с матконт/файлы matlab")
 
 I0_hom = load("I0_hom_hom.jld")["data"]
 u0_hom = load("U0_hom_hom.jld")["data"]
@@ -24,12 +24,12 @@ u0_hom_st = load("U0_hom_stump.jld")["data"]
 I0_hom_st = I0_hom_st[:]
 u0_hom_st = u0_hom_st[:];
 
-Λs = load("/home/sergey/work/repo/dynamical-systems/Tsodyks Markram/Levanova/3 набор параметров/Map LSE/chaos_homoclinic_center/LSE_1000x1000_I_0_U_0.jld2")["λs"]
+Λs = load("/home/sergey/work/repo/dynamical-systems/Tsodyks Markram/Article Chaos//Map LSE/chaos_homoclinic_center/LSE_1000x1000_I_0_U_0.jld2")["λs"]
 
 I0range = range( -1.7, -1.73, length = 1000);
 U0range = range(0.27, 0.2635, length = 1000);
 
-cd("/home/sergey/work/repo/dynamical-systems/Tsodyks Markram/Levanova/3 набор параметров/Сопоставление с матконт/файлы matlab")
+cd("/home/sergey/work/repo/dynamical-systems/Tsodyks Markram/Article Chaos/Сопоставление с матконт/файлы matlab")
 
 I0_hom = load("I0_hom_hom.jld")["data"]
 u0_hom = load("U0_hom_hom.jld")["data"]
@@ -54,7 +54,7 @@ U0_hom_bt = U0_hom_bt[:];
 index_start_hom_bt = 1; index_end_hom_bt = 8000
 
 
-cd("/home/sergey/work/repo/dynamical-systems/Tsodyks Markram/Levanova/3 набор параметров/bifurcationkit")
+cd("/home/sergey/work/repo/dynamical-systems/Tsodyks Markram/Article Chaos/bifurcationkit")
 
 hp_codim2_1 = load("hp_codim2_1.jld2")
 hp_codim2_1I0 = hp_codim2_1["I0"]
@@ -99,6 +99,6 @@ ylims!(0.2635, 0.27)
 display(f);
 
 pathtosave = "/home/sergey/MEGA/dynamical-systems/Tsodyks Markram/images/RJND/"
-filename = "/hom_center.pdf"
+filename = "/1000x1000_hom_center.pdf"
 fullpath = pathtosave * filename 
 save(fullpath, f)
