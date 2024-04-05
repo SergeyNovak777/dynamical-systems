@@ -13,11 +13,11 @@ end
 using JLD2, CairoMakie, MAT
 
 
-Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/LSE_400x400_k_1_k_2.jld2")["λs"]
+Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/k1_k2_zoom_left_angle/LSE_350x350_k_1_k_2.jld2")["λs"]
 
-length_range = 400;
-k1range = range( 0.0, 0.12, length = length_range);
-k2range = range(0.0, 80.0, length = length_range);
+length_range = 350;
+k1range = range( 0.0, 0.02, length = length_range);
+k2range = range(0.0, 2.0, length = length_range);
 
 index = 1
 absmax = maximum(abs.(Λs[:, :, index]))
@@ -43,6 +43,6 @@ hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :sei
 display(f);
 
 pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
-filename = "/k1_k2_extended.eps"
+filename = "/k1_k2_left_angle.eps"
 fullpath = pathtosave * filename 
 save(fullpath, f)
