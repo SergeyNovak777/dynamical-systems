@@ -10,7 +10,7 @@ else
     Pkg.activate(pathtorepo * "/env/integrate/")
 end
 include("/home/sergey/work/repo/dynamical-systems/system.jl")
-using StaticArrays, DifferentialEquations, DynamicalSystems, CairoMakie, JLD2
+using StaticArrays, DifferentialEquations, DynamicalSystems, CairoMakie, JLD2, BenchmarkTools
 
 function get_u0(x1, y1, x2, y2)
     z = y1 - y2
@@ -37,6 +37,13 @@ function calculate_LSE(sys, u0, params, integrator_setting, time_calculate)
     ds = CoupledODEs(sys, u0, params,
     diffeq = integrator_setting);
     LSE = lyapunovspectrum(ds, time_calculate)
+    return LSE
+end
+
+function calculate_LLE(sys, u0, params, integrator_setting, time_calculate)
+    ds = CoupledODEs(sys, u0, params,
+    diffeq = integrator_setting);
+    LSE = lyapunov(ds, time_calculate)
     return LSE
 end
 
@@ -79,19 +86,21 @@ sys = FHN2_try3
 params = FHN2_try3_params()
 tspan_for_solver = (0.0, 5000.0)
 time_calculate_LSE = 10000
-params[3] = 0.1
-params[7] = 0.09
-params[8] = 0.05
-#u0 = get_u0(-5.0,-0.7,-10.0,-0.3)
-u0 = (1.0, 0.0, -1.5, 0.4, -0.3)
+params[3] = 0.25
+params[7] = 0.0
+params[8] = 1.5
+u0 = get_u0(-5.0,-0.7,-10.0,-0.3)
 u0 = SVector{5}(u0)
-integrator_setting = (alg = Vern6(), adaptive = true, abstol = 1e-9, reltol = 1e-9)
+integrator_setting = (alg = DP8(), adaptive = true, abstol = 1e-9, reltol = 1e-9)
 
 solution = solver(sys, u0, params, integrator_setting, tspan_for_solver)
 LSE = calculate_LSE(sys, solution[end], params, integrator_setting, time_calculate_LSE)
+LLE = calculate_LLE(sys, solution[end], params, integrator_setting, time_calculate_LSE)
+println("LSE: $LSE")
+println("LLE: $LLE")
 
 index_variable_timeseries = 1
-percent_ploting_timeseries = 50
+percent_ploting_timeseries = 10
 
 width_window, height_window = [1000, 300]
 resolution_timeseries = (width_window, height_window)
@@ -100,9 +109,19 @@ ylabel, labelsize, ticksize, lw = [L"x_1", 40, 25, 1.0]
 trange, x_range = get_timeseries(solution, index_variable_timeseries, percent_ploting_timeseries)
 plot_timeseries(trange, x_range, ylabel, labelsize, ticksize, lw, resolution_timeseries)
 
-percent_plotting_phase_space = 99
+percent_plotting_phase_space = 10
 indexs = [1, 3, 4]
 labels = [L"x_1", L"x_2", L"y_1"]
 resolution_phase_space = (600, 900)
 X = get_phase_space(solution, percent_plotting_phase_space, indexs)
 plot_phase_space(X, labels, labelsize, ticksize, lw, resolution_phase_space)
+
+
+#=
+[0.01, -1.01, 0.1, 50.0, 0.8726646259971648, 2.792526803190927, 0.0, 8.595317725752508]
+k_1: 0.0
+index_cycle_k_2: 258, value_k_2: 8.595317725752508
+init_point: [1.0205654914439346e98, -1.738313060327035e30, -8.868302837874765e50, 1.7096853839685579e12, -1.738313060327035e30]
+last_point: [1.0205654914439346e98, -1.738313060327035e30, -8.868302837874765e50, 1.7096853839685579e12, -1.738313060327035e30]
+LLE: [NaN, NaN, NaN, NaN, NaN]
+=#
