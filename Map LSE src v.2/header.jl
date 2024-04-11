@@ -57,6 +57,20 @@ function solver(prob, integrator_setting)
     return solution
 end
 
+function get_percent(number, percent)
+    return floor(Int64, (number / 100) * percent )
+end
+
+function difference_between_points(solution, len_matrix)
+    matrix_difference = zeros(len_matrix, 5)
+    for index in range(1, len_matrix - 1, step = 2)
+        difference = solution[index] - solution[index+1]
+        difference = abs.(collect(difference))
+        matrix_difference[index, :] = difference
+    end
+    return matrix_difference
+end
+
 function calculate_LSE(ds, time_calculate_LSE)
     LSE = lyapunovspectrum(ds, time_calculate_LSE)
     return LSE
@@ -226,7 +240,7 @@ function pre_broaching_inh_side(sys, params, u0, time_setting, integrator_settin
         if all(matrix_difference .<= ϵ) == true
             LSE = ones(dim) * -1
         else
-            ds = init_Coupled_ODE(sys, params, solution, integrator_setting,
+            ds = init_Coupled_ODE(sys, params, solution[end], integrator_setting,
             index_control_parameter, value_parameter_p2_in_cycle,
             index_fixed_parameter, value_fixed_parameter)
         
@@ -235,15 +249,15 @@ function pre_broaching_inh_side(sys, params, u0, time_setting, integrator_settin
        
     
         save_in_matrix(1,index_parameter_p2_in_cycle, dim,
-        LSE, u0_local_pre_broach, solution)
+        LSE, u0_local_pre_broach, solution[end])
 
         if flag_output == true
             print_output_inh(name_p1, name_p2,
             index_parameter_p2_in_cycle, value_parameter_p2_in_cycle, params[index_fixed_parameter],
-            u0_local_pre_broach, solution, LSE)
+            u0_local_pre_broach, solution[end], LSE)
         end
         
-        u0_local_pre_broach = solution
+        u0_local_pre_broach = solution[end]
     
         if mod(index_parameter_p2_in_cycle, 10) == 0
             save_in_files(namefile_LLE, namefile_u0s, dim)
@@ -285,21 +299,21 @@ function calculate_map_inh_side(sys, params, u0, time_setting, integrator_settin
             if all(matrix_difference .<= ϵ) == true
                 LSE = ones(dim) * -1
             else
-                ds = init_Coupled_ODE(sys, params, solution, integrator_setting,
+                ds = init_Coupled_ODE(sys, params, solution[end], integrator_setting,
                 index_parameter_2, value_parameter_2, index_parameter_1, value_parameter_1)
 
                 LSE = calculate_LSE(ds, time_setting.time_calculate_LSE)
             end
 
             save_in_matrix(index_cycle_parameter_1, index_cycle_parameter_2, dim,
-                LSE, u0_local_map, solution)
+                LSE, u0_local_map, solution[end])
 
             if flag_output == true
                 print_output_inh(name_p1, name_p2, index_cycle_parameter_1, index_cycle_parameter_2, value_parameter_1, value_parameter_2,
-                u0, solution, LSE)
+                u0, solution[end], LSE)
             end
 
-            u0_local_map = solution
+            u0_local_map = solution[end]
         end
         save_in_files(namefile_LLE, namefile_u0s, dim)
     end

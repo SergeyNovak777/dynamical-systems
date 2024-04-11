@@ -33,7 +33,7 @@ function main()
     params = FHN2_try3_params()
     u0 = [1.9075684503044907, -0.3904496392396389, 1.9413139567288633, -0.4925421548500994, 0.10209251561045568];
     
-    length_range = 300;
+    length_range = 100;
     range_parameter_1 = range( 0.0, 0.14, length = length_range);
     range_parameter_2 = range(0.01109, 0.25, length = length_range);
     
