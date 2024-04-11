@@ -8,6 +8,26 @@ function get_file_name(len_p1, len_p2, name_p1, name_p2)
     return namefile_LSE, namefile_u0s
 end
 
+function get_percent(number, percent)
+    return floor(Int64, (number / 100) * percent )
+end
+
+function get_point_from_attractor(prob, integrator_setting)
+
+    if integrator_setting.adaptive == true
+        last_point_from_attractor = solve(prob, alg = integrator_setting.alg,
+        adaptive = integrator_setting.adaptive,
+        abstol = integrator_setting.abstol, reltol = integrator_setting.reltol, maxiters = integrator_setting.maxiters,
+        save_everystep = false, save_start = false)
+    else
+        last_point_from_attractor = solve(prob, alg = integrator_setting.alg,
+        adaptive = integrator_setting.adaptive,
+        dt = integrator_setting.dt,
+        save_everystep = false, save_start = false, maxiters = integrator_setting.maxiters)
+    end
+    return last_point_from_attractor[end]
+end
+
 function init_ODE_prob(sys, parameters, u0, time_setting,
     index_parameter_p2, value_parameter_p2,index_parameter_p1, value_parameter_p1)
 
@@ -27,22 +47,6 @@ function init_Coupled_ODE(sys, parameters, u0, integ_set,
     return ds
 end
 
-function get_point_from_attractor(prob, integrator_setting)
-
-    if integrator_setting.adaptive == true
-        last_point_from_attractor = solve(prob, alg = integrator_setting.alg,
-        adaptive = integrator_setting.adaptive,
-        abstol = integrator_setting.abstol, reltol = integrator_setting.reltol, maxiters = integrator_setting.maxiters,
-        save_everystep = false, save_start = false)
-    else
-        last_point_from_attractor = solve(prob, alg = integrator_setting.alg,
-        adaptive = integrator_setting.adaptive,
-        dt = integrator_setting.dt,
-        save_everystep = false, save_start = false, maxiters = integrator_setting.maxiters)
-    end
-    return last_point_from_attractor[end]
-end
-
 function solver(prob, integrator_setting)
     if integrator_setting.adaptive == true
         solution = solve(prob, alg = integrator_setting.alg,
@@ -57,16 +61,16 @@ function solver(prob, integrator_setting)
     return solution
 end
 
-function get_percent(number, percent)
-    return floor(Int64, (number / 100) * percent )
+function distance_between_point(X1, X2)
+    return sqrt( (X1[1] - X2[1])^2 + ( X1[2] - X2[2] )^2 + ( X1[3] - X2[3] )^2 )
 end
 
 function difference_between_points(solution, len_matrix)
-    matrix_difference = zeros(len_matrix, 5)
+    matrix_difference = zeros(len_matrix)
     for index in range(1, len_matrix - 1, step = 2)
-        difference = solution[index] - solution[index+1]
-        difference = abs.(collect(difference))
-        matrix_difference[index, :] = difference
+        point1 = solution[index]
+        point2 = solution[index+1]
+        matrix_difference[index] = distance_between_point(point1, point2)
     end
     return matrix_difference
 end
@@ -310,7 +314,7 @@ function calculate_map_inh_side(sys, params, u0, time_setting, integrator_settin
 
             if flag_output == true
                 print_output_inh(name_p1, name_p2, index_cycle_parameter_1, index_cycle_parameter_2, value_parameter_1, value_parameter_2,
-                u0, solution[end], LSE)
+                u0_local_map, solution[end], LSE)
             end
 
             u0_local_map = solution[end]
@@ -343,7 +347,7 @@ function calculate_map_LSE_without_inheritance(sys, params, u0, time_setting, in
                 LSE, point_from_attractor)
             
             if flag_output == true
-                rint_output_w_inh(name_p1, name_p2, index_cycle_parameter_1, index_cycle_parameter_2, value_parameter_1, value_parameter_2,
+                print_output_w_inh(name_p1, name_p2, index_cycle_parameter_1, index_cycle_parameter_2, value_parameter_1, value_parameter_2,
                 point_from_attractor, LSE)
             end
 
