@@ -1,10 +1,10 @@
 #---------------------------------------
 #INCLUDE
-include(joinpath(@__DIR__, "HEADERS\\header.jl"))
+include(joinpath(@__DIR__, "header.jl"))
 
 function map_LSE(sys, params, u0,
     range_p1, range_p2, index_p1, index_p2, name_p1, name_p2,
-    time_setting, integrator_setting, type_inheritance; printing = false)
+    time_setting, integrator_setting, type_inheritance; printing = false, ϵ = 1e-9)
 
     #---------------------------------------
     len_p1 = length(range_p1)
@@ -25,7 +25,8 @@ function map_LSE(sys, params, u0,
     index_control_parameter = index_p2
 
     if type_inheritance == "move to side"
-        pre_broaching_with_print(sys, params, u0, time_setting, integrator_setting,
+
+        pre_broaching_inh_side(sys, params, u0, time_setting, integrator_setting,
             index_fixed_parameter, value_fixed_parameter, index_control_parameter, range_p2,
             name_p1, name_p2,
             namefile_LSE, namefile_u0s, printing)
@@ -40,5 +41,21 @@ function map_LSE(sys, params, u0,
         calculate_map_LSE_without_inheritance(sys, params, u0, time_setting, integrator_setting,
         index_parameter_1, index_parameter_2, range_p1, range_p2,
         namefile_LSE, namefile_u0s, printing)
+
+    elseif type_inheritance == "move to side detect fp"
+
+        pre_broaching_inh_side(sys, params, u0, time_setting, integrator_setting,
+            index_fixed_parameter, value_fixed_parameter, index_control_parameter, range_p2,
+            name_p1, name_p2,
+            namefile_LSE, namefile_u0s, printing,
+            ϵ)
+
+        calculate_map_inh_side(sys, params, u0, time_setting, integrator_setting,
+                index_p1, index_p2, range_p1, range_p2,
+                name_p1, name_p2,
+                namefile_LSE, namefile_u0s,
+                printing,
+                ϵ)
+        
     end
 end

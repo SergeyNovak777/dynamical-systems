@@ -1,4 +1,4 @@
-#=if Sys.iswindows()
+if Sys.iswindows()
     username = "Alex"
     pathtorepo = "C:\\Users\\" *username *  "\\Desktop\\"
     using Pkg
@@ -10,10 +10,10 @@ else
     Pkg.activate(pathtorepo * "/env/integrate/")
 end
 include("/home/sergey/work/repo/dynamical-systems/system.jl")
-=#
 
-using Pkg
-Pkg.activate("D:\\work\\dynamical-systems\\env\\integrate")
+
+#using Pkg
+#Pkg.activate("D:\\work\\dynamical-systems\\env\\integrate")
 #include("D:\\work\\dynamical-systems\\system.jl")
 
 
@@ -37,7 +37,7 @@ function solver(sys, u0, params, integrator_setting, tspan)
     else
         sol = solve(prob, integrator_setting.alg, adaptive = false, dt = integrator_setting.dt, maxiters = integrator_setting.maxiters)
     end    
-    return sol
+    return prob, sol
 end
 
 function calculate_LSE(sys, u0, params, integrator_setting, time_calculate)
@@ -71,7 +71,7 @@ function plot_timeseries(trange, x_range, ylabel_, labelsize, ticksize, lw, reso
     display(fig)
 end
 
-function plot_phase_space(X, labels, lebelsize, ticksize, lw, resolution)
+function plot_phase_space(X, labels, labelsize, ticksize, lw, resolution)
     fig = Figure(size = resolution)
     ax = Axis3(fig[1, 1], xlabel = labels[1], ylabel = labels[2], zlabel = labels[3],
     xlabelsize = labelsize, ylabelsize = labelsize, zlabelsize = labelsize,
@@ -87,43 +87,109 @@ function get_phase_space(solution, percent_plotting_phase_space, indexs)
     X = [solution[indexs[1], start_time:end_time], solution[indexs[2], start_time:end_time], solution[indexs[3], start_time:end_time]]
     return X
 end
+
+function difference_between_points(solution, len_matrix)
+    matrix_difference = zeros(len_matrix, 5)
+    for index in range(1, len_matrix - 1, step = 2)
+        difference = solution[index] - solution[index+1]
+        difference = abs.(collect(difference))
+        matrix_difference[index, :] = difference
+    end
+    return matrix_difference
+end
 #---------------------------------------------------------------------------------------
 
-sys = FHN2_try3
-params = FHN2_try3_params()
-tspan_for_solver = (0.0, 5000.0)
-time_calculate_LSE = 20000
-params[3] = 0.15 # g
-params[7] = 0.04 # k1
-params[8] = 1.0 # k2
-u0 = get_u0(-5.0,-0.7,-10.0,-0.3)
-u0 = SVector{5}(u0)
-integrator_setting = (alg = DP8(), adaptive = true, abstol = 1e-10, reltol = 1e-10)
+function show_mode(g, k1, k2, u0, static)
+    sys = FHN2_try3
+    params = FHN2_try3_params()
+    tspan_for_solver = (0.0, 3000.0)
+    time_calculate_LSE = 20000
+    params[3] = g
+    params[7] = k1
+    params[8] = k2
+    #u0 = get_u0(-5.0,-0.7,-10.0,-0.3)
+    #u0 = SVector{5}(u0)
+    integrator_setting = (alg = DP8(), adaptive = true, abstol = 1e-10, reltol = 1e-10)
 
+    if static == false
+        prob, solution = solver(sys, SVector{5}(u0), params, integrator_setting, tspan_for_solver)
+    else
+        prob, solution = solver(sys, u0, params, integrator_setting, tspan_for_solver)
+    end
+    
+    ϵ=1e-9
+    len_sol = length(solution)
+    percent = get_percent(len_sol, 100-50)
+    len_matrix = length(solution[:, percent:end])
+    percent_sol = solution[:, percent:end]
+    if mod(len_matrix, 2) != 0
+        len_matrix = len_matrix - 1
+    end
+
+    matrix_difference = difference_between_points(percent_sol, len_matrix)
+    if all(matrix_difference .<= ϵ) == true
+        LSE = -1
+        LLE = -1
+    else
+        LSE = calculate_LSE(sys, u0, params, integrator_setting, time_calculate_LSE)
+        LLE = calculate_LLE(sys, u0, params, integrator_setting, time_calculate_LSE)
+    end
+    println("LSE: $LSE")
+    println("LLE: $LLE")
+
+    index_variable_timeseries = 1
+    percent_ploting_timeseries = 10
+
+    width_window, height_window = [1000, 300]
+    resolution_timeseries = (width_window, height_window)
+    ylabel, labelsize, ticksize, lw = [L"x_1", 40, 25, 1.0]
+
+    trange, x_range = get_timeseries(solution, index_variable_timeseries, percent_ploting_timeseries)
+    plot_timeseries(trange, x_range, ylabel, labelsize, ticksize, lw, resolution_timeseries)
+
+    percent_plotting_phase_space = 50
+    indexs = [1, 3, 4]
+    labels = [L"x_1", L"x_2", L"y_1"]
+    resolution_phase_space = (600, 900)
+    X = get_phase_space(solution, percent_plotting_phase_space, indexs)
+    plot_phase_space(X, labels, labelsize, ticksize, lw, resolution_phase_space)
+
+    return prob, solution, matrix_difference
+end
+
+
+g = 0.2 #0.01109
+k1 = 0.0
+k2 = 1.0
+#u0 = [-5.0,-0.7,-10.0,-0.3, -0.7+0.3]
+u0 = [1.9075684503044907, -0.3904496392396389, 1.9413139567288633, -0.4925421548500994, 0.10209251561045568]
+prob, solution, matrix_difference = show_mode(g, k1, k2, u0, false);
+;
+
+#=ϵ=1e-9
+len_sol = length(sol)
+percent = get_percent(len_sol, 100-20)
+len_matrix = length(sol[:, percent:end])
+percent_sol = sol[:, percent:end]
+if mod(len_matrix, 2) != 0
+    len_matrix = len_matrix - 1
+end
+
+matrix_difference = difference_between_points(percent_sol, len_matrix)
+if all(matrix_difference .<= ϵ) == true
+    println("FP!!!!!")
+end
+=#
 #=
-[-1.0188585884884223, -0.5189943100524299, -1.000868215009377, -0.5293712406754373, 0.010376930622985253]
+CYCLE
+g = 0.15
+k1 = 0.14
+k2 = 1.0
+u0 = [1.9075684503044907, -0.3904496392396389, 1.9413139567288633, -0.4925421548500994, 0.10209251561045568]
+
+g = 0.01109
+k1 = 0.0
+k2 = 1.0
+u0 = [-1.0083078648152173, -0.6646900583246136, -1.0118497540232405, -0.6636637416235039, -0.0010263167011098397]
 =#
 
-solution = solver(sys, solution[end], params, integrator_setting, tspan_for_solver)
-
-LSE = calculate_LSE(sys, solution[end], params, integrator_setting, time_calculate_LSE)
-LLE = calculate_LLE(sys, solution[end], params, integrator_setting, time_calculate_LSE)
-println("LSE: $LSE")
-println("LLE: $LLE")
-
-index_variable_timeseries = 1
-percent_ploting_timeseries = 10
-
-width_window, height_window = [1000, 300]
-resolution_timeseries = (width_window, height_window)
-ylabel, labelsize, ticksize, lw = [L"x_1", 40, 25, 1.0]
-
-trange, x_range = get_timeseries(solution, index_variable_timeseries, percent_ploting_timeseries)
-plot_timeseries(trange, x_range, ylabel, labelsize, ticksize, lw, resolution_timeseries)
-
-percent_plotting_phase_space = 30
-indexs = [1, 3, 4]
-labels = [L"x_1", L"x_2", L"y_1"]
-resolution_phase_space = (600, 900)
-X = get_phase_space(solution, percent_plotting_phase_space, indexs)
-plot_phase_space(X, labels, labelsize, ticksize, lw, resolution_phase_space)

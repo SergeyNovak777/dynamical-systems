@@ -16,10 +16,10 @@ include("/home/sergey/work/repo/dynamical-systems/system.jl")
 using StaticArrays, DifferentialEquations, DynamicalSystems, JLD2
 using DataFrames, CSV
 #-----------------------------------------------------------------
-function generate_u0(len_array_u0)
+function generate_u0(limits_X, limits_Y, len_array_u0)
 
-    x1_2_range =range(-3.0, 3.0, length = 100)
-    y1_2_range = range(-1.0, 1.0, length = 100)
+    x1_2_range =range(limits_X[1], limits_X[2], length = len_array_u0)
+    y1_2_range = range(limits_Y[1], limits_Y[2], length = len_array_u0)
 
     array_u0 = zeros(len_array_u0, 5)
 
@@ -36,7 +36,7 @@ end
 
 function solver(sys, u0, params, integrator_setting, tspan)
 
-    prob = ODEProblem(sys, u0, tspan, params)
+    prob = ODEProblem(sys, SVector{length(u0)}(u0), tspan, params)
 
     if integrator_setting.adaptive == true
         sol = solve(prob, integrator_setting.alg, adaptive = true, abstol = integrator_setting.abstol, reltol  = integrator_setting.reltol)
@@ -63,40 +63,53 @@ function create_df(u0, last_point, LSE)
 end
 
 function push_df(df, u0, last_point, LSE)
-    push!(df, u0[1], u0[2],)
+    push!(df, (u0[1], u0[2], u0[3], u0[4], u0[5], last_point[1], last_point[2], last_point[3], last_point[4], last_point[5], LSE[1], LSE[2], LSE[3], LSE[4], LSE[5]))
 end
 
-function save_df(df, path_to_save)
+function randomizer_u0(sys, params, tspan_solution, time_calculate_LSE,
+    integrator_setting, len_matrix_random_u0, limits_X, limits_Y, path_to_save)
 
-end
-
-function randomizer_u0(sys, params, tspan_solution, time_calculate_LSE, integrator_setting)
-    len_matrix_random_u0 = 100
-    matrix_random_u0 = generate_u0(len_matrix_random_u0)
+    matrix_random_u0 = generate_u0(limits_X, limits_Y, len_matrix_random_u0)
 
     for index in range(1, len_matrix_random_u0, step = 1)
         u0 = matrix_random_u0[index, :]
         solution = solver(sys, u0, params, integrator_setting, tspan_solution)
         last_point = solution[end]
-        LSE = calculate_LSE(sys, u0, params, integrator_setting, time_calculate)
+        LSE = calculate_LSE(sys, last_point, params, integrator_setting, time_calculate_LSE)
 
         if index === 1
             global df = create_df(u0, last_point, LSE)
+            CSV.write(path_to_save, df)
         else
             push_df(df, u0, last_point, LSE)
+        end
+
+        if mod(index, 10) == 0
+            CSV.write(path_to_save, df)
         end
     end
 end
 
-test_u0 = [1.0, 2.0, 3.0, 4.0, 5.0]
-test_last_point = [6.0, 7.0, 8.0, 9.0, 10.0]
-test_LSE = [11.0, 12.0, 13.0, 14.0, 15.0]
+function main()
 
-    
-df = create_df(test_u0, test_last_point, test_LSE)
+    sys = FHN2_try3
+    params = FHN2_try3_params()
+    tspan_solution = 10000
+    time_calculate_LSE = 20000
+    params[3] = 0.02
+    params[7] = 0.150
+    params[8] = 0.0
+    integrator_setting = (alg = Vern9(), adaptive = true,
+    abstol = 1e-11, reltol = 1e-11)
+    len_matrix_random_u0 = 1000
+    limits_X = [-2.0, 2.0]
+    limits_Y = [-2.0, 2.0]
 
-path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/randomizer/"
-file_name = "test_name.csv"
-fullpath = path_to_save * file_name
+    path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/randomizer/"
+    file_name = "$len_matrix_random_u0" * "_random_u0_g_0_02_k1_$(params[7])_k2_$(params[8]).csv"
+    fullpath = path_to_save * file_name
 
-CSV.write(fullpath, df)
+    randomizer_u0(sys, params, tspan_solution, time_calculate_LSE,
+    integrator_setting, len_matrix_random_u0, limits_X, limits_Y, fullpath)
+
+end
