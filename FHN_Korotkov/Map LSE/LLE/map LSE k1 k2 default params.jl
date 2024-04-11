@@ -25,7 +25,7 @@ end
 #---------------------------------------------------------------------
 function main()
         
-    path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/k1_k2_zoom_left_angle/"
+    path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/k1_k2_default_scale/"
     cd(path_to_save)
         
     sys = FHN2_try3;
@@ -34,9 +34,9 @@ function main()
     x1, y1, x2, y2  = 1.0,2.0,3.0,4.0
     u0 = [x1, y1, x2, y2, y1 - y2 ];
     
-    length_range = 350;
-    range_parameter_1 = range( 0.0, 0.02, length = length_range);
-    range_parameter_2 = range(0.0, 2.0, length = length_range);
+    length_range = 300;
+    range_parameter_1 = range( 0.0, 0.1, length = length_range);
+    range_parameter_2 = range(0.0, 10.0, length = length_range);
     
     index_parameter_1 = 7;
     index_parameter_2 = 8;
@@ -44,11 +44,11 @@ function main()
     name_parameter_1 = "k_1";
     name_parameter_2 = "k_2";
     
-    time_attract = 1000
+    time_attract = 500
     time_calculate_LSE = 10000
-    abstl = 1e-12; reltl = 1e-12;
+    abstl = 1e-9; reltl = 1e-9;
     time_setting = Time_setting(time_attract, time_calculate_LSE);
-    integrator_setting = (alg = Vern9(), adaptive = true, abstol = abstl, reltol = reltl, maxiters = 10e6);
+    integrator_setting = (alg = DP8(), adaptive = true, abstol = abstl, reltol = reltl, maxiters = 10e6);
     
     map_LSE(sys, params, u0,
     range_parameter_1, range_parameter_2, index_parameter_1, index_parameter_2,
