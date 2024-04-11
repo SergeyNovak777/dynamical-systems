@@ -13,9 +13,9 @@ end
 using JLD2, CairoMakie, MAT
 
 
-Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/k1_g_k2=1/LSE_10x10_k_1_g.jld2")["λs"]
+Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/k1_g_k2=1/LSE_300x300_k_1_g.jld2")["λs"]
 
-length_range = 10;
+length_range = 300;
 k1range = range( 0.0, 0.14, length = length_range);
 k2range = range(0.01109, 0.25, length = length_range);
 
