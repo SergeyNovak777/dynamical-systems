@@ -21,7 +21,7 @@ k2range = range(0.01109, 0.25, length = length_range);
 
 
 index = 1
-absmax = maximum(abs.(Λs[:, :, index]))
+absmax = maximum((Λs[:, :, index]))
 
 mn, mx =  -absmax, absmax
 CairoMakie.activate!()  
