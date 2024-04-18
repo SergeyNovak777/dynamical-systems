@@ -1,9 +1,9 @@
-include("C:\\Users\\admin\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\src\\header.jl");
+include("/home/sergey/work/repo/dynamical-systems/brain rhythms/map of LSE/params from TG/gammaY s0E/src/header.jl");
 
 function main()
 
-    time_LSE = 500;
-    time_attract = 500;
+    time_LSE = 1000;
+    time_attract = 1000;
     tstep = 0.001;
     integ_set = (alg = Vern9(), adaptive = false, dt = tstep);
 
@@ -26,15 +26,15 @@ function main()
 
     len = 100;
     p1name = "γY";
-    p2name = "IE";
+    p2name = "s0E";
     p1_range = range( 0.0, 10.0, length = len );
-    p2_range = range(0.0, 2.0, length = len);
+    p2_range = range(0.0, 0.5, length = len);
 
     global Λs = zeros(len, len, dim);
     global u0s = zeros(len, len, dim);
 
     map_dim = " $(len)x$(len) ";
-    name = " $(p1name) $(p2name) rate_model";
+    name = " $(p1name) $(p2name) rate_model params from tg RK4 ubuntu";
     format = ".jld2";
     namefile_LSE = "LSE" * map_dim * name * format;
     namefile_u0s = "u0s" * map_dim * name * format;
@@ -43,7 +43,7 @@ function main()
     
     # Индексы управляющих параметров
     index_p1= 21;
-    index_p2 = 9;
+    index_p2 = 3;
 
     # для предварительной протяжки
     index_fix = index_p1;

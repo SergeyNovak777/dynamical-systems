@@ -1,9 +1,15 @@
-username = "Alex";
-env = "integrate";
-pathtorepo = "C:\\Users\\" *username *  "\\Desktop\\";
-using Pkg;
-Pkg.activate(pathtorepo * "dynamical-systems\\env\\" * env * "\\");
-include(pathtorepo * "dynamical-systems\\system.jl");
+if Sys.iswindows()
+    username = "Alex"
+    pathtorepo = "C:\\Users\\" *username *  "\\Desktop\\"
+    using Pkg
+    Pkg.activate(pathtorepo * "dynamical-systems\\env\\integrate\\")
+else
+    username = "sergey"
+    pathtorepo = "/home/" *username *"/work/repo/dynamical-systems"
+    using Pkg
+    Pkg.activate(pathtorepo * "/env/integrate/")
+    include("/home/sergey/work/repo/dynamical-systems/system.jl")
+end
 
 using StaticArrays, DifferentialEquations, DynamicalSystems, JLD2;
 

@@ -1,9 +1,9 @@
-include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\params from TG\\gammaY s0I\\src\\header.jl");
+include("/home/sergey/work/repo/dynamical-systems/brain rhythms/map of LSE/params from TG/gammaY s0I/src/header.jl");
 
 #include("C:\\Users\\Alex\\Desktop\\dynamical-systems\\brain rhythms\\map of LSE\\params from TG\\gammaY s0I\\src\\main.jl")
 function main()
 
-    time_LSE = 1000;
+    time_LSE = 2000;
     time_attract = 1000;
     tstep = 0.001;
     integ_set = (alg = RK4(), adaptive = false, dt = tstep);
@@ -35,7 +35,7 @@ function main()
     global u0s = zeros(len, len, dim);
 
     map_dim = " $(len)x$(len) ";
-    name = " $(p1name) $(p2name) rate_model params from tg RK4";
+    name = " $(p1name) $(p2name) rate_model params from tg RK4 ubuntu";
     format = ".jld2";
     namefile_LSE = "LSE" * map_dim * name * format;
     namefile_u0s = "u0s" * map_dim * name * format;
