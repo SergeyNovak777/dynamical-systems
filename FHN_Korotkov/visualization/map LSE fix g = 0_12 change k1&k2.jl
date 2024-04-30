@@ -13,7 +13,7 @@ end
 using JLD2, CairoMakie, MAT
 
 
-Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/g=0.098 change k1&k2/LSE_300x300_k_1_k_2.jld2")["λs"]
+Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/g=0.12 change k1&k2/LSE_300x300_k_1_k_2.jld2")["λs"]
 
 length_range = 300;
 k1range = range( 0.0, 0.1, length = length_range);
@@ -44,6 +44,6 @@ hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :sei
 display(f);
 
 pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
-filename = "/g=0_098_k1&k2.eps"
+filename = "/g=0_011_k1&k2.eps"
 fullpath = pathtosave * filename 
 save(fullpath, f)
