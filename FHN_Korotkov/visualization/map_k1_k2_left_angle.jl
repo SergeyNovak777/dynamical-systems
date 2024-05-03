@@ -43,6 +43,6 @@ hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :sei
 display(f);
 
 pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
-filename = "/k1_k2_left_angle.eps"
+filename = "/k1_k2_left_angle.pdf"
 fullpath = pathtosave * filename 
 save(fullpath, f)

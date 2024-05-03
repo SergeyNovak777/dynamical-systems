@@ -13,18 +13,18 @@ end
 using JLD2, CairoMakie, MAT
 
 
-Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/LSE_400x400_k_1_k_2.jld2")["λs"]
+Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/g=0.19 change k1&k2/LSE_300x300_k_1_k_2.jld2")["λs"]
 
-length_range = 400;
-k1range = range( 0.0, 0.12, length = length_range);
-k2range = range(0.0, 80.0, length = length_range);
+length_range = 300;
+k1range = range( 0.0, 0.1, length = length_range);
+k2range = range(0.0, 10.0, length = length_range);
 
 index = 1
 absmax = maximum(abs.(Λs[:, :, index]))
 
 mn, mx =  -absmax, absmax
 CairoMakie.activate!()  
-f = Figure()
+f = Figure()    
 ticksize = 35
 tickpad = 10.0
 textsize = 25
@@ -35,16 +35,15 @@ mksize = 12
 ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 50,
             xticklabelsize = ticksize, yticklabelsize = ticksize,
             xgridvisible  = false, ygridvisible = false,
-            xticklabelpad = tickpad, yticklabelpad = tickpad)
-
-#Λs[323:400, :, 1] .= -1
+            xticklabelpad = tickpad, yticklabelpad = tickpad,
+            xticks = [0, 2, 4, 6, 8, 10], yticks = [0.0, 0.02, 0.04, 0.06, 0.08, 0.1])
 
 hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :seismic,
                 colorrange = (mn, mx))
-#ylims!(0.0, 0.097)
+
 display(f);
 
 pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
-filename = "/k1_k2_extended.pdf"
+filename = "/g=0_19_k1_k2.pdf"
 fullpath = pathtosave * filename 
 save(fullpath, f)

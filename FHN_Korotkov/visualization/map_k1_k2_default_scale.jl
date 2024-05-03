@@ -37,7 +37,7 @@ ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize 
             xgridvisible  = false, ygridvisible = false,
             xticklabelpad = tickpad, yticklabelpad = tickpad,
             xticks = [0, 2, 4, 6, 8, 10], yticks = [0.0, 0.02, 0.04, 0.06, 0.08, 0.1])
-
+Λs[288:300, :, 1] .= -1
 hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :seismic,
                 colorrange = (mn, mx))
 
