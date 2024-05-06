@@ -28,23 +28,26 @@ len_sol = length(sol.t)
 tstart = t_truncate(len_sol); tend = len_sol
 
 data = [sol[1, tstart:tend], sol.t[tstart:tend]]
-array_peaks, array_t_peaks = get_peaks(data; level_zero = "nothing")
-# get_peaks_neg(data)
-array_peaks_abs = abs.(array_peaks)
-Hs_x = Hs_above(array_peaks_abs, 8)
-σ = Statistics.mean(array_peaks_abs)
+array_spikes_max, array_t_spikes_max = get_peaks(data; level_zero = "nothing")
+array_spikes_thresholds, array_t_spikes_thresholds = get_peaks_neg(data)
+baseline = Statistics.mean(array_spikes_thresholds)
+#array_peaks_abs = abs.(array_peaks)
+#Hs_x = Hs_above(array_peaks_abs, 8)
+#σ = Statistics.mean(array_peaks_abs)
 
 width_window = 500; height_window = 1000;
 f = Figure(size = (height_window, width_window))
 ax = Axis(f[1, 1], xlabel = L"time", ylabel =  L"x")
-lines!(ax, sol.t[2600000:tend], sol[1, 2600000:tend], color = :blue, linewidth = 0.5)
-scatter!(ax, array_t_peaks, array_peaks, markersize = 10, color = :red)
+lines!(ax, sol.t[2300000:tend], sol[1, 2300000:tend], color = :blue, linewidth = 0.5)
+scatter!(ax, array_t_spikes_max, array_spikes_max, markersize = 10, color = :red)
+scatter!(ax, array_t_spikes_thresholds, array_spikes_thresholds, markersize = 10, color = :blue)
 xlims!(ax, 49700, 49930)
-hlines!(Hs_x, color = "red", linewidth = 2.0, linestyle = :dash)
-hlines!(σ , color = "lime", linewidth = 2.0, linestyle = :dash)
+hlines!(baseline, color = :blue, linewidth = 2.0, linestyle = :dash)
+#hlines!(Hs_x, color = "red", linewidth = 2.0, linestyle = :dash)
+#hlines!(σ , color = "lime", linewidth = 2.0, linestyle = :dash)
 display(GLMakie.Screen(), f)    
 
-count_thesholds = 1000000
+#=count_thesholds = 1000000
 maxvalue = maximum(array_peaks_abs) # minimum(sol[1, tstart:tend])
 minvalue = minimum(array_peaks_abs)
 ϵ = 1.5
@@ -54,12 +57,16 @@ f = Figure(size = (400, 400))
 ax = Axis(f[1, 1])
 lines!(threshold_range, array_PDF, linewidth = 1.5)
 vlines!(ax, Hs_x, color = "red", linestyle = :dash, linewidth = 1.5)
-display(GLMakie.Screen(), f)
+display(GLMakie.Screen(), f)=#
 
 
+width_window = 500; height_window = 1000;
 f = Figure(size = (height_window, width_window))
 ax = Axis(f[1, 1], xlabel = L"time", ylabel =  L"x")
-scatter!(ax, array_t_peaks, abs.(array_peaks), markersize = 10, color = :red)
-xlims!(ax, 49000, 49930)
-hlines!(abs.(Hs_x), color = "red", linewidth = 2.0, linestyle = :dash)
-display(GLMakie.Screen(), f)   
+lines!(ax, sol.t[tstart:tstart+5000], sol[1, tstart:tstart+5000], color = :blue, linewidth = 0.5)
+scatter!(ax, array_t_spikes_max, array_spikes_max, markersize = 10, color = :red)
+scatter!(ax, array_t_spikes_thresholds, array_spikes_thresholds, markersize = 10, color = :blue)
+xlims!(ax, 25000, 25080)
+#hlines!(Hs_x, color = "red", linewidth = 2.0, linestyle = :dash)
+hlines!(baseline, color = :blue, linewidth = 2.0, linestyle = :dash)
+display(GLMakie.Screen(), f)    
