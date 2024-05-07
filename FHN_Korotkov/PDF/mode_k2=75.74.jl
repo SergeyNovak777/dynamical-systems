@@ -48,6 +48,8 @@ hlines!(baseline, color = :blue, linewidth = 2.0, linestyle = :dash)
 #hlines!(σ , color = "lime", linewidth = 2.0, linestyle = :dash)
 display(GLMakie.Screen(), f)    
 
+# mda
+
 #=count_thesholds = 1000000
 maxvalue = maximum(array_peaks_abs) # minimum(sol[1, tstart:tend])
 minvalue = minimum(array_peaks_abs)
