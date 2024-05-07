@@ -8,10 +8,11 @@ else
     pathtorepo = "/home/" *username *"/work/repo/dynamical-systems"
     using Pkg
     Pkg.activate(pathtorepo * "/env/integrate/")
+    include("/home/sergey/work/repo/dynamical-systems/system.jl")
+    include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF/pdf_function.jl")
 end
 
-include("/home/sergey/work/repo/dynamical-systems/system.jl")
-include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF/pdf_function.jl")
+
 using StaticArrays, DifferentialEquations, DynamicalSystems, Statistics, CairoMakie, GLMakie
 
 t_truncate(t) = floor(Int64, t / 2)
