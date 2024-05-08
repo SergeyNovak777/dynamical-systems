@@ -20,7 +20,7 @@ end
 
 function get_peaks_neg(data)
     xrange, trange = data
-    xrange, trange = xrange[findall(xrange.<=0)], trange[findall(xrange.<=0)]
+    #xrange, trange = xrange[findall(xrange.<=0)], trange[findall(xrange.<=0)]
     array_peaks = Float64[]
     array_t_peaks = Float64[]
     for index in range(2, length(xrange)-1 )

@@ -18,7 +18,7 @@ using StaticArrays, DifferentialEquations, DynamicalSystems, Statistics, CairoMa
 t_truncate(t) = floor(Int64, t / 2)
 
 parameters = FHN2_try3_params()
-tspan = (0.0, 50000.0)
+tspan = (0.0, 300000.0)
 parameters[7] = 0.09
 parameters[8] = 75.74
 u0 = [1.7, 0.7, -1.4, 0.35, 0.7 - 0.35]
@@ -32,44 +32,66 @@ data = [sol[1, tstart:tend], sol.t[tstart:tend]]
 array_spikes_max, array_t_spikes_max = get_peaks(data; level_zero = "nothing")
 array_spikes_thresholds, array_t_spikes_thresholds = get_peaks_neg(data)
 baseline = Statistics.mean(array_spikes_thresholds)
-#array_peaks_abs = abs.(array_peaks)
-#Hs_x = Hs_above(array_peaks_abs, 8)
-#σ = Statistics.mean(array_peaks_abs)
+println("length local max: $(length(array_spikes_max)); length local min $(length(array_spikes_thresholds))")
+
+function check_timeseries(array_spikes_max, array_spikes_thresholds)
+    if length(array_spikes_max)+1 == length(array_spikes_thresholds)
+        flag = true
+    else
+        flag = false
+    end
+    return flag
+end
+
+function drop_false_start_end(array_t_spikes_max, array_t_spikes_thresholds)
+    if array_t_spikes_max[1] < array_t_spikes_thresholds[1]
+        popfirst!(array_t_spikes_max)
+        popfirst!(array_spikes_max)
+    elseif array_t_spikes_max[end] > array_t_spikes_thresholds[end]
+        pop!(array_t_spikes_max)
+        pop!(array_spikes_max)
+    end
+end
+
+if check_timeseries(array_spikes_max, array_spikes_thresholds) == true
+    # drop spike with small amplitude and save amplitude spike
+else
+    drop_false_start_end(array_t_spikes_max, array_t_spikes_thresholds)
+end
+
+function get_amplitude_spike(local_min_left, local_min_right, local_max)
+    maxmin = maximum([local_min_left, local_min_right])
+    amplitude = abs( local_max - maxmin )
+    return amplitude
+end
+
+array_spikes_max_correct = Float64[]
+array_t_spikes_max_correct = Float64[]
+amplitudes = Float64[]
+for index in range(1, length(array_spikes_max)-1)
+    amplitude = get_amplitude_spike(array_spikes_thresholds[index], array_spikes_thresholds[index+1], array_spikes_max[index])
+    if amplitude >= 0.1
+       push!(array_spikes_max_correct, array_spikes_max[index])
+       push!(array_t_spikes_max_correct, array_t_spikes_max[index])
+       push!(amplitudes, amplitude)
+    end
+end
+
+println("length local max: $(length(array_spikes_max)); length local min $(length(array_spikes_thresholds))")
+println("count correct spike: $(length(array_spikes_max_correct))")
+
+minspike = minimum(amplitudes)
+maxspike = maximum(amplitudes)
+
+Hs_x  = Hs_above(amplitudes, 8)
 
 width_window = 500; height_window = 1000;
 f = Figure(size = (height_window, width_window))
 ax = Axis(f[1, 1], xlabel = L"time", ylabel =  L"x")
-lines!(ax, sol.t[2300000:tend], sol[1, 2300000:tend], color = :blue, linewidth = 0.5)
-scatter!(ax, array_t_spikes_max, array_spikes_max, markersize = 10, color = :red)
+lines!(ax, sol.t[tstart:tstart+100000], sol[1, tstart:tstart+100000], color = :blue, linewidth = 0.5)
+scatter!(ax, array_t_spikes_max_correct, array_spikes_max_correct, markersize = 10, color = :green)
 scatter!(ax, array_t_spikes_thresholds, array_spikes_thresholds, markersize = 10, color = :blue)
-xlims!(ax, 49700, 49930)
+xlims!(ax, sol.t[tstart], sol.t[tstart+100000])
+hlines!(Hs_x, color = "red", linewidth = 2.0, linestyle = :dash)
 hlines!(baseline, color = :blue, linewidth = 2.0, linestyle = :dash)
-#hlines!(Hs_x, color = "red", linewidth = 2.0, linestyle = :dash)
-#hlines!(σ , color = "lime", linewidth = 2.0, linestyle = :dash)
-display(GLMakie.Screen(), f)    
-
-# mda
-
-#=count_thesholds = 1000000
-maxvalue = maximum(array_peaks_abs) # minimum(sol[1, tstart:tend])
-minvalue = minimum(array_peaks_abs)
-ϵ = 1.5
-threshold_range, array_PDF = pdf_v2(array_peaks_abs, count_thesholds, minvalue, maxvalue, ϵ)
-
-f = Figure(size = (400, 400))
-ax = Axis(f[1, 1])
-lines!(threshold_range, array_PDF, linewidth = 1.5)
-vlines!(ax, Hs_x, color = "red", linestyle = :dash, linewidth = 1.5)
-display(GLMakie.Screen(), f)=#
-
-
-width_window = 500; height_window = 1000;
-f = Figure(size = (height_window, width_window))
-ax = Axis(f[1, 1], xlabel = L"time", ylabel =  L"x")
-lines!(ax, sol.t[tstart:tstart+5000], sol[1, tstart:tstart+5000], color = :blue, linewidth = 0.5)
-scatter!(ax, array_t_spikes_max, array_spikes_max, markersize = 10, color = :red)
-scatter!(ax, array_t_spikes_thresholds, array_spikes_thresholds, markersize = 10, color = :blue)
-xlims!(ax, 25000, 25080)
-#hlines!(Hs_x, color = "red", linewidth = 2.0, linestyle = :dash)
-hlines!(baseline, color = :blue, linewidth = 2.0, linestyle = :dash)
-display(GLMakie.Screen(), f)    
+display(GLMakie.Screen(), f)
