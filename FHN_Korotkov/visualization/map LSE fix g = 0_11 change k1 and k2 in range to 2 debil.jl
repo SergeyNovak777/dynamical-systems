@@ -24,7 +24,7 @@ absmax = maximum((Λs[:, :, index]))
 
 mn, mx =  -absmax, absmax
 CairoMakie.activate!()  
-f = Figure()    
+f = Figure()
 ticksize = 35
 tickpad = 10.0
 textsize = 25
@@ -38,7 +38,7 @@ mksize = 12
 ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 50,
             xticklabelsize = ticksize, yticklabelsize = ticksize,
             xgridvisible  = false, ygridvisible = false,
-            xticklabelpad = tickpad, yticklabelpad = tickpad, yticks = [0.0, 0.02, 0.04, 0.06, 0.08, 0.1])
+            xticklabelpad = tickpad, yticklabelpad = tickpad, xticks = [0., 0.9, 1.8], yticks = [0.0, 0.02, 0.04, 0.06, 0.08, 0.1])
 
 hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :seismic,
                 colorrange = (mn, mx))
