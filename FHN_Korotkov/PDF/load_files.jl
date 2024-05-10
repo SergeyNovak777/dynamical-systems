@@ -15,7 +15,7 @@ end
 
 using StaticArrays, Statistics, CairoMakie, GLMakie, JLD2
 
-path_to_save = "/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF/sol_k2=75.74/"
+path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_74/"
 
 EE_peaks = Float64[]
 EE_times = Float64[]
@@ -23,7 +23,7 @@ sol = Float64[]
 sol_times = Float64[]
 
 function vcat_arrays(sol, sol_times, EE_peaks, EE_times)
-    for iteration in range(1, 10)
+    for iteration in range(1, 18)
 
         namefile_sol_x1 = "$(iteration)_sol_x1.jld"
         namefile_EE = "$(iteration)_EE.jld"
