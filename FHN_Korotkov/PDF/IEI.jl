@@ -73,27 +73,33 @@ for index in range(1, len_EE-1)
     push!(IEI, IEI_i)
 end
 len_IEI = length(IEI)
-IEI
+ϵ = 5.0;
 
-#=t_plot_start = 1
-t_shift = 150000
-width_window = 500; height_window = 1000;
-f = Figure(size = (height_window, width_window))
-ax = Axis(f[1, 1], xlabel = L"time", ylabel =  L"x")
-lines!(ax, data_x1[2][t_plot_start:t_plot_start+t_shift], data_x1[1][t_plot_start:t_plot_start+t_shift], color = :blue, linewidth = 0.5)
-scatter!(ax, t_EE, EE, markersize = 10, color = :deeppink)
-xlims!(ax, data_x1[2][t_plot_start], data_x1[2][t_plot_start+t_shift])
-hlines!(Hs_x, color = "red", linewidth = 2.0, linestyle = :dash)
-hlines!(baseline, color = :blue, linewidth = 2.0, linestyle = :dash)
-#IEI
-lines!(ax, [t_EE[1], t_EE[2]], [0.0, 0.0], color = :black, linewidth = 1.0)
-text!(ax, [t_EE[1], t_EE[2]], [0.0, 0.0], text = "IEI: $(IEI[1])")
-lines!(ax, [t_EE[2], t_EE[3]], [0.0, 0.0], color = :black, linewidth = 1.0)
-text!(ax, mean([t_EE[2], t_EE[3]]), 0.0, text = "IEI: $(IEI[2])")
-display(GLMakie.Screen(), f)=#
+count_identical_IEI = zeros(len_IEI)
+PDF_IEI = zeros(len_IEI)
+
+for index in range(1, len_IEI)
+    count_IEI_i = count(IEI[index]-ϵ .<= IEI .<= IEI[index]+ϵ)
+    count_identical_IEI[index] = count_IEI_i
+
+    PDF_IEI_i = count_IEI_i / len_IEI
+    PDF_IEI[index] = PDF_IEI_i
+end 
 
 width_window = 500; height_window = 1000;
 f = Figure(size = (height_window, width_window))
 ax = Axis(f[1, 1], xlabel = L"count", ylabel =  L"IEI")
 lines!(ax, IEI, color = :black, linewidth = 1.0)
-display(f)
+display(GLMakie.Screen(), f)
+
+width_window = 500; height_window = 1000;
+f = Figure(size = (height_window, width_window))
+ax = Axis(f[1, 1], xlabel = L"count_identical_IEI", ylabel =  L"IEI")
+lines!(ax, count_identical_IEI, color = :black, linewidth = 1.0)
+display(GLMakie.Screen(), f)
+
+width_window = 500; height_window = 1000;
+f = Figure(size = (height_window, width_window))
+ax = Axis(f[1, 1], xlabel = L"count_identical_IEI", ylabel =  L"PDF")
+scatter!(ax, IEI, PDF_IEI, color = :black, linewidth = 1.0)
+display(GLMakie.Screen(), f)
