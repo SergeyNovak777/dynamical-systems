@@ -51,7 +51,11 @@ u0 = [-0.9859005363852416, -0.635253572091177, -1.0345181027025165, -0.636382088
 # 6 
 u0 = SVector{5}(u0)
 prob = ODEProblem(FHN2_try3, u0, tspan, parameters)
-sol = solve(prob, DP8(), adaptive = true, abstol = 1e-11, reltol = 1e-11, maxiters = 1e8);
+alg = DP8();
+abs_tl = 1e-11;
+rel_tl = 1e-11;
+max_iters = 1e-7;
+sol = solve(prob, alg, adaptive = true, abstol = abs_tl, reltol = rel_tl, maxiters = max_iters);
 len_sol = length(sol.t)
 tstart = t_truncate(len_sol); tend = len_sol
 

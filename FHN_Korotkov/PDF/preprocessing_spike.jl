@@ -29,7 +29,7 @@ function select_spike_by_amplitude(array_spikes_thresholds, array_t_spikes_max, 
     amplitudes = Float64[]
     for index in range(1, length(array_spikes_max)-1)
         amplitude = get_amplitude_spike(array_spikes_thresholds[index], array_spikes_thresholds[index+1], array_spikes_max[index])
-        if amplitude >= 0.05
+        if amplitude >= 0.1
             push!(array_spikes_max_correct, array_spikes_max[index])
             push!(array_t_spikes_max_correct, array_t_spikes_max[index])
             push!(amplitudes, amplitude)
