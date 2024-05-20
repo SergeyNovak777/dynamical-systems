@@ -15,14 +15,14 @@ end
 
 using StaticArrays, Statistics, CairoMakie, GLMakie, JLD2
 
-path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_74/"
+path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75/"
 
 len_part_timeseris = Int64[]
 sol = Float64[]
 sol_times = Float64[]
 
 function vcat_arrays(sol, sol_times)
-    for iteration in range(1, 13)
+    for iteration in range(1, 27)
 
         namefile_sol_x1 = "$(iteration)_sol_x1.jld"
         full_path_to_save_sol_x1 = path_to_save*namefile_sol_x1
@@ -77,7 +77,7 @@ for index in range(1, len_EE-1)
 end
 IEI_v2 = IEI_v2[sortperm(IEI_v2[:, 3]), :]
 IEI = sort(IEI)
-#IEI = IEI[IEI.>=10]
+IEI = IEI[IEI.>=10]
 len_IEI = length(IEI)
 ϵ = 10.0;
 
@@ -97,6 +97,7 @@ ax = Axis(f[1, 1], xlabel = L"IEI", ylabel =  L"PDF")
 lines!(ax, IEI, PDF_IEI, color = :black, linewidth = 1.0)
 display(GLMakie.Screen(), f)
 #--------------------------------------------
+#=
 part_time_series = 50
 tstart = 1; tend = Int64(5e6) #length(data_x1[2])
 width_window = 500; height_window = 1000;
@@ -108,4 +109,4 @@ scatter!(ax, array_t_spikes_max_correct, array_spikes_max_correct, markersize = 
 scatter!(ax, t_EE, EE, markersize = 10, color = :deeppink)
 scatter!(ax, array_t_spikes_thresholds, array_spikes_thresholds, markersize = 10, color = :blue)
 xlims!(data_x1[2][tstart], data_x1[2][tend])
-display(GLMakie.Screen(), f)
+display(GLMakie.Screen(), f)=#
