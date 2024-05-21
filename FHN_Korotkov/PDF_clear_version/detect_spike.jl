@@ -31,7 +31,8 @@ function drop_artifacts(data_local_max, data_local_min)
     if t_local_maxs[1] < t_local_mins[1]
         popfirst!(local_maxs)
         popfirst!(t_local_maxs)
-    elseif t_local_maxs[end] > t_local_mins[end]
+    end
+    if t_local_maxs[end] > t_local_mins[end]
         pop!(local_maxs)
         pop!(t_local_maxs)
     end

@@ -31,19 +31,20 @@ function vcat_arrays(sol, sol_times, len_charts)
 end
 Hs(x, k) = Statistics.mean(x) + k * Statistics.std(x)
 
-path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_74/"
+path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_72/"
 
 len_part_timeseris = Int64[]
 sol = Float64[]
 sol_times = Float64[]
-len_charts = 15
+len_charts = 1
 sol, sol_times = vcat_arrays(sol, sol_times, len_charts)
 
 data = [sol, sol_times]
-println("len sol: $(length(data))")
+println("len sol: $(length(data[1]))")
 
 data_local_max = get_local_max(data)
 data_local_min = get_local_min(data)
+
 drop_artifacts(data_local_max, data_local_min)
 
 println("length local maxs: $(length(data_local_max[1]))")
@@ -90,9 +91,9 @@ display(GLMakie.Screen(), f)=#
 #=f = Figure()
 ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10)
 lines!(ax, array_IEI, array_PDF_IEI, linewidth = 1.0)
-display(GLMakie.Screen(), f)
-
+display(GLMakie.Screen(), f)=#
+#=
 f = Figure()
 ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10)
-hist!(ax, array_IEI, weights = array_PDF_IEI, bins = 25)#length(array_IEI))
+hist!(ax, array_IEI, weights = array_PDF_IEI, bins = 30)#length(array_IEI))
 display(GLMakie.Screen(), f)=#
