@@ -47,7 +47,9 @@ function plot_PDF_scatter(array_IEI, array_PDF_IEI; width_window = 1000, height_
     display(GLMakie.Screen(), f)
 end
 
-function plot_timeseries(data, data_local_max, data_local_min, t_peaks_spikes, peaks_spikes,
+function plot_timeseries(data, data_local_max, data_local_min,
+    t_peaks_spikes, peaks_spikes, Hs_x,
+    t_EEs, peaks_EEs,
     t_start, t_end;
     width_window = 1000, height_window = 300)
     f = Figure(size = (width_window, height_window))
@@ -66,13 +68,15 @@ end
 function solver_IEI(prob, integrator_setting;
     plot_pdf_hist = true, bins = 25,
     plot_pdf_scatter = false,
-    plot_timesereis = false, t_start = 1, t_end = 10000)
+    plot_timesereis = false, window_time_series = "nothing", t_start = 0, t_end = 0)
+
     sol = solve(prob, integrator_setting.alg, adaptive = true, abstol = integrator_setting.abs_tol, reltol = integrator_setting.rel_tol,
     maxiters = integrator_setting.max_iters);
 
     len_sol = length(sol.t)
     ttr = t_truncate(len_sol)
     data = [sol[1, ttr:len_sol], sol.t[ttr:len_sol]]
+    len_data = length(data[1])
     println("len sol: $len_sol")
     println("len sol after truncate: $(len_sol - ttr)")
 
@@ -105,19 +109,30 @@ function solver_IEI(prob, integrator_setting;
     if plot_pdf_scatter == true
         plot_PDF_scatter(array_IEI, array_PDF_IEI)
     end
-#=     t_start = length(data[2])-10000; t_end = length(data[2])
 
-    plot_timeseries(data,
-                    data_local_max, data_local_min,
-                    t_peaks_spikes, peaks_spikes,
-                    t_start, t_end)
-    plot_PDF_hist(array_IEI, array_PDF_IEI; bins_ = 25) =#
+    if plot_timesereis == true
+        
+        if window_time_series == "end"
+            t_start = len_data - 10000;
+            t_end = len_data
+        elseif window_time_series == "start"
+            t_start = 1;
+            t_end = 10000;
+        elseif window_time_series == "full"
+            t_start = 1;
+            t_end = len_data;
+        end
+        plot_timeseries(data, data_local_max, data_local_min,
+        t_peaks_spikes, peaks_spikes, Hs_x,
+        t_EEs, peaks_EEs,
+        t_start, t_end)
+    end
 end
 
 parameters = FHN2_try3_params()
-tspan = (0.0, 75000.0)
+tspan = (0.0, 225_000.0)
 parameters[7] = 0.09
-parameters[8] = 75.74
+parameters[8] = 75.73
 u0 = [-0.9859005363852416, -0.635253572091177, -1.0345181027025165, -0.636382088705782, 0.0011285166148596525] 
 u0 = SVector{5}(u0)
 prob = ODEProblem(FHN2_try3, u0, tspan, parameters)
@@ -128,4 +143,5 @@ rel_tol = 1e-14;
 max_iters = 1e8;
 integrator_setting = (alg = alg, abs_tol = abs_tol, rel_tol = rel_tol, max_iters = max_iters)
 
-solver_IEI(prob, integrator_setting; plot_pdf_scatter = true)
+solver_IEI(prob, integrator_setting;
+plot_pdf_scatter = true, plot_timesereis = true, window_time_series = "end"); GC.gc()                                                                                                                                                                                                                                                                                                                                                                                                                                                                           

@@ -81,13 +81,13 @@ function calculate_timeseris(u0_start, parameters, integrator_setting,
     end
 end
 
-alg = Vern9()
+alg = Feagin12()
 println("alg: $alg")
 max_iters = 1e8
 abs_tol = 1e-14; rel_tol = 1e-14
 integrator_setting = (alg = alg, abs_tol = abs_tol, rel_tol = rel_tol, max_iters = max_iters)
 
-path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_74/"
+path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_74_Feagin/"
 parameters = FHN2_try3_params()
 parameters[7] = 0.09
 parameters[8] = 75.74

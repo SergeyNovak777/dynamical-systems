@@ -31,12 +31,12 @@ function vcat_arrays(sol, sol_times, len_charts)
 end
 Hs(x, k) = Statistics.mean(x) + k * Statistics.std(x)
 
-path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_74/"
+path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_74_DP8/"
 
 len_part_timeseris = Int64[]
 sol = Float64[]
 sol_times = Float64[]
-len_charts = 30
+len_charts = 15
 sol, sol_times = vcat_arrays(sol, sol_times, len_charts)
 
 data = [sol, sol_times]
@@ -80,11 +80,6 @@ scatter!(ax, data_local_min[2], data_local_min[1], color = :blue, markersize = 1
 xlims!(ax, data[2][t_start], data[2][t_end])
 display(GLMakie.Screen(), f)
 
-f = Figure()
-ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10)
-hist!(ax, array_IEI, weights = array_PDF_IEI, bins = 100)#length(array_IEI))
-display(GLMakie.Screen(), f)
-
 # all amplitudes
 #=f = Figure(size = (width_window, height_window))
 ax = Axis(f[1, 1], ylabel = L"amplitudes")
@@ -96,3 +91,8 @@ display(GLMakie.Screen(), f)=#
 ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10)
 lines!(ax, array_IEI, array_PDF_IEI, linewidth = 1.0)
 display(GLMakie.Screen(), f)=#
+
+f = Figure()
+ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10)
+hist!(ax, array_IEI, weights = array_PDF_IEI, bins = 25)#length(array_IEI))
+display(GLMakie.Screen(), f)
