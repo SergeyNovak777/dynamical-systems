@@ -9,9 +9,11 @@ else
     using Pkg
     Pkg.activate(pathtorepo * "/env/integrate/")
     include("/home/sergey/work/repo/dynamical-systems/system.jl")
+    include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/detect_spike.jl")
+    include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/IEI.jl")
 end
 
-using StaticArrays, DifferentialEquations, JLD2 
+using StaticArrays, DifferentialEquations, Statistics, JLD2 
 
 function clear_work_space(sol, len_sol, ttr)
     sol = nothing
@@ -31,8 +33,7 @@ end
 function first_iteration(u0, parameters, tspan, integrator_setting, path_to_save)
 
     prob = ODEProblem(FHN2_try3, u0, tspan, parameters)
-    sol = solve(prob, integrator_setting.alg, adaptive = true,
-    abstol = integrator_setting.abs_tol, reltol = integrator_setting.rel_tol,
+    sol = solve(prob, integrator_setting.alg, adaptive = false, dt = integrator_setting.dt,
     maxiters = integrator_setting.max_iters);
     last_point = sol[end]
     println("last point: $(last_point)"); flush(stdout)
@@ -64,8 +65,8 @@ function calculate_timeseris(u0_start, parameters, integrator_setting,
         tspan = (t_point*(iteration-1), t_point*iteration)
         prob = ODEProblem(FHN2_try3, u0, tspan, parameters)
         println("u0: $(u0)"); flush(stdout)
-        sol = solve(prob, integrator_setting.alg, adaptive = true,
-        abstol = integrator_setting.abs_tol, reltol = integrator_setting.rel_tol,
+        sol = solve(prob, integrator_setting.alg, adaptive = false,
+        dt = integrator_setting.dt,
         maxiters = integrator_setting.max_iters);
         u0 = sol[end]
 
@@ -80,13 +81,11 @@ function calculate_timeseris(u0_start, parameters, integrator_setting,
 end
 
 alg = Vern9()
-abs_tol = 1e-14;
-rel_tol = 1e-14;
-max_iters = 1e8;
-println("alg: $alg"); println("abstol: $abs_tol; reltol: $(rel_tol)")
-integrator_setting = (alg = alg, abs_tol = abs_tol, rel_tol = rel_tol, max_iters = max_iters)
+max_iters = 1e8
+dt = 0.001
+integrator_setting = (alg = alg, dt = dt, max_iters = max_iters)
 
-path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_74/"
+path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_74_without_adaptive/"
 parameters = FHN2_try3_params()
 parameters[7] = 0.09
 parameters[8] = 75.74
@@ -94,8 +93,8 @@ parameters[8] = 75.74
 u0_start = [1.7, 0.7, -1.4, 0.35, 0.7 - 0.35]
 u0_start = SVector{5}(u0_start)
 
-t_point = 50000.0
-count_iteration = 30
+t_point = 10000.0
+count_iteration = 150
 
 calculate_timeseris(u0_start, parameters, integrator_setting,
     t_point, count_iteration, path_to_save)

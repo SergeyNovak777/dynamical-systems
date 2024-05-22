@@ -31,12 +31,12 @@ function vcat_arrays(sol, sol_times, len_charts)
 end
 Hs(x, k) = Statistics.mean(x) + k * Statistics.std(x)
 
-path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_74/"
+path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_74_without_adaptive/"
 
 len_part_timeseris = Int64[]
 sol = Float64[]
 sol_times = Float64[]
-len_charts = 30
+len_charts = 5
 sol, sol_times = vcat_arrays(sol, sol_times, len_charts)
 
 data = [sol, sol_times]
@@ -68,16 +68,16 @@ array_PDF_IEI = get_PDF_IEI(array_IEI; shift = 10)
 #PLOTTING
 height_window = 400; width_window = 1100;
 # timeseries
-t_start =  length(data[2])-100000; t_end = length(data[2])
+t_start =  length(data[2])-10000; t_end = length(data[2])
 f = Figure(size = (width_window, height_window))
 ax = Axis(f[1, 1], xlabel = L"time", ylabel = L"x_1")
 lines!(ax, data[2][t_start:t_end], data[1][t_start:t_end])
-#= scatter!(ax, data_local_max[2], data_local_max[1], color = :green, markersize = 10)   
+scatter!(ax, data_local_max[2], data_local_max[1], color = :green, markersize = 10)   
 #scatter!(ax, t_peaks_spikes, peaks_spikes, color = :orange, markersize = 10)                                                                                                                                        
 scatter!(ax, data_local_min[2], data_local_min[1], color = :blue, markersize = 10)
 #hlines!(ax, Hs_x, linewidth = 5.0, linestyle = :dash, color = :red)
 #scatter!(ax, t_EEs, peaks_EEs, color = :deeppink, markersize = 10)
-xlims!(ax, data[2][t_start], data[2][t_end]) =#
+xlims!(ax, data[2][t_start], data[2][t_end])
 display(GLMakie.Screen(), f)
 
 #= f = Figure()
