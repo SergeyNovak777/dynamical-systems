@@ -28,20 +28,11 @@ function first_iteration(u0, parameters, tspan, integrator_setting, path_to_save
     abstol = integrator_setting.abs_tol, reltol = integrator_setting.rel_tol,
     maxiters = integrator_setting.max_iters);
 
-    tstart = tspan[1]; tend = tspan[2]
-    trange = range(tstart, tend, length = 5000000)
-    values_interp = sol(trange)
-    last_point = values_interp[end]
-
-    sol = nothing;
-    GC.gc()
-
-    len_sol = length(trange)
+    len_sol = length(sol.t)
     ttr = t_truncate(len_sol); tend = len_sol
-    data_x1 = [values_interp[1, ttr:tend], trange[ttr:tend]]
-    
-    values_interp = nothing;
-    trange = nothing;
+    data_x1 = [sol[1, ttr:tend], sol.t[ttr:tend]]
+    last_point = sol[end];
+    sol = nothing;
     GC.gc();
 
     println("last point: $(last_point)"); flush(stdout)
@@ -71,18 +62,10 @@ function calculate_timeseris(u0_start, parameters, integrator_setting,
         abstol = integrator_setting.abs_tol, reltol = integrator_setting.rel_tol,
         maxiters = integrator_setting.max_iters);
 
-        tstart = tspan[1]; tend = tspan[2]
-        trange = range(tstart, tend, length = 5000000)
-        values_interp = sol(trange)
-        u0 = values_interp[end]
-
+        u0 = sol[end]
+        data_x1 = [sol[1, :], sol.t]
         sol = nothing;
         GC.gc();
-
-        data_x1 = [values_interp[1, :], trange]
-        values_interp = nothing;
-        trange = nothing;
-         GC.gc();
 
         save_data(iteration, data_x1, path_to_save)
 
@@ -107,8 +90,8 @@ parameters[8] = 75.74
 u0_start = [1.7, 0.7, -1.4, 0.35, 0.7 - 0.35]
 u0_start = SVector{5}(u0_start)
 
-t_point = 25000.0
-count_iteration = 10
+t_point = 50000.0
+count_iteration = 1000
 
 calculate_timeseris(u0_start, parameters, integrator_setting,
     t_point, count_iteration, path_to_save)

@@ -10,7 +10,7 @@ else
     Pkg.activate(pathtorepo * "/env/integrate/")
 end
 
-using StaticArrays, DifferentialEquations, CairoMakie, GLMakie
+using StaticArrays, DifferentialEquations, Plots
 
 function FHN2_try3(u, p ,t)
     x1, y1, x2, y2, z= u
@@ -38,7 +38,7 @@ function FHN2_try3_params()
 end
 
 parameters = FHN2_try3_params()
-tspan = (0.0, 500_000.0)
+tspan = (0.0, 200_000.0)
 parameters[7] = 0.09
 parameters[8] = 75.74
 u0 = [-0.9859005363852416, -0.635253572091177, -1.0345181027025165, -0.636382088705782, 0.0011285166148596525] 
@@ -55,13 +55,16 @@ sol = solve(prob, integrator_setting.alg, adaptive = true, abstol = integrator_s
 maxiters = integrator_setting.max_iters, dense = false);
 
 len_sol = length(sol);
-tstart = len_sol - 20000;
+tstart = len_sol - 500;
 tend = len_sol;
+plot(sol.t[tstart:tend], sol[1, tstart:tend], fmt = :pdf)
+ylims!(-1.1, -0.90)
 
-f = Figure()
+
+#= f = Figure()
 ax = Axis(f[1, 1], xlabel = L"time", ylabel = L"x_1")
 lines!(ax, sol.t[tstart:tend], sol[1, tstart:tend], linewidth = 1.0, color = :blue)
-display(GLMakie.Screen(), f) 
+display(GLMakie.Screen(), f)  =#
 
 #= tstart = tspan[1]; tend = tspan[2]
 trange = range(tstart, tend, length = 5000000)

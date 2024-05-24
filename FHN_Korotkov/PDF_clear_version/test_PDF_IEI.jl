@@ -10,12 +10,12 @@ else
     Pkg.activate(pathtorepo * "/env/integrate/")
 end
 
-using StaticArrays, DifferentialEquations, Statistics, CairoMakie, GLMakie, Distributions
+using StaticArrays, DifferentialEquations, Statistics, Plots
 
 include("/home/sergey/work/repo/dynamical-systems/system.jl")
 include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/detect_spike.jl")
 include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/IEI.jl")
-include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/plotter.jl")
+#include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/plotter.jl")
 
 function clear_work_space(sol, len_sol, ttr)
     sol = nothing

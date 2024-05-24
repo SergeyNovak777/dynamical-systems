@@ -10,12 +10,12 @@ else
     Pkg.activate(pathtorepo * "/env/integrate/")
 end
 
-using Statistics, MAT, JLD2, CairoMakie, GLMakie
+using Statistics, MAT, JLD2, Plots
 
 include("/home/sergey/work/repo/dynamical-systems/system.jl")
 include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/detect_spike.jl")
 include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/IEI.jl")
-include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/plotter.jl")
+#include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/plotter.jl")
 
 t_truncate(t) = floor(Int64, t / 2)
 Hs(x, k) = Statistics.mean(x) + k * Statistics.std(x)
@@ -52,10 +52,31 @@ function load_vcat(sol, sol_times, len_charts)
 end
 
 folder = "/home/sergey/MEGA/matlab/files_long_time_series/"
-sol = Float64[]
+
+println("index: 30"); flush(stdout)
+filename_sol = "30_solution.mat"
+filename_sol_t = "30_t_interval.mat"
+
+println("open files"); flush(stdout)
+solve = matopen(folder*filename_sol)
+solve_t = matopen(folder*filename_sol_t)
+solve = read(solve, "solve")
+solve_t = read(solve_t, "t_solve")
+
+len_solve = length(solve_t)
+tstart = len_solve - 10000; tend = len_solve
+plot(solve_t[tstart:tend], solve[tstart:tend])
+
+
+#= f = Figure()
+ax = Axis(f[1, 1], xlabel = L"time", ylabel = L"x_1")
+lines!(ax, solve_t[tstart:tend], solve[tstart:tend], linewidth = 1.0, color = :blue)
+display(f) =#
+
+#= sol = Float64[]
 sol_times = Float64[]
 
-len_charts = 21
+len_charts = 30
 
 sol, sol_times = load_vcat(sol, sol_times, len_charts)
 
@@ -87,8 +108,8 @@ array_PDF_IEI = get_PDF_IEI(array_IEI; shift = 20)
 plot_PDF_hist(array_IEI, array_PDF_IEI, 25)
 
 len_solve = length(data[2])
-tstart = len_solve - 500000; tend = len_solve
+tstart = len_solve - 10000; tend = len_solve
 f = Figure()
 ax = Axis(f[1, 1], xlabel = L"time", ylabel = L"x_1")
 lines!(ax, data[2][tstart:tend], data[1][tstart:tend], linewidth = 1.0, color = :blue)
-display(GLMakie.Screen(), f) 
+display(f) =#
