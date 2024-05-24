@@ -13,13 +13,6 @@ end
 
 using StaticArrays, DifferentialEquations, JLD2 
 
-function clear_work_space(sol, len_sol, ttr)
-    sol = nothing
-    len_sol = nothing
-    ttr = nothing
-    return sol, len_sol, ttr
-end
-
 t_truncate(t) = floor(Int64, t / 2)
 
 function save_data(iteration, data, path_to_save)
@@ -34,15 +27,25 @@ function first_iteration(u0, parameters, tspan, integrator_setting, path_to_save
     sol = solve(prob, integrator_setting.alg, adaptive = true,
     abstol = integrator_setting.abs_tol, reltol = integrator_setting.rel_tol,
     maxiters = integrator_setting.max_iters);
-    last_point = sol[end]
-    println("last point: $(last_point)"); flush(stdout)
-    len_sol = length(sol.t)
 
-    ttr = t_truncate(len_sol); tend = len_sol
-    data_x1 = [sol[1, ttr:tend], sol.t[ttr:tend]]
-    sol, len_sol, ttr = clear_work_space(sol, len_sol, ttr)
+    tstart = tspan[1]; tend = tspan[2]
+    trange = range(tstart, tend, length = 5000000)
+    values_interp = sol(trange)
+    last_point = values_interp[end]
+
+    sol = nothing;
     GC.gc()
 
+    len_sol = length(trange)
+    ttr = t_truncate(len_sol); tend = len_sol
+    data_x1 = [values_interp[1, ttr:tend], trange[ttr:tend]]
+    
+    values_interp = nothing;
+    trange = nothing;
+    GC.gc();
+
+    println("last point: $(last_point)"); flush(stdout)
+    
     save_data(1, data_x1, path_to_save)
     return last_point
 end
@@ -67,10 +70,20 @@ function calculate_timeseris(u0_start, parameters, integrator_setting,
         sol = solve(prob, integrator_setting.alg, adaptive = true,
         abstol = integrator_setting.abs_tol, reltol = integrator_setting.rel_tol,
         maxiters = integrator_setting.max_iters);
-        u0 = sol[end]
 
-        data_x1 = [sol[1, :], sol.t]
-        sol = nothing; GC.gc();
+        tstart = tspan[1]; tend = tspan[2]
+        trange = range(tstart, tend, length = 5000000)
+        values_interp = sol(trange)
+        u0 = values_interp[end]
+
+        sol = nothing;
+        GC.gc();
+
+        data_x1 = [values_interp[1, :], trange]
+        values_interp = nothing;
+        trange = nothing;
+         GC.gc();
+
         save_data(iteration, data_x1, path_to_save)
 
         println("last point: $(u0)"); flush(stdout)
@@ -80,8 +93,8 @@ function calculate_timeseris(u0_start, parameters, integrator_setting,
 end
 
 alg = Vern9()
-abs_tol = 1e-14;
-rel_tol = 1e-14;
+abs_tol = 1e-10;
+rel_tol = 1e-10;
 max_iters = 1e8;
 println("alg: $alg"); println("abstol: $abs_tol; reltol: $(rel_tol)")
 integrator_setting = (alg = alg, abs_tol = abs_tol, rel_tol = rel_tol, max_iters = max_iters)
@@ -94,8 +107,8 @@ parameters[8] = 75.74
 u0_start = [1.7, 0.7, -1.4, 0.35, 0.7 - 0.35]
 u0_start = SVector{5}(u0_start)
 
-t_point = 50000.0
-count_iteration = 30
+t_point = 25000.0
+count_iteration = 10
 
 calculate_timeseris(u0_start, parameters, integrator_setting,
     t_point, count_iteration, path_to_save)
