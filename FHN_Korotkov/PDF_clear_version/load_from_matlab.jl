@@ -55,7 +55,7 @@ folder = "/home/sergey/MEGA/matlab/files_long_time_series/"
 sol = Float64[]
 sol_times = Float64[]
 
-len_charts = 10
+len_charts = 21
 
 sol, sol_times = load_vcat(sol, sol_times, len_charts)
 

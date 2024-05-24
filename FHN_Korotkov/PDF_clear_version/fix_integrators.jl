@@ -38,7 +38,7 @@ function FHN2_try3_params()
 end
 
 parameters = FHN2_try3_params()
-tspan = (0.0, 1_000_000.0)
+tspan = (0.0, 500_000.0)
 parameters[7] = 0.09
 parameters[8] = 75.74
 u0 = [-0.9859005363852416, -0.635253572091177, -1.0345181027025165, -0.636382088705782, 0.0011285166148596525] 
@@ -49,10 +49,10 @@ alg = Vern9();
 abs_tol = 1e-10;
 rel_tol = 1e-10;
 max_iters = 1e8;
-integrator_setting = (alg = alg, abs_tol = abs_tol, rel_tol = rel_tol, max_iters = max_iters)
+integrator_setting = (alg = alg, abs_tol = abs_tol, rel_tol = rel_tol, max_iters = max_iters, dense = false)
 
 sol = solve(prob, integrator_setting.alg, adaptive = true, abstol = integrator_setting.abs_tol, reltol = integrator_setting.rel_tol,
-maxiters = integrator_setting.max_iters, dense = false, saveat = 0.01);
+maxiters = integrator_setting.max_iters, dense = false);
 
 len_sol = length(sol);
 tstart = len_sol - 20000;

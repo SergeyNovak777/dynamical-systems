@@ -33,7 +33,7 @@ function solver_IEI(prob, integrator_setting;
     plot_timesereis = false, window_time_series = "nothing", t_start = 0, t_end = 0)
 
     sol = solve(prob, integrator_setting.alg, adaptive = true, abstol = integrator_setting.abs_tol, reltol = integrator_setting.rel_tol,
-    maxiters = integrator_setting.max_iters);
+    maxiters = integrator_setting.max_iters, dense = integrator_setting.dense);
     println("sol_t_end: $(sol.t[end])")
     len_sol = length(sol.t)
     ttr = t_truncate(len_sol)
@@ -93,7 +93,7 @@ function solver_IEI(prob, integrator_setting;
 end
 
 parameters = FHN2_try3_params()
-tspan = (0.0, 150_000.0)
+tspan = (0.0, 500_000.0)
 parameters[7] = 0.09
 parameters[8] = 75.74
 u0 = [-0.9859005363852416, -0.635253572091177, -1.0345181027025165, -0.636382088705782, 0.0011285166148596525] 
@@ -104,11 +104,8 @@ alg = Vern9();
 abs_tol = 1e-10;
 rel_tol = 1e-10;
 max_iters = 1e8;
-integrator_setting = (alg = alg, abs_tol = abs_tol, rel_tol = rel_tol, max_iters = max_iters)
-
-sol = solve(prob, integrator_setting.alg, adaptive = true, abstol = integrator_setting.abs_tol, reltol = integrator_setting.rel_tol,
-maxiters = integrator_setting.max_iters);
+integrator_setting = (alg = alg, abs_tol = abs_tol, rel_tol = rel_tol, max_iters = max_iters, dense = false)
 
 solver_IEI(prob, integrator_setting;
-plot_pdf_hist = false,
+plot_pdf_hist = true,
 plot_pdf_scatter = false, plot_timesereis = true, window_time_series = "end"); GC.gc()                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
