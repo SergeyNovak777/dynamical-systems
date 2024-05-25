@@ -82,6 +82,11 @@ array_IEI = get_IEI(t_EEs)
 array_IEI = sort(array_IEI)
 array_PDF_IEI = get_PDF_IEI(array_IEI; shift = 10)
 
+path_to_folder = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/"
+filename_data_local_max = "data_local_max.jld2"
+filename_data_local_min = "data_local_min.jld2"
+jldsave(path_to_folder*filename_data_local_max; data_local_max)
+jldsave(path_to_folder*filename_data_local_min; data_local_min)
 
 f = Figure()
 ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10)
