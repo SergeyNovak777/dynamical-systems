@@ -40,10 +40,14 @@ len_charts = 100
 sol, sol_times = vcat_arrays(sol, sol_times, len_charts)
 
 data = [sol, sol_times]
-println("len sol: $(length(data))")
+println("len sol: $(length(data[1]))")
 
 data_local_max = get_local_max(data)
 data_local_min = get_local_min(data)
+
+println("length local maxs: $(length(data_local_max[1]))")
+println("length local mins: $(length(data_local_min[1]))")
+
 drop_artifacts(data_local_max, data_local_min)
 
 println("length local maxs: $(length(data_local_max[1]))")
@@ -74,12 +78,18 @@ t_start =  length(data[2])-10000; t_end = length(data[2])
 f = Figure(size = (width_window, height_window))
 ax = Axis(f[1, 1], xlabel = L"time", ylabel = L"x_1")
 lines!(ax, data[2][t_start:t_end], data[1][t_start:t_end])
-display(f)
+scatter!(ax, data_local_max[2], data_local_max[1], color = :green, markersize = 10)   
+scatter!(ax, t_peaks_spikes, peaks_spikes, color = :orange, markersize = 10)                                                                                                                                        
+scatter!(ax, data_local_min[2], data_local_min[1], color = :blue, markersize = 10)
+hlines!(ax, Hs_x, linewidth = 1.0, linestyle = :dash, color = :red)
+scatter!(ax, t_EEs, peaks_EEs, color = :deeppink, markersize = 10)
+xlims!(ax, data[2][t_start], data[2][t_end])
+display(GLMakie.Screen(), f)
 
-f = Figure()
+#= f = Figure()
 ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10)
 hist!(ax, array_IEI, weights = array_PDF_IEI, bins = 100)#length(array_IEI))
-display(f)
+display(GLMakie.Screen(), f) =#
 
 # all amplitudes
 #=f = Figure(size = (width_window, height_window))

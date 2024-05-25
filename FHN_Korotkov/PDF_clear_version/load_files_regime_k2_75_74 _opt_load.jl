@@ -15,35 +15,52 @@ end
 
 using StaticArrays, Statistics, CairoMakie, GLMakie, JLD2
 
-function vcat_arrays(sol, sol_times, len_charts)
+function vcat_arrays(array_local_max, array_t_local_max,
+                    array_local_min, array_t_local_min,
+                    len_charts)
+
     for iteration in range(1, len_charts)
 
         namefile_sol_x1 = "$(iteration)_sol_x1.jld"
         full_path_to_save_sol_x1 = path_to_save*namefile_sol_x1
 
         sol_x1, sol_t = load(full_path_to_save_sol_x1)["data"]
-        sol = vcat(sol, sol_x1)
-        sol_times = vcat(sol_times, sol_t)
+        data = [sol_x1, sol_t]
+        
+        array_local_max_lc, array_t_local_max_lc = get_local_max(data)
+        array_local_min_lc, array_t_local_min_lc = get_local_min(data)
+
+        data = nothing; GC.gc()
+
+        array_local_max = vcat(array_local_max, array_local_max_lc)
+        array_t_local_max = vcat(array_t_local_max, array_t_local_max_lc)
+        array_local_min = vcat(array_local_min, array_local_min_lc)
+        array_t_local_min = vcat(array_t_local_min, array_t_local_min_lc)
+
         push!(len_part_timeseris, length(sol_x1))
     end
 
-    return sol, sol_times
+    return  array_local_max, array_t_local_max, array_local_min, array_t_local_min
+    
 end
 Hs(x, k) = Statistics.mean(x) + k * Statistics.std(x)
 
-path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_74_without_adaptive/"
+path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_74/"
 
 len_part_timeseris = Int64[]
-sol = Float64[]
-sol_times = Float64[]
-len_charts = 5
-sol, sol_times = vcat_arrays(sol, sol_times, len_charts)
 
-data = [sol, sol_times]
-println("len sol: $(length(data))")
+array_local_max = Float64[]
+array_t_local_max = Float64[]
+array_local_min = Float64[]
+array_t_local_min = Float64[]
 
-data_local_max = get_local_max(data)
-data_local_min = get_local_min(data)
+len_charts = 500
+
+array_local_max, array_t_local_max, array_local_min, array_t_local_min = vcat_arrays(array_local_max, array_t_local_max,array_local_min, array_t_local_min, len_charts)
+
+data_local_max = [array_local_max, array_t_local_max]
+data_local_min = [array_local_min, array_t_local_min]
+
 drop_artifacts(data_local_max, data_local_min)
 
 println("length local maxs: $(length(data_local_max[1]))")
@@ -65,25 +82,11 @@ array_IEI = get_IEI(t_EEs)
 array_IEI = sort(array_IEI)
 array_PDF_IEI = get_PDF_IEI(array_IEI; shift = 10)
 
-#PLOTTING
-height_window = 400; width_window = 1100;
-# timeseries
-t_start =  length(data[2])-10000; t_end = length(data[2])
-f = Figure(size = (width_window, height_window))
-ax = Axis(f[1, 1], xlabel = L"time", ylabel = L"x_1")
-lines!(ax, data[2][t_start:t_end], data[1][t_start:t_end])
-scatter!(ax, data_local_max[2], data_local_max[1], color = :green, markersize = 10)   
-#scatter!(ax, t_peaks_spikes, peaks_spikes, color = :orange, markersize = 10)                                                                                                                                        
-scatter!(ax, data_local_min[2], data_local_min[1], color = :blue, markersize = 10)
-#hlines!(ax, Hs_x, linewidth = 5.0, linestyle = :dash, color = :red)
-#scatter!(ax, t_EEs, peaks_EEs, color = :deeppink, markersize = 10)
-xlims!(ax, data[2][t_start], data[2][t_end])
-display(GLMakie.Screen(), f)
 
-#= f = Figure()
+f = Figure()
 ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10)
-hist!(ax, array_IEI, weights = array_PDF_IEI, bins = 100)#length(array_IEI))
-display(GLMakie.Screen(), f) =#
+hist!(ax, array_IEI, weights = array_PDF_IEI, bins = 20)#length(array_IEI))
+display(GLMakie.Screen(), f)
 
 # all amplitudes
 #=f = Figure(size = (width_window, height_window))
