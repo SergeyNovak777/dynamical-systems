@@ -15,29 +15,16 @@ end
 
 using StaticArrays, Statistics, CairoMakie, GLMakie, JLD2
 
-function vcat_arrays(sol, sol_times, len_charts)
-    for iteration in range(1, len_charts)
-
-        namefile_sol_x1 = "$(iteration)_sol_x1.jld"
-        full_path_to_save_sol_x1 = path_to_save*namefile_sol_x1
-
-        sol_x1, sol_t = load(full_path_to_save_sol_x1)["data"]
-        sol = vcat(sol, sol_x1)
-        sol_times = vcat(sol_times, sol_t)
-        push!(len_part_timeseris, length(sol_x1))
-    end
-
-    return sol, sol_times
-end
 Hs(x, k) = Statistics.mean(x) + k * Statistics.std(x)
 
-path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_72/"
+path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/timeseries_k2_75_74/"
 
-len_part_timeseris = Int64[]
-sol = Float64[]
-sol_times = Float64[]
-len_charts = 1
-sol, sol_times = vcat_arrays(sol, sol_times, len_charts)
+len_charts = 1000
+
+namefile_sol_x1 = "$(len_charts)_sol_x1.jld"
+full_path_to_save_sol_x1 = path_to_save*namefile_sol_x1
+
+sol, sol_times = load(full_path_to_save_sol_x1)["data"]
 
 data = [sol, sol_times]
 println("len sol: $(length(data[1]))")

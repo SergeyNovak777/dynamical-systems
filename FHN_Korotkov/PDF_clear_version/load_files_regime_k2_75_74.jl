@@ -75,6 +75,7 @@ Makie.inline!()
 height_window = 400; width_window = 1100;
 # timeseries
 t_start =  length(data[2])-10000; t_end = length(data[2])
+
 f = Figure(size = (width_window, height_window))
 ax = Axis(f[1, 1], xlabel = L"time", ylabel = L"x_1")
 lines!(ax, data[2][t_start:t_end], data[1][t_start:t_end])

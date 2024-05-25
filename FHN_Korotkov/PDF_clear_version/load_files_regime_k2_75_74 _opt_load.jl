@@ -54,7 +54,7 @@ array_t_local_max = Float64[]
 array_local_min = Float64[]
 array_t_local_min = Float64[]
 
-len_charts = 500
+len_charts = 1000
 
 array_local_max, array_t_local_max, array_local_min, array_t_local_min = vcat_arrays(array_local_max, array_t_local_max,array_local_min, array_t_local_min, len_charts)
 
@@ -85,7 +85,7 @@ array_PDF_IEI = get_PDF_IEI(array_IEI; shift = 10)
 
 f = Figure()
 ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10)
-hist!(ax, array_IEI, weights = array_PDF_IEI, bins = 20)#length(array_IEI))
+hist!(ax, array_IEI, weights = array_PDF_IEI, bins = 25)#length(array_IEI))
 display(GLMakie.Screen(), f)
 
 # all amplitudes
