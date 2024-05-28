@@ -43,8 +43,16 @@ array_PDF_IEI = get_PDF_IEI(array_IEI; shift = 10)
 
 Hs_IEI = Hs(array_IEI, 8)
 
+labelsize = 40;
+ticksize = 30;
+path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/t_EE_IEI.eps"
+CairoMakie.activate!()
 f = Figure()
-ax = Axis(f[1, 1], xlabel = L"t_{EE}", ylabel = L"IEI")
+ax = Axis(f[1, 1], xlabel = L"t_{EE}", ylabel = L"IEI",
+xlabelsize = labelsize, ylabelsize = labelsize,
+xticklabelsize = ticksize, yticklabelsize = ticksize,
+xgridvisible = false, ygridvisible = false)
 lines!(ax, t_EEs[2:end], array_IEI, linewidth = 1.0)
 hlines!(ax, Hs_IEI, linewidth = 3.0, linestyle = :dash, color = :red)
-display(GLMakie.Screen(), f)
+save(path_to_save, f)
+display(f)
