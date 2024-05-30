@@ -41,7 +41,13 @@ function two_coupled_rulkov_first_iteration(u, p)
     end
 
     x1, y1, z1, x2, y2, z2 = u
-    α, σ, μ, β_syn, σ_syn, x_rp, x_th, k, γ_1, γ_2, g1, g2 = p
+    α, σ, μ, β_syn, σ_syn, x_rp, x_th, γ_1, γ_2, g1, g2 = p
+
+    if g1 > 0 && g2 >0
+        k = 2
+    else
+        k = 1
+    end
 
     I21 = g2 * ( x_rp - x1 ) * xi(x2)
     x1n = right_part_x(x1, y1 + (β_syn/k) * I21, z1)
@@ -83,7 +89,13 @@ function two_coupled_rulkov(u, p, t)
     end
 
     x1, y1, z1, I21prev, x2, y2, z2, I12prev = u
-    α, σ, μ, β_syn, σ_syn, x_rp, x_th, k, γ_1, γ_2, g1, g2 = p
+    α, σ, μ, β_syn, σ_syn, x_rp, x_th, γ_1, γ_2, g1, g2 = p
+
+    if g1 > 0 && g2 >0
+        k = 2
+    else
+        k = 1
+    end
 
     I21 = γ_2 * I21prev + g2 * ( x_rp - x1 ) * xi(x2)
     x1n = right_part_x(x1, y1 + (β_syn/k) * I21, z1)
@@ -104,7 +116,7 @@ function get_params_two_coupled_rulkov()
     x_rp = -1.5; x_th = -0.8;
     γ_1 = 0.0; γ_2 = 0.0;
     g1 = 0.8; g2 = 0.2;
-    return [α, σ, μ, β_syn, σ_syn, x_rp, x_th, k, γ_1, γ_2, g1, g2]
+    return [α, σ, μ, β_syn, σ_syn, x_rp, x_th, γ_1, γ_2, g1, g2]
 end
 
 function pdf(array_peaks, threshold_range, ϵ)
@@ -119,12 +131,12 @@ function pdf(array_peaks, threshold_range, ϵ)
 end
 
 function get_PDF(X, shift)
-    total_count_IEI = length(X)
+    total_count_X = length(X)
     array_PDF = Float64[]
-    for index in 1:total_count_IEI
-        count_IEI_i = count(X[index]-shift .<= X .<= X[index]+shift)
-        PDF_IEI_i = count_IEI_i / total_count_IEI
-        push!(array_PDF, PDF_IEI_i)
+    for index in 1:total_count_X
+        count_X_i = count(X[index] -shift .<= X .<= X[index]+shift)
+        PDF_X_i = count_X_i / total_count_X
+        push!(array_PDF, PDF_X_i)
     end
     return array_PDF
 end
@@ -132,15 +144,15 @@ end
 Hs(x, k) = Statistics.mean(x) + k * Statistics.std(x)
 
 params = get_params_two_coupled_rulkov();
-params[11] = 0.8;
-params[12] = 0.2;
-u0 = [1.0, 0.3, 0.01, 2.0, 0.7, 0.6];
+params[10] = 0.8;
+params[11] = 0.2;
+u0 = [-0.1, -0.1, -0.1, -0.1, -0.1, -0.1];
 tspan = (0, 1000000);
 u0_first_iteration = two_coupled_rulkov_first_iteration(u0, params);
 
 prob = DiscreteProblem(two_coupled_rulkov, SVector{8}(u0_first_iteration), tspan, params);
 sol = solve(prob);
-t_start = 200000;
+t_start = 20000;
 x_sum = sol[1, t_start:end] + sol[5, t_start:end]
 t_range = sol.t[t_start:end]
 
@@ -151,34 +163,38 @@ peaks_local_max_above_zero = array_local_max[index_local_max_above_zero]
 
 Hs_x_sum = Hs(array_local_max, 6)
 
-threshold_range = range(0, 3, length = 1000000);
-ϵ = 0.1;
-array_pdf = pdf(array_local_max, threshold_range, 1.0);
+threshold_range = range(0, maximum(array_local_max), length = 1000000);
+ϵ_pdf = 0.15;
+array_pdf = pdf(array_local_max, threshold_range, ϵ_pdf);
 
 f = Figure()
-ax = Axis(f[1, 1], xlabel = L"peaks", ylabel = L"PDF_{peaks} OLD", yscale = log10)
+ax = Axis(f[1, 1], xlabel = L"peaks", ylabel = L"PDF_{peaks} OLD", xscale = log10, yscale = log10)
 lines!(ax, threshold_range, array_pdf, linewidth = 1.0, color = :blue)
 vlines!(ax, Hs_x_sum, linewidth = 3.0, linestyle = :dash, color = :red)
 display(GLMakie.Screen(), f)
 
+ϵ_pdf_v2 = 0.15;
+array_local_max_sort = sort(peaks_local_max_above_zero)
+array_pdf_v2 = get_PDF(array_local_max_sort, ϵ_pdf_v2)
 
-t_plot_end = 10000 #length(t_range) #1_000_000;
+f = Figure()
+ax = Axis(f[1, 1], xlabel = L"peaks", ylabel = L"PDF_{peaks}", xscale = log10, yscale = log10)
+lines!(ax, array_local_max_sort, array_pdf_v2, linewidth = 1.0, color = :blue)
+vlines!(ax, Hs_x_sum, linewidth = 3.0, linestyle = :dash, color = :red)
+display(GLMakie.Screen(), f)
+
+f = Figure()
+ax = Axis(f[1, 1], xlabel = L"peaks", ylabel = L"PDF_{peaks}", xscale = log10, yscale = log10)
+hist!(ax, array_local_max_sort, weights = array_pdf_v2, bins = 100)#length(array_IEI))
+vlines!(ax, Hs_x_sum, linewidth = 3.0, linestyle = :dash, color = :red)
+display(GLMakie.Screen(), f)
+
+#= t_plot_end = length(t_range) #1_000_000;
 
 f = Figure(size = (1000, 400))
 ax = Axis(f[1, 1])
-lines!(ax, t_range[1:t_plot_end], x_sum[1:t_plot_end], linewidth = 1.0, color = :black)
+lines!(ax, t_range[1:t_plot_end], x_sum[1:t_plot_end], linewidth = 1.0, color = :blue)
 hlines!(ax, Hs_x_sum, linewidth = 3.0, linestyle = :dash, color = :red)
-scatter!(ax, array_t_local_max, array_local_max, markersize = 7.0, color = :orange)
+#scatter!(ax, array_t_local_max, array_local_max, markersize = 7.0, color = :orange)
 xlims!(ax, t_range[1], t_range[t_plot_end])
-display(GLMakie.Screen(), f)
-
-
-#= array_local_max_sort = sort(peaks_local_max_above_zero)
-array_pdf_v2 = get_PDF(array_local_max_sort, ϵ)
-
-f = Figure()
-ax = Axis(f[1, 1], xlabel = L"peaks", ylabel = L"PDF_{peaks}", yscale = log10)
-lines!(ax, array_local_max_sort, array_pdf_v2, linewidth = 1.0, color = :blue)
-vlines!(ax, Hs_x_sum, linewidth = 3.0, linestyle = :dash, color = :red)
 display(GLMakie.Screen(), f) =#
-
