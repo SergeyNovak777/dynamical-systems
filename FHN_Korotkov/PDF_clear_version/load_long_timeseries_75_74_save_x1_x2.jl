@@ -21,10 +21,10 @@ function vcat_arrays(array_local_max, array_t_local_max,
 
     for iteration in range(1, len_charts)
 
-        namefile_sol_x1 = "$(iteration)_sol_x1.jld"
+        namefile_sol_x1 = "$(iteration)_sol_x2.jld2"
         full_path_to_save_sol_x1 = path_to_save*namefile_sol_x1
 
-        sol_x1, sol_t = load(full_path_to_save_sol_x1)["data"]
+        sol_x1, sol_t = load(full_path_to_save_sol_x1)["datax2"]
         data = [sol_x1, sol_t]
         
         array_local_max_lc, array_t_local_max_lc = get_local_max(data)
@@ -38,11 +38,14 @@ function vcat_arrays(array_local_max, array_t_local_max,
         array_t_local_min = vcat(array_t_local_min, array_t_local_min_lc)
 
         push!(len_part_timeseris, length(sol_x1))
+        println("iteration: $iteration"); flush(stdout)
+        println("----------------------");flush(stdout)
     end
 
     return  array_local_max, array_t_local_max, array_local_min, array_t_local_min
     
 end
+
 Hs(x, k) = Statistics.mean(x) + k * Statistics.std(x)
 
 path_to_save = "/home/sergey/timeseries_k2_75_74_save_x1_x2/"
@@ -82,9 +85,10 @@ array_IEI = get_IEI(t_EEs)
 array_IEI = sort(array_IEI)
 array_PDF_IEI = get_PDF_IEI(array_IEI; shift = 10)
 
-path_to_folder = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/"
-filename_data_local_max = "data_local_max.jld2"
-filename_data_local_min = "data_local_min.jld2"
+path_to_folder = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/local_maxs/"
+filename_data_local_max = "data_local_max_x2.jld2"
+filename_data_local_min = "data_local_min_x2.jld2"
+
 jldsave(path_to_folder*filename_data_local_max; data_local_max)
 jldsave(path_to_folder*filename_data_local_min; data_local_min)
 

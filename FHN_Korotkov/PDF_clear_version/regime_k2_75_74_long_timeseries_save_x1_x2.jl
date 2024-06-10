@@ -95,7 +95,7 @@ parameters = FHN2_try3_params()
 parameters[7] = 0.09
 parameters[8] = 75.74
 
-u0_start = [1.7, 0.7, -1.4, 0.35, 0.7 - 0.35]
+u0_start = [1.7, 0.7, -1.4, 0.35, 0.7 - 0.35]   
 u0_start = SVector{5}(u0_start)
 
 t_point = 50000.0
