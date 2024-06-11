@@ -41,7 +41,8 @@ array_IEI = get_IEI(t_EEs)
 #array_IEI = sort(array_IEI)
 array_PDF_IEI = get_PDF_IEI(array_IEI; shift = 10)
 
-Hs_IEI = Hs(array_IEI, 8)
+Hs_IEI_coeff_8 = Hs(array_IEI, 8)
+Hs_IEI_coeff_6 = Hs(array_IEI, 6)
 
 labelsize = 40;
 ticksize = 30;
@@ -53,6 +54,7 @@ xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticksize, yticklabelsize = ticksize,
 xgridvisible = false, ygridvisible = false)
 lines!(ax, t_EEs[2:end], array_IEI, linewidth = 1.0)
-hlines!(ax, Hs_IEI, linewidth = 3.0, linestyle = :dash, color = :red)
+hlines!(ax, Hs_IEI_coeff_8, linewidth = 3.0, linestyle = :dash, color = :red)
+hlines!(ax, Hs_IEI_coeff_6, linewidth = 3.0, linestyle = :dash, color = :green)
 save(path_to_save, f)
 display(f)
