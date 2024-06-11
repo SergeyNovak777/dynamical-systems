@@ -66,6 +66,13 @@ ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10, title
 hist!(ax, sorted_amplitudes, weights = array_PDF_amplitudes_without_less_shift, bins = 30)
 display(GLMakie.Screen(), f)
 
+path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/"
+filename_pdf_shift_both_border = "pdf_shift_both_border.jld2"
+file_pdf_shift_up_border = "pdf_shift_up_border.jld2"
+
+save(path_to_save*filename_pdf_shift_both_border; array_PDF_amplitudes)
+save(path_to_save*file_pdf_shift_up_border; array_PDF_amplitudes_without_less_shift)
+
 #= f = Figure()
 ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10)
 lines!(ax, array_IEI, array_PDF_IEI, linewidth = 1.0)
