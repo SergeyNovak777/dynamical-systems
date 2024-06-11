@@ -92,17 +92,18 @@ filename_data_local_min = "data_local_min_x2.jld2"
 jldsave(path_to_folder*filename_data_local_max; data_local_max)
 jldsave(path_to_folder*filename_data_local_min; data_local_min)
 
-f = Figure()
+#= f = Figure()
 ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10)
 hist!(ax, array_IEI, weights = array_PDF_IEI, bins = 25)#length(array_IEI))
-display(GLMakie.Screen(), f)
+display(GLMakie.Screen(), f) =#
 
 # all amplitudes
-#=f = Figure(size = (width_window, height_window))
+width_window = 1000; height_window = 350;
+f = Figure(size = (width_window, height_window))
 ax = Axis(f[1, 1], ylabel = L"amplitudes")
 lines!(ax, all_amplitudes)
 hlines!(ax, Hs_x, linewidth = 1.0, linestyle = :dash, color = :red)
-display(GLMakie.Screen(), f)=#
+display(GLMakie.Screen(), f)
 
 #=f = Figure()
 ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10)
