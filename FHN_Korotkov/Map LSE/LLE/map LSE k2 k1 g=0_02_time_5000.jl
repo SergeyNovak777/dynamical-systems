@@ -24,7 +24,7 @@ end
 
 function main()
         
-    path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/fix g = 0.02 change k2 and k1/"
+    path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/fix g = 0.02 change k2 and k1 time 5000/"
     cd(path_to_save)
         
     sys = FHN2_try3;
@@ -44,7 +44,7 @@ function main()
     name_parameter_2 = "k_2";
     
     time_attract = 3000
-    time_calculate_LSE = 10000
+    time_calculate_LSE = 5000
     abstl = 1e-10; reltl = 1e-10;
     time_setting = Time_setting(time_attract, time_calculate_LSE);
     integrator_setting = (alg = DP8(), adaptive = true, abstol = abstl, reltol = reltl, maxiters = 5e7);

@@ -10,13 +10,13 @@ else
     Pkg.activate(pathtorepo * "/env/integrate/")
 end
 
-using JLD2, CairoMakie, MAT
+using JLD2, CairoMakie, GLMakie
 
-Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/g_0_02_from_uni/LSE_350x350_k_1_k_2.jld2")["λs"]
+Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/fix g = 0.02 change k2 and k1/LSE_300x300_k_1_k_2.jld2")["λs"]
 
-length_range = 350;
-k1range = range( 0.07, 0.15, length = length_range);
-k2range = range(0.0, 0.3, length = length_range);
+length_range = 300;
+k1range = range( 0.001, 0.008, length = length_range);
+k2range = range(0.0, 1.0, length = length_range);
 
 index = 1
 absmax = maximum(abs.(Λs[:, :, index]))
@@ -39,7 +39,7 @@ ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize 
 hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :seismic,
                 colorrange = (mn, mx))
 Colorbar(f[:, end+1], hm)
-display(f);
+display(GLMakie.Screen(), f);
 
 #=pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
 filename = "/k1_k2_left_angle.eps"

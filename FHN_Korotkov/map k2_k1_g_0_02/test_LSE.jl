@@ -40,11 +40,11 @@ params[8] = 0.1
 
 params = FHN2_try3_params()
 params[3] = 0.02
-params[7] = 0.001
-params[8] =  0.22073578595317725
+params[7] = 0.004
+params[8] =  0.75
 
 tspan = (0.0, 10000.0)
-time_calculate_LSE = 10000
+time_calculate_LSE = 5000
 
 u0 = [-1.122685745876286, -0.5655795683079851, -1.2279038564970448, -0.538136579127275, -0.027442989180487945]
 #[-0.9859005363852416, -0.635253572091177, -1.0345181027025165, -0.636382088705782, 0.0011285166148596525] 
@@ -54,6 +54,11 @@ integrator_setting = (alg = DP8(), adaptive = true, abstol = 1e-10, reltol = 1e-
 
 prob = ODEProblem(sys, u0, tspan, params)
 sol = solver(prob, integrator_setting)
+
+ds = CoupledODEs(sys, sol[end], params,
+diffeq = integrator_setting);
+LSE = lyapunovspectrum(ds, time_calculate_LSE)
+println("LSE: $LSE")
 
 t_plot_start = 30000; t_plot_end = 50000;
 f = Figure()
@@ -65,8 +70,3 @@ f = Figure()
 ax = Axis3(f[1, 1], xlabel = L"x_1", ylabel = L"x_2", zlabel = L"y_1")
 lines!(ax, sol[1, t_plot_start:t_plot_end], sol[3, t_plot_start:t_plot_end], sol[2, t_plot_start:t_plot_end], linewidth = 1.0, color = :blue)
 display(GLMakie.Screen(), f)
-
-
-ds = CoupledODEs(sys, sol[end], params,
-diffeq = integrator_setting);
-LSE = lyapunovspectrum(ds, time_calculate_LSE)
