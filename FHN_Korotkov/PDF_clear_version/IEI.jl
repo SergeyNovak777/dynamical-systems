@@ -45,9 +45,9 @@ function get_PDF_without_less_shift(events, shift)
     return PDFs
 end
 
-function CALCPDF(spikes, count_thesholds)
-    thesholds = range(minimum(spikes),maximum(spikes),count_thesholds)
+function CALCPDF(spikes, thesholds)
+    #thesholds = range(minimum(spikes),maximum(spikes),count_thesholds)
     ee_counter = [sum(i-> s<=i<s+025, spikes) for s in thesholds]
     pdf = ee_counter ./ length(spikes)
-    return thesholds, pdf
+    return pdf
 end

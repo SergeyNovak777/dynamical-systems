@@ -9,8 +9,9 @@ else
     using Pkg
     Pkg.activate(pathtorepo * "/env/integrate/")
 end
-
-using StaticArrays, Statistics, DifferentialEquations, DynamicalSystems, CairoMakie, GLMakie
+include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/detect_spike.jl")
+include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/IEI.jl")
+using StaticArrays, Statistics, DifferentialEquations, DynamicalSystems, CairoMakie, GLMakie, JLD2
 
 function three_coupled_rulkov_first_iteration(u, p)
 
@@ -56,7 +57,7 @@ function three_coupled_rulkov_first_iteration(u, p)
     I13 = g2 * ( x_rp - x3 ) * xi(x1)
     I23 = g1 * ( x_rp - x3 ) * xi(x2)
 
-    x1n = right_part_x(x1, y1 + (β_syn/k) * (I21 + I31), z1)
+    x1n = right_part_x(x1, y1 + (β_syn/k) * (I21 + I31), z1)    
     y1n = right_part_y(x1, y1, (σ_syn/k) * (I21 + I31))
     z1n = x1
 
@@ -136,37 +137,130 @@ function get_params_three_coupled_rulkov()
     return [α, σ, μ, β_syn, σ_syn, x_rp, x_th, γ_1, γ_2, g1, g2]
 end
 
-params = get_params_three_coupled_rulkov()
-params[10] = 3.1;
-params[11] = 3.0;
-tspan = (0, 1000000);
+Hs(x, k) = Statistics.mean(x) + k * Statistics.std(x)
 
-u0 = [1.0, 0.5, 0.2, -1.0, -0.5, -0.2, 1.5, 1.0, 0.4]
+function CALCPDF_debil(spikes, threshold, ϵ)
+    ee_counter = [sum(i->s<=i<s+ϵ, spikes) for s in threshold]
+    pdf = ee_counter ./ length(spikes)
+    return pdf
+end
+
+params = get_params_three_coupled_rulkov()
+params[10] = 4.7;
+params[11] = 5.0;
+tspan = (0, 5000000);
+
+u0 = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0]
 u0_first_iteration = three_coupled_rulkov_first_iteration(u0, params);
 prob = DiscreteProblem(three_coupled_rulkov, SVector{length(u0_first_iteration)}(u0_first_iteration), tspan, params);
 sol = solve(prob);
+Ttr = 1_000_000;
+point_from_attractor = sol[:, Ttr]
 x_sum = sol[1, :] + sol[6, :] + sol[11, :]
 
-ds = DeterministicIteratedMap(three_coupled_rulkov, sol[end], params)
+#= ds = DeterministicIteratedMap(three_coupled_rulkov, point_from_attractor, params)
 Λs = lyapunov(ds, 500000)
-println("Λs: $Λs")
+println("Λs: $Λs") =#
 
-t_start_plot = 300_000
-t_end_plot = 300_800
+data = [x_sum[Ttr:end], sol.t[Ttr:end]]
+sol = nothing;
+x_sum = nothing;
 
-f = Figure(size = (400, 400))
-ax1 = Axis(f[1, 1])
-ax2 = Axis(f[2, 1])
-ax3 = Axis(f[3, 1])
-lines!(ax1, sol.t[t_start_plot:t_end_plot], sol[1, t_start_plot:t_end_plot], linewidth = 1.0, color = :green)
-lines!(ax2, sol.t[t_start_plot:t_end_plot], sol[6, t_start_plot:t_end_plot], linewidth = 1.0, color = :red)
-lines!(ax3, sol.t[t_start_plot:t_end_plot], sol[11, t_start_plot:t_end_plot], linewidth = 1.0, color = :blue)
-display(GLMakie.Screen(), f)
+data_local_max = get_local_max(data)
+data_local_min = get_local_min(data)
+
+drop_artifacts(data_local_max, data_local_min)
+
+Hs_xsum = Hs(data_local_max[1] ,6);
+thesholds = range(0.1, 3, 5_000_000);
+PDF_old = CALCPDF_debil(data_local_max[1], thesholds, 0.05);
+
+EE_mapcopy = PDF_old;
+EE_mapcopy = [ iszero(x) ? NaN : x for x in EE_mapcopy ];
+
+labelsize = 40;
+ticksize = 30;
+CairoMakie.activate!();
+
+path_to_save_timeseries = "/home/sergey/MEGA/dynamical-systems/Rulkov/Images/timeseries/";
+path_to_save_PDF = "/home/sergey/MEGA/dynamical-systems/Rulkov/Images/PDF/";
+path_to_save_data = "/home/sergey/MEGA/dynamical-systems/Rulkov/data/PDF/";
+
+# timeseries of xsum
+t_plot_start = 1; t_plot_end = 200_000;
+f = Figure(size = (1000, 400));
+ax = Axis(f[1, 1], xlabel = L"time", ylabel = L"x_{sum}",
+xlabelsize = labelsize, ylabelsize = labelsize,
+xticklabelsize = ticksize, yticklabelsize = ticksize,
+xgridvisible = false, ygridvisible = false);
+lines!(ax, data[2][t_plot_start:t_plot_end], data[1][t_plot_start:t_plot_end], linewidth = 1.0, color = :blue);
+hlines!(ax, Hs_xsum, linestyle = :dash, color = :red, linewidth = 3.0);
+display(GLMakie.Screen(), f);
+save(path_to_save_timeseries*"timeseries__xsum_g1=4.7_g2=5.0_.eps", f)
+
+# pdf old version
+f = Figure();
+ax = Axis(f[1, 1], xlabel = L"x_{sum}", ylabel = L"PDF",
+xscale = log10, yscale = log10,
+xlabelsize = labelsize, ylabelsize = labelsize,
+xticklabelsize = ticksize, yticklabelsize = ticksize,
+xgridvisible = false, ygridvisible = false);
+lines!(thesholds, EE_mapcopy, linewidth = 1.0, color = :blue);
+vlines!(ax, Hs_xsum, linewidth = 3.0, linestyle = :dash, color = :red);
+display(GLMakie.Screen(), f);
+save(path_to_save_PDF*"PDF_g1=4.7_g2=5.0_.eps", f)
 
 
-t_start_plot = 300_000
-t_end_plot = 1000_000
-f = Figure(size = (400, 400))
-ax = Axis3(f[1, 1])
-scatter!(ax, sol[1, t_start_plot:t_end_plot], sol[6, t_start_plot:t_end_plot], sol[11, t_start_plot:t_end_plot], markersize = 1.0, color = :blue)
-display(GLMakie.Screen(), f)
+#= jldsave(path_to_save_data*"PDF_g1=4.7_g2=5.0_jld2"; EE_mapcopy);
+jldsave(path_to_save_data*"data_g1=4.7_g2=5.0_jld2"; data); =#
+
+
+amplitudes = get_amplitudes_all_events(data_local_max[1], data_local_min[1]);
+PDF_amplitudes = get_PDF(amplitudes, 0.05);
+amplitudes_sorted = sort(amplitudes);
+PDF_amplitudes_sorted = get_PDF(amplitudes_sorted, 0.05);
+Hs_xsum_ampl = Hs(amplitudes, 6);
+
+array_local_max_above_thr, array_t_local_max_above_thr, amplitudes_above_thr = select_spikes(data_local_min[1], data_local_max, 0.5);
+println("minumum amplitude: $(minimum(amplitudes_above_thr))");
+amplitudes_above_thr_sorted = sort(amplitudes_above_thr);
+PDF_amplitudes_thr = get_PDF(amplitudes_above_thr_sorted, 0.05);
+Hs_xsum_ampl_above_thr = Hs(amplitudes_above_thr_sorted, 6);
+
+# pdf by amplitudes
+CairoMakie.activate!();
+f = Figure();
+ax = Axis(f[1, 1], xlabel = L"amplitudes", ylabel = L"PDF",
+xscale = log10, yscale = log10,
+xlabelsize = labelsize, ylabelsize = labelsize,
+xticklabelsize = ticksize, yticklabelsize = ticksize,
+xgridvisible = false, ygridvisible = false);
+lines!(amplitudes_sorted, PDF_amplitudes_sorted, linewidth = 1.0, color = :blue);
+vlines!(ax, Hs_xsum_ampl, linewidth = 3.0, linestyle = :dash, color = :red);
+display(GLMakie.Screen(), f);
+save(path_to_save_PDF*"PDF_ampl_g1=4.7_g2=5.0_.eps", f);
+
+# pdf by amplitudes above thr
+CairoMakie.activate!();
+f = Figure();
+ax = Axis(f[1, 1], xlabel = "amplitudes_above_thr", ylabel = L"PDF",
+xscale = log10, yscale = log10,
+xlabelsize = labelsize, ylabelsize = labelsize,
+xticklabelsize = ticksize, yticklabelsize = ticksize,
+xgridvisible = false, ygridvisible = false);
+lines!(amplitudes_above_thr_sorted, PDF_amplitudes_thr, linewidth = 1.0, color = :blue);
+vlines!(ax, Hs_xsum_ampl_above_thr, linewidth = 3.0, linestyle = :dash, color = :red);
+display(GLMakie.Screen(), f);
+save(path_to_save_PDF*"PDF_ampl_above_thr_g1=4.7_g2=5.0_.eps", f);
+
+# timeseries of amplitudes
+t_plot_start = 1; t_plot_end = 200_000;
+f = Figure(size = (1000, 400));
+ax = Axis(f[1, 1], xlabel = L"time", ylabel = L"amplitudes",
+xlabelsize = labelsize, ylabelsize = labelsize,
+xticklabelsize = ticksize, yticklabelsize = ticksize,
+xgridvisible = false, ygridvisible = false);
+lines!(ax, amplitudes[t_plot_start:t_plot_end], linewidth = 1.0, color = :blue);
+hlines!(ax, Hs_xsum_ampl, linestyle = :dash, color = :red, linewidth = 3.0);
+display(GLMakie.Screen(), f);
+save(path_to_save_timeseries*"timeseries_ampl_g1=4.7_g2=5.0_.eps", f)
