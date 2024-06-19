@@ -55,8 +55,8 @@ function get_params_two_coupled_rulkov()
 end
 
 params = get_params_two_coupled_rulkov();
-params[1] = 3.5;#4.4;
-params[2] = 0.15;#0.1;
+params[1] = 3.9; #4.4;
+params[2] = 0.15; #0.1;
 u0 = [1.0, 0.3, 0.01];
 tspan = (0, 100000);
 
@@ -64,7 +64,7 @@ prob = DiscreteProblem(two_coupled_rulkov, SVector{3}(u0), tspan, params);
 sol = solve(prob);
 
 t_start = 50000;
-t_end = 80000;
+t_end = 55200;
 
 f = Figure()
 ax = Axis(f[1, 1])
@@ -77,5 +77,5 @@ scatter!(ax, sol[1, t_start:t_end], sol[2, t_start:t_end], markersize = 1.0, col
 display(GLMakie.Screen(), f)
 
 ds = DeterministicIteratedMap(two_coupled_rulkov, sol[end], params)
-Λs = lyapunovspectrum(ds, 500000)
+Λs = lyapunovspectrum(ds, 10000)
 

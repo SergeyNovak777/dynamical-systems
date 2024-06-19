@@ -146,22 +146,24 @@ function CALCPDF_debil(spikes, threshold, ϵ)
 end
 
 params = get_params_three_coupled_rulkov()
-params[10] = 4.7;
-params[11] = 5.0;
-tspan = (0, 5000000);
+params[10] = 2.0; #4.7;
+params[11] = 0.5; #5.0;
+tspan = (0, 10000); # 5000000
 
 u0 = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0]
 u0_first_iteration = three_coupled_rulkov_first_iteration(u0, params);
 prob = DiscreteProblem(three_coupled_rulkov, SVector{length(u0_first_iteration)}(u0_first_iteration), tspan, params);
 sol = solve(prob);
-Ttr = 1_000_000;
+Ttr = 2_500; # 1_000_000
 point_from_attractor = sol[:, Ttr]
 x_sum = sol[1, :] + sol[6, :] + sol[11, :]
 
-#= ds = DeterministicIteratedMap(three_coupled_rulkov, point_from_attractor, params)
-Λs = lyapunov(ds, 500000)
-println("Λs: $Λs") =#
+ds = DeterministicIteratedMap(three_coupled_rulkov, point_from_attractor, params)
+Λs = lyapunov(ds, 50000)
+println("Λs: $Λs")
 
+
+#= 
 data = [x_sum[Ttr:end], sol.t[Ttr:end]]
 sol = nothing;
 x_sum = nothing;
@@ -263,4 +265,4 @@ xgridvisible = false, ygridvisible = false);
 lines!(ax, amplitudes[t_plot_start:t_plot_end], linewidth = 1.0, color = :blue);
 hlines!(ax, Hs_xsum_ampl, linestyle = :dash, color = :red, linewidth = 3.0);
 display(GLMakie.Screen(), f);
-save(path_to_save_timeseries*"timeseries_ampl_g1=4.7_g2=5.0_.eps", f)
+save(path_to_save_timeseries*"timeseries_ampl_g1=4.7_g2=5.0_.eps", f) =#
