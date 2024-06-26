@@ -58,7 +58,6 @@ array_IEI = get_IEI(t_EEs)
 array_PDF_IEI = get_PDF_IEI(array_IEI; shift = 10)
 
 Hs_IEI_coeff_8 = Hs(array_IEI, 8)
-Hs_IEI_coeff_6 = Hs(array_IEI, 6)
 
 labelsize = 40;
 ticksize = 30;
@@ -71,34 +70,24 @@ filename_tEE_IEI = "t_EE_IEI_x1.eps"
 filename_peaks_EE_IEI = "peaks_EE_IEI_x1.eps"
 
 f = Figure()
-ax = Axis(f[1, 1], xlabel = L"IEI_{x1}", ylabel = L"PDF_{IEI_{x1}}", yscale = log10,
+ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10,
 xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticksize, yticklabelsize = ticksize,
 xgridvisible = false, ygridvisible = false)
 hist!(ax, array_IEI, weights = array_PDF_IEI, bins = 100)
-vlines!(ax, Hs_IEI_coeff_8, linewidth = 3.0, linestyle = :dash, color = :red)
-vlines!(ax, Hs_IEI_coeff_6, linewidth = 3.0, linestyle = :dash, color = :green)
+vlines!(ax, Hs_IEI_coeff_8, linewidth = 5.0, linestyle = :dash, color = :red, label = L"H_s=4612")
+#text!(ax, 3900, 1, text = "Hs", fontsize = labelsize)
+axislegend(ax, labelsize = labelsize, position = :ct)
 display(f)
 save(path_to_save*filename_hist, f)
 
 f = Figure()
-ax = Axis(f[1, 1], xlabel = L"t_{EE_{x1}}", ylabel = L"IEI{x1}",
+ax = Axis(f[1, 1], xlabel = L"t_{EE}", ylabel = L"IEI",
 xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticksize, yticklabelsize = ticksize,
 xgridvisible = false, ygridvisible = false)
 lines!(ax, t_EEs[2:end], array_IEI, linewidth = 1.0)
-hlines!(ax, Hs_IEI_coeff_8, linewidth = 3.0, linestyle = :dash, color = :red)
-hlines!(ax, Hs_IEI_coeff_6, linewidth = 3.0, linestyle = :dash, color = :green)
+hlines!(ax, Hs_IEI_coeff_8, linewidth = 5.0, linestyle = :dash, color = :red, label = L"H_s=4612")
+axislegend(ax, labelsize = labelsize, position = :cb)
 display(f)
 save(path_to_save*filename_tEE_IEI, f)
-
-f = Figure()
-ax = Axis(f[1, 1], xlabel = L"peaks_{EE_{x1}}", ylabel = L"IEI_{x1}",
-xlabelsize = labelsize, ylabelsize = labelsize,
-xticklabelsize = ticksize, yticklabelsize = ticksize,
-xgridvisible = false, ygridvisible = false)
-scatter!(ax, peaks_EEs[2:end], array_IEI, markersize = 1.0)
-hlines!(ax, Hs_IEI_coeff_8, linewidth = 3.0, linestyle = :dash, color = :red)
-hlines!(ax, Hs_IEI_coeff_6, linewidth = 3.0, linestyle = :dash, color = :green)
-display(f)
-save(path_to_save*filename_peaks_EE_IEI, f)

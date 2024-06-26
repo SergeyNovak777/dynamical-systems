@@ -146,23 +146,50 @@ function CALCPDF_debil(spikes, threshold, ϵ)
 end
 
 params = get_params_three_coupled_rulkov()
-params[10] = 2.5; #4.7;
-params[11] = 2.5; #5.0;
-tspan = (0, 5000000);
+params[10] = 0.0; #4.7;
+params[11] = 3.0; #5.0;
+tspan = (0, 500000); # 5000000
 
 u0 = [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0]
 u0_first_iteration = three_coupled_rulkov_first_iteration(u0, params);
 prob = DiscreteProblem(three_coupled_rulkov, SVector{length(u0_first_iteration)}(u0_first_iteration), tspan, params);
 sol = solve(prob);
-Ttr = 1_000_000;
+Ttr = 100_000; # 1_000_000
 point_from_attractor = sol[:, Ttr]
 x_sum = sol[1, :] + sol[6, :] + sol[11, :]
+data = [x_sum[Ttr:end], sol.t[Ttr:end]]
+
+data_local_max = get_local_max(data)
+data_local_min = get_local_min(data)
+
+drop_artifacts(data_local_max, data_local_min)
+
+Hs_xsum = Hs(data_local_max[1] ,6);
 
 ds = DeterministicIteratedMap(three_coupled_rulkov, point_from_attractor, params)
-Λs = lyapunov(ds, 50000)
+Λs = lyapunov(ds, 500000)
 println("Λs: $Λs")
 
+labelsize = 40;
+ticksize = 30;
 
+# timeseries of xsum
+t_plot_start = 1; t_plot_end = 200_000;
+f = Figure(size = (1000, 400));
+ax = Axis(f[1, 1], xlabel = L"time", ylabel = L"x_{sum}",
+xlabelsize = labelsize, ylabelsize = labelsize,
+xticklabelsize = ticksize, yticklabelsize = ticksize,
+xgridvisible = false, ygridvisible = false);
+lines!(ax, data[2][t_plot_start:t_plot_end], data[1][t_plot_start:t_plot_end], linewidth = 1.0, color = :blue);
+hlines!(ax, Hs_xsum, linestyle = :dash, color = :red, linewidth = 3.0);
+display(GLMakie.Screen(), f);
+
+f = Figure(size = (400, 400));
+ax = Axis3(f[1, 1], xlabel = L"x_1", ylabel = L"x_{2}", zlabel = L"x_3");
+scatter!(ax, sol[1, Ttr:end], sol[6, Ttr:end], sol[11, Ttr:end], markersize = 1.0, color = :blue);
+display(GLMakie.Screen(), f);
+
+#= 
 data = [x_sum[Ttr:end], sol.t[Ttr:end]]
 sol = nothing;
 x_sum = nothing;
@@ -197,7 +224,7 @@ xgridvisible = false, ygridvisible = false);
 lines!(ax, data[2][t_plot_start:t_plot_end], data[1][t_plot_start:t_plot_end], linewidth = 1.0, color = :blue);
 hlines!(ax, Hs_xsum, linestyle = :dash, color = :red, linewidth = 3.0);
 display(GLMakie.Screen(), f);
-save(path_to_save_timeseries*"timeseries__xsum_g1=2.5_g2=2.5_.eps", f)
+save(path_to_save_timeseries*"timeseries__xsum_g1=4.7_g2=5.0_.eps", f)
 
 # pdf old version
 f = Figure();
@@ -209,13 +236,13 @@ xgridvisible = false, ygridvisible = false);
 lines!(thesholds, EE_mapcopy, linewidth = 1.0, color = :blue);
 vlines!(ax, Hs_xsum, linewidth = 3.0, linestyle = :dash, color = :red);
 display(GLMakie.Screen(), f);
-save(path_to_save_PDF*"PDF_g1=2.5_g2=2.5_.eps", f)
+save(path_to_save_PDF*"PDF_g1=4.7_g2=5.0_.eps", f)
 
 
 #= jldsave(path_to_save_data*"PDF_g1=4.7_g2=5.0_jld2"; EE_mapcopy);
 jldsave(path_to_save_data*"data_g1=4.7_g2=5.0_jld2"; data); =#
 
-#= 
+
 amplitudes = get_amplitudes_all_events(data_local_max[1], data_local_min[1]);
 PDF_amplitudes = get_PDF(amplitudes, 0.05);
 amplitudes_sorted = sort(amplitudes);
@@ -239,7 +266,7 @@ xgridvisible = false, ygridvisible = false);
 lines!(amplitudes_sorted, PDF_amplitudes_sorted, linewidth = 1.0, color = :blue);
 vlines!(ax, Hs_xsum_ampl, linewidth = 3.0, linestyle = :dash, color = :red);
 display(GLMakie.Screen(), f);
-save(path_to_save_PDF*"PDF_ampl_g1=2.5_g2=2.5_.eps", f);
+save(path_to_save_PDF*"PDF_ampl_g1=4.7_g2=5.0_.eps", f);
 
 # pdf by amplitudes above thr
 CairoMakie.activate!();
@@ -252,7 +279,7 @@ xgridvisible = false, ygridvisible = false);
 lines!(amplitudes_above_thr_sorted, PDF_amplitudes_thr, linewidth = 1.0, color = :blue);
 vlines!(ax, Hs_xsum_ampl_above_thr, linewidth = 3.0, linestyle = :dash, color = :red);
 display(GLMakie.Screen(), f);
-save(path_to_save_PDF*"PDF_ampl_above_thr_g1=2.5_g2=2.5_.eps", f);
+save(path_to_save_PDF*"PDF_ampl_above_thr_g1=4.7_g2=5.0_.eps", f);
 
 # timeseries of amplitudes
 t_plot_start = 1; t_plot_end = 200_000;
@@ -264,4 +291,4 @@ xgridvisible = false, ygridvisible = false);
 lines!(ax, amplitudes[t_plot_start:t_plot_end], linewidth = 1.0, color = :blue);
 hlines!(ax, Hs_xsum_ampl, linestyle = :dash, color = :red, linewidth = 3.0);
 display(GLMakie.Screen(), f);
-save(path_to_save_timeseries*"timeseries_ampl_g1=2.5_g2=2.5_.eps", f) =#
+save(path_to_save_timeseries*"timeseries_ampl_g1=4.7_g2=5.0_.eps", f) =#
