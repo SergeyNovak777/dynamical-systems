@@ -41,7 +41,7 @@ function get_sol(prob, integrator_setting)
     return sol_t, sol_u;
 end
 
-function diagram_LSE(sys, params, u0, integrator_setting,
+function diagram_LSE_check_fp(prob, integrator_setting,
     name_p1, index_p1, range_p1;
     check_fixed_point=true)
 
@@ -49,3 +49,6 @@ function diagram_LSE(sys, params, u0, integrator_setting,
         
     end
 end
+
+
+sys = 

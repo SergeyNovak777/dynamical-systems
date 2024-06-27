@@ -14,8 +14,8 @@ using BifurcationKit, Setfield, LinearAlgebra, Plots, Parameters
 
 function FHN2_try3_params_set()
     ϵ = 0.01; a = -1.01;
-    g = 0.05; k = 50.0; σ = 50.0 * pi / 180; α = 160.0 * pi / 180;
-    k1 = 0.02; k2 = 1.0
+    g = 0.1; k = 50.0; σ = 50.0 * pi / 180; α = 160.0 * pi / 180;
+    k1 = 0.0; k2 = 40.0;
     return (ϵ = ϵ, a = a, g = g, k = k, σ = σ, α = α, k1 = k1, k2 = k2)
 end
 
@@ -37,20 +37,28 @@ function FHN2_try3(u, p)
     return [dx1dt, dy1dt, dx2dt, dy2dt, dzdt]
 end
 
-u0 = [1.7, 0.7, -1.4, 0.35, 0.7 - 0.35];
+
+u0 = [-1.01
+        -0.6544965895143954
+        -1.01
+        -0.6544965895143952
+        0.0]#-1.3089931790287905];
+
 params = FHN2_try3_params_set();
 
-prob =  BifurcationProblem(FHN2_try3, u0, params, (@lens _.g));
+opt_new = NewtonPar(tol = 1e-9, max_iterations = 10, linsolver=GMRESKrylovKit(), verbose =true);
 
-opt_new = NewtonPar(tol = 1e-9, max_iterations = 10);
-
-pmax = 1.0;
+pmax = 0.1;
 pmin = 0.0;
 
 opts_con = ContinuationPar(p_min = pmin, p_max = pmax,
-                            ds = 0.001, dsmin = 1e-5, dsmax = 0.1,
+                            ds = 0.0001, dsmin = 1e-5, dsmax = 0.001,
                             nev = 3, detect_bifurcation = 3, newton_options  = opt_new,
-                            max_steps  = 300)
+                            max_steps  = 1000)
 
 
-br = continuation(prob, PALC(), opts_con)
+prob =  BifurcationProblem(FHN2_try3, u0, params, (@lens _.k1));
+
+br = continuation(prob, PALC(), opts_con, verbosity=2, linear_algo = BorderingBLS(opt_new.linsolver))
+
+plot(br)

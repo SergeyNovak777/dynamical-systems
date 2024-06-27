@@ -10,7 +10,7 @@ else
     Pkg.activate(pathtorepo * "/env/integrate/")
 end
 
-using JLD2, CairoMakie, MAT
+using JLD2, CairoMakie, GLMakie, MAT
 
 
 Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/k1_k2_default_scale/LSE_300x300_k_1_k_2.jld2")["λs"]
@@ -35,15 +35,17 @@ mksize = 12
 ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 50,
             xticklabelsize = ticksize, yticklabelsize = ticksize,
             xgridvisible  = false, ygridvisible = false,
-            xticklabelpad = tickpad, yticklabelpad = tickpad,
-            xticks = [0, 1, 1.5, 2, 4, 6, 8, 10], yticks = [0.0, 0.02, 0.04, 0.06, 0.08, 0.1])
+            xticklabelpad = tickpad, yticklabelpad = tickpad)
+            #,
+            #xticks = [0, 2, 4, 6, 8, 10], yticks = [0.0, 0.02, 0.04, 0.06, 0.08, 0.1])
+
 Λs[288:300, :, 1] .= -1
 hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :seismic,
                 colorrange = (mn, mx))
 
-display(f);
+display(GLMakie.Screen(), f);
 
-pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
+#= pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
 filename = "/g=0_1_k1_k2.pdf"
 fullpath = pathtosave * filename 
-save(fullpath, f)
+save(fullpath, f) =#

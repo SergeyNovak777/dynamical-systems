@@ -10,7 +10,7 @@ else
     Pkg.activate(pathtorepo * "/env/integrate/")
 end
 
-using JLD2, CairoMakie, MAT
+using JLD2, CairoMakie, GLMakie, MAT
 
 
 Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/k1_k2_zoom_left_angle/LSE_350x350_k_1_k_2.jld2")["λs"]
@@ -40,9 +40,9 @@ ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize 
 hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :seismic,
                 colorrange = (mn, mx))
 
-display(f);
+display(GLMakie.Screen(), f);
 
-pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
+#= pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
 filename = "/k1_k2_left_angle.pdf"
 fullpath = pathtosave * filename 
-save(fullpath, f)
+save(fullpath, f) =#

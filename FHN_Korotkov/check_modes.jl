@@ -62,23 +62,45 @@ t_end = 5_000;
 tspan = (0.0, t_end);
 
 prob = ODEProblem(FHN2_try3, u0_start, tspan, parameters)
-sol_t, sol_u = get_sol(prob, integrator_setting); GC.gc();
+sol = solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive,
+                abstol = integrator_setting.abstol, reltol = integrator_setting.reltol,
+                maxiters = integrator_setting.maxiters);
 
+
+
+#sol_t, sol_u = get_sol(prob, integrator_setting); GC.gc();
+
+#= 
 ds = CoupledODEs(FHN2_try3, sol_u[end,:], parameters,
 diffeq = integrator_setting);
 LSE = lyapunovspectrum(ds, 5000);
 println("LSE: $LSE");
 println("last point: $(sol_u[end,:])")
-len_sol = length(sol_t);
+ =#
+
+len_sol = length(sol.t);
 ttr = t_truncate(len_sol);
 
-#= labelsize = 40;
+labelsize = 40;
 ticksize = 30;
 t_plot_start = ttr;
-t_plot_end = ttr+10000;
+t_plot_end = len_sol;
 
 f = Figure();
 ax = Axis3(f[1, 1]);
-lines!(ax, sol_u[t_plot_start:t_plot_end, 1], sol_u[t_plot_start:t_plot_end, 3],
-        sol_u[t_plot_start:t_plot_end, 2], linewidth = 0.5, color = :black);
-display(GLMakie.Screen(), f) =#
+lines!(ax, sol[1, t_plot_start:t_plot_end], sol[3, t_plot_start:t_plot_end],
+        sol[2, t_plot_start:t_plot_end], linewidth = 0.5, color = :black);
+display(GLMakie.Screen(), f)
+
+
+prob.p[3] = 0.15; 
+sol1 = solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive,
+                abstol = integrator_setting.abstol, reltol = integrator_setting.reltol,
+                maxiters = integrator_setting.maxiters);
+
+
+f = Figure();
+ax = Axis3(f[1, 1]);
+lines!(ax, sol1[1, t_plot_start:t_plot_end], sol1[3, t_plot_start:t_plot_end],
+sol1[2, t_plot_start:t_plot_end], linewidth = 0.5, color = :black);
+display(GLMakie.Screen(), f)
