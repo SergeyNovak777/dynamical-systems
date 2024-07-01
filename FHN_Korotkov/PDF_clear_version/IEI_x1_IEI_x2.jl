@@ -70,8 +70,20 @@ index_EEs_x2 = findall(x-> x >= Hs_x2, peaks_spikes_x2)
 peaks_EEs_x2 = peaks_spikes_x2[index_EEs_x2]
 t_EEs_x2 = t_peaks_spikes_x2[index_EEs_x2]
 
+labelsize = 40;
+ticksize = 30;
 
-array_IEI_x1 = get_IEI(t_EEs_x1)
+f = Figure();
+ax1 = Axis(f[1, 1]);
+lines!(ax1, amplitudes_above_mean_x1[1:1200_000], linewidth = 0.5, color = :black);
+display(GLMakie.Screen(), f)
+
+f = Figure();
+ax2 = Axis(f[1, 1]);
+lines!(ax2, amplitudes_above_mean_x2[1:1200_000], linewidth = 0.5, color = :black);
+display(GLMakie.Screen(), f)
+
+#= array_IEI_x1 = get_IEI(t_EEs_x1)
 array_PDF_IEI_x1 = get_PDF_IEI(array_IEI_x1; shift = 10)
 
 array_IEI_x2 = get_IEI(t_EEs_x2)
@@ -82,4 +94,4 @@ ax_x1 = Axis(f[1, 1], xlabel = L"peaks_EEs_x1", ylabel = L"IEI_{x1}")
 ax_x2 = Axis(f[2, 1], xlabel = L"peaks_EEs_x2", ylabel = L"IEI_{x2}")
 scatter!(ax_x1, peaks_EEs_x1[2:end], array_IEI_x1, markersize = 1.0, color = :blue)
 scatter!(ax_x2, peaks_EEs_x2[2:end], array_IEI_x2, markersize = 1.0, color = :green)
-display(GLMakie.Screen(), f)
+display(GLMakie.Screen(), f) =#

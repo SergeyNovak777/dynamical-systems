@@ -23,7 +23,7 @@ abs_tol = 1e-10;
 rel_tol = 1e-10;
 max_iters = 1e8;
 println("alg: $alg"); println("abstol: $abs_tol; reltol: $(rel_tol)")
-integrator_setting = (alg = alg, abs_tol = abs_tol, rel_tol = rel_tol, max_iters = max_iters)
+integrator_setting = (alg = alg, abs_tol = abs_tol, rel_tol = rel_tol,  max_iters = max_iters)
 
 path_to_save = "/home/sergey/timeseries_k2_75_74_save_x1_x2/"
 parameters = FHN2_try3_params()
@@ -99,6 +99,9 @@ Hs_IEI_coeff_6_x2 = Hs(array_IEI_x2, 6)
 labelsize = 40;
 ticksize = 30;
 
+
+
+#= 
 f = Figure()
 ax = Axis(f[1, 1], xlabel = L"IEI_{x1}", ylabel = L"PDF_{IEI_{x1}}", yscale = log10,
 xlabelsize = labelsize, ylabelsize = labelsize,
@@ -126,4 +129,4 @@ xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticksize, yticklabelsize = ticksize,
 xgridvisible = false, ygridvisible = false)
 scatter!(ax, peaks_EEs_x1[2:end], peaks_EEs_x2[2:end])
-display(GLMakie.Screen(), f)
+display(GLMakie.Screen(), f) =#
