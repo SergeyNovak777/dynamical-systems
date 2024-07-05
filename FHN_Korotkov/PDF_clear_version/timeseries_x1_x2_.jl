@@ -30,18 +30,26 @@ parameters = FHN2_try3_params()
 parameters[7] = 0.09
 parameters[8] = 75.74
 
-u0_start = [-1.0537832727558796, -0.6375955063962165, -0.9461308916381171, -0.6265187262257061, -0.01107678017056557]; 
+u0_start = [1.7, 0.7, -1.4, 0.35, 0.7 - 0.35]; 
 u0_start = SVector{5}(u0_start)
 
 t_point = 100_000.0
 tspan = (0.0, t_point)
 
-
-prob = ODEProblem(FHN2_try3, u0_start, tspan, parameters)
-
+# [-0.9975306305716877, -0.6263745781621949, -1.0270854610823394, -0.6388340471505014, 0.012459468987929649]
+prob = ODEProblem(FHN2_try3, sol[end], tspan, parameters)
 sol = solve(prob, integrator_setting.alg, adaptive = true,
     abstol = integrator_setting.abs_tol, reltol = integrator_setting.rel_tol,
     maxiters = integrator_setting.max_iters);
+
+plot_start = 1; plot_end = 1_500_000;
+f = Figure();
+ax_x1 = Axis(f[1, 1]);
+ax_x2 = Axis(f[2, 1]);
+lines!(ax_x1, sol.t[plot_start:plot_end], sol[1, plot_start:plot_end]);
+lines!(ax_x2, sol.t[plot_start:plot_end], sol[3, plot_start:plot_end]);
+display(GLMakie.Screen(), f)
+
 
 len_sol = length(sol.t)
 ttr = t_truncate(len_sol); tend = len_sol
@@ -98,8 +106,6 @@ Hs_IEI_coeff_6_x2 = Hs(array_IEI_x2, 6)
 
 labelsize = 40;
 ticksize = 30;
-
-
 
 #= 
 f = Figure()

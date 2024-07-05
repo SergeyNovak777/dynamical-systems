@@ -39,3 +39,16 @@ function drop_artifacts(array_local_maxs, array_local_mins)
         pop!(times_local_maxs)
     end
 end
+
+function check_spikes(array_local_maxs, array_local_mins)
+    local_maxs, times_local_maxs = array_local_maxs;
+    local_mins, times_local_mins = array_local_mins;
+    
+    len_local_mins = length(times_local_mins);
+    index_local_mins = 1;
+    index_local_maxs = 1;
+
+    while index_local_mins != len_local_mins
+        if times_local_maxs
+    end
+end

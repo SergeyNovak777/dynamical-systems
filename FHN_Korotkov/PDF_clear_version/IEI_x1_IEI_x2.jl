@@ -48,10 +48,10 @@ println("count local max x2: $(length(local_max_x2))")
 println("count local min x2: $(length(local_min_x2))")
 println("different between count local max and local min x2: $(abs( length(local_min_x2) - length(local_max_x2) ))")
 
-all_amplitudes_x2 = get_amplitudes_all_events(local_max_x2, local_min_x2)
-mean_amplitudes_x2 = Statistics.mean(all_amplitudes_x2)
-println("mean amplitude x2: $mean_amplitudes_x2")
-peaks_spikes_x2, t_peaks_spikes_x2, amplitudes_above_mean_x2 = select_spikes(local_min_x2, [local_max_x2, t_local_max_x2], mean_amplitudes_x2)
+#= all_amplitudes_x2 = get_amplitudes_all_events(local_max_x2, local_min_x2)
+mean_amplitudes_x2 = Statistics.mean(all_amplitudes_x2) =#
+println("mean amplitude x2: $mean_amplitudes_x1")
+peaks_spikes_x2, t_peaks_spikes_x2, amplitudes_above_mean_x2 = select_spikes(local_min_x2, [local_max_x2, t_local_max_x2], mean_amplitudes_x1)
 
 local_max_x2 = nothing; t_local_max_x2 = nothing;
 local_min_x2 = nothing; t_local_min_x2 = nothing;
@@ -73,15 +73,27 @@ t_EEs_x2 = t_peaks_spikes_x2[index_EEs_x2]
 labelsize = 40;
 ticksize = 30;
 
+#= plot_start = 1; plot_end = 50_000;
 f = Figure();
 ax1 = Axis(f[1, 1]);
-lines!(ax1, amplitudes_above_mean_x1[1:1200_000], linewidth = 0.5, color = :black);
+scatter!(ax1, peaks_EEs_x1[plot_start:plot_end], peaks_EEs_x2[plot_start:plot_end], markersize = 0.5, color = :black);
+display(GLMakie.Screen(), f) =#
+
+plot_start = 1; plot_end = 30_000_000;
+f = Figure();
+ax1 = Axis(f[1, 1]);
+scatter!(ax1, peaks_spikes_x1[plot_start:plot_end], peaks_spikes_x2[plot_start:plot_end], markersize = 1.0, color = :black);
+display(GLMakie.Screen(), f)
+
+#= f = Figure();
+ax1 = Axis(f[1, 1]);
+lines!(ax1, peaks_spikes_x2[1:1200_000], linewidth = 0.5, color = :black);
 display(GLMakie.Screen(), f)
 
 f = Figure();
 ax2 = Axis(f[1, 1]);
-lines!(ax2, amplitudes_above_mean_x2[1:1200_000], linewidth = 0.5, color = :black);
-display(GLMakie.Screen(), f)
+lines!(ax2, peaks_spikes_x2[1:1200_000], linewidth = 0.5, color = :black);
+display(GLMakie.Screen(), f) =#
 
 #= array_IEI_x1 = get_IEI(t_EEs_x1)
 array_PDF_IEI_x1 = get_PDF_IEI(array_IEI_x1; shift = 10)

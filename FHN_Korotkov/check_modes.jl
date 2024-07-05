@@ -52,8 +52,8 @@ integrator_setting = get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_
 
 parameters = FHN2_try3_params();
 parameters[3] = 0.1; # g
-parameters[7] = 0.010; # k1
-parameters[8] = 0.9; # k2
+parameters[7] = 0.092; # k1
+parameters[8] = 0.2; # k2
 
 u0_start = [1.7, 0.7, -1.4, 0.35, 0.7 - 0.35];
 u0_start = SVector{5}(u0_start);
@@ -73,10 +73,16 @@ sol = solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive
 ds = CoupledODEs(FHN2_try3, sol[end], parameters,
 diffeq = integrator_setting);
 LSE = lyapunovspectrum(ds, 5000);
-println("LSE: $LSE");
-println("last point: $(sol[end])")
+LSE_dt_0_05 = lyapunovspectrum(ds, 5000, Δt = 0.05);
+LSE_dt_0_001 = lyapunovspectrum(ds, 5000, Δt = 0.001);
+LSE_dt_0_025= lyapunovspectrum(ds, 5000, Δt = 0.0525);
 
+println("LSE default: $(LSE)")
+println("LSE_dt_0_05: $(LSE_dt_0_05)");
+println("LSE_dt_0_001: $(LSE_dt_0_001)");
+println("LSE_dt_0_025: $(LSE_dt_0_025)");
 
+#= 
 len_sol = length(sol.t);
 ttr = t_truncate(len_sol);
 
@@ -89,4 +95,4 @@ f = Figure();
 ax = Axis3(f[1, 1]);
 lines!(ax, sol[1, t_plot_start:t_plot_end], sol[3, t_plot_start:t_plot_end],
         sol[2, t_plot_start:t_plot_end], linewidth = 0.5, color = :black);
-display(GLMakie.Screen(), f)
+display(GLMakie.Screen(), f) =#
