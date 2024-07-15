@@ -33,7 +33,7 @@ function main()
     params = FHN2_try3_params()
     u0 = [1.9075684503044907, -0.3904496392396389, 1.9413139567288633, -0.4925421548500994, 0.10209251561045568];
     
-    length_range = 300;
+    length_range = 350;
     range_parameter_1 = range( 0.0, 0.1, length = length_range);
     range_parameter_2 = range(0.0, 2.0, length = length_range);
     
@@ -43,7 +43,7 @@ function main()
     name_parameter_1 = "k_1";
     name_parameter_2 = "k_2";
     
-    time_attract = 1500
+    time_attract = 3000
     time_calculate_LSE = 10000
     abstl = 1e-11; reltl = 1e-11;
     time_setting = Time_setting(time_attract, time_calculate_LSE);
