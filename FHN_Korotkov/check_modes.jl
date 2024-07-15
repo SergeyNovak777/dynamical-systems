@@ -66,11 +66,19 @@ sol = solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive
                 abstol = integrator_setting.abstol, reltol = integrator_setting.reltol,
                 maxiters = integrator_setting.maxiters);
 
+function test_func2()
+    println(v1); flush(stdout);
+end
+
+function test_func1()
+    v1 = 45.0;
+    test_func2();
+end
 
 
 #sol_t, sol_u = get_sol(prob, integrator_setting); GC.gc();
 
-ds = CoupledODEs(FHN2_try3, sol[end], parameters,
+#= ds = CoupledODEs(FHN2_try3, sol[end], parameters,
 diffeq = integrator_setting);
 LSE = lyapunovspectrum(ds, 5000);
 LSE_dt_0_05 = lyapunovspectrum(ds, 5000, Δt = 0.05);
@@ -80,7 +88,7 @@ LSE_dt_0_025= lyapunovspectrum(ds, 5000, Δt = 0.0525);
 println("LSE default: $(LSE)")
 println("LSE_dt_0_05: $(LSE_dt_0_05)");
 println("LSE_dt_0_001: $(LSE_dt_0_001)");
-println("LSE_dt_0_025: $(LSE_dt_0_025)");
+println("LSE_dt_0_025: $(LSE_dt_0_025)"); =#
 
 #= 
 len_sol = length(sol.t);
