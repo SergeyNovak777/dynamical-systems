@@ -10,10 +10,14 @@ else
     Pkg.activate(pathtorepo * "/env/integrate/")
 end
 
-using JLD2, CairoMakie, MAT
+using JLD2, CairoMakie, MAT, GLMakie
 
 
 Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/LSE_400x400_k_1_k_2.jld2")["λs"]
+u0s = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/u0s_400x400_k_1_k_2.jld2")
+init_point = u0s["init_points"]
+last_point = u0s["last_points"]
+
 
 length_range = 400;
 k1range = range( 0.0, 0.12, length = length_range);
@@ -24,7 +28,7 @@ absmax = maximum(abs.(Λs[:, :, index]))
 
 mn, mx =  -absmax, absmax
 CairoMakie.activate!()  
-f = Figure()
+
 ticksize = 35
 tickpad = 10.0
 textsize = 25
@@ -32,19 +36,26 @@ textsizecurve = 30
 lw = 3.5
 mksize = 12
 
+f = Figure()
 ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 50,
             xticklabelsize = ticksize, yticklabelsize = ticksize,
             xgridvisible  = false, ygridvisible = false,
             xticklabelpad = tickpad, yticklabelpad = tickpad)
-
-#Λs[323:400, :, 1] .= -1
-
+Λs[324:400, :, 1] .= -1
 hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :seismic,
                 colorrange = (mn, mx))
 #ylims!(0.0, 0.097)
-display(f);
+display(GLMakie.Screen(), f);
 
-pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
+#= pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
 filename = "/k1_k2_extended.pdf"
 fullpath = pathtosave * filename 
-save(fullpath, f)
+save(fullpath, f) =#
+
+index_p1 = 323
+index_p2 = 101
+println("k1: $(k1range[index_p1])")
+println("k2: $(k2range[index_p2])")
+println("u0: $(init_point[index_p1, index_p2, :])")
+println("λs: $(Λs[index_p1, index_p2, index]) ")
+println("last pont: $(last_point[index_p1,index_p2,:])")

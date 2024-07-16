@@ -51,14 +51,13 @@ max_iters = 1e8;
 integrator_setting = get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters);
 
 parameters = FHN2_try3_params();
-parameters[3] = 0.1; # g
-parameters[7] = 0.092; # k1
-parameters[8] = 0.2; # k2
+parameters[7] = 0.096859
+parameters[8] = 4.448160535117057
 
-u0_start = [1.7, 0.7, -1.4, 0.35, 0.7 - 0.35];
+u0_start = [-1.002201845684165, -0.6387935561024373, -1.0254528312514828, -0.6308174333307994, -0.007976122771661428]
 u0_start = SVector{5}(u0_start);
 
-t_end = 5_000;
+t_end = 20_000;
 tspan = (0.0, t_end);
 
 prob = ODEProblem(FHN2_try3, u0_start, tspan, parameters)
@@ -66,31 +65,12 @@ sol = solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive
                 abstol = integrator_setting.abstol, reltol = integrator_setting.reltol,
                 maxiters = integrator_setting.maxiters);
 
-function test_func2()
-    println(v1); flush(stdout);
-end
-
-function test_func1()
-    v1 = 45.0;
-    test_func2();
-end
-
-
-#sol_t, sol_u = get_sol(prob, integrator_setting); GC.gc();
-
-#= ds = CoupledODEs(FHN2_try3, sol[end], parameters,
+ds = CoupledODEs(FHN2_try3, u0_start, parameters,
 diffeq = integrator_setting);
-LSE = lyapunovspectrum(ds, 5000);
-LSE_dt_0_05 = lyapunovspectrum(ds, 5000, Δt = 0.05);
-LSE_dt_0_001 = lyapunovspectrum(ds, 5000, Δt = 0.001);
-LSE_dt_0_025= lyapunovspectrum(ds, 5000, Δt = 0.0525);
 
-println("LSE default: $(LSE)")
-println("LSE_dt_0_05: $(LSE_dt_0_05)");
-println("LSE_dt_0_001: $(LSE_dt_0_001)");
-println("LSE_dt_0_025: $(LSE_dt_0_025)"); =#
+LSE = lyapunovspectrum(ds, 10000);
+println(LSE);
 
-#= 
 len_sol = length(sol.t);
 ttr = t_truncate(len_sol);
 
@@ -103,4 +83,4 @@ f = Figure();
 ax = Axis3(f[1, 1]);
 lines!(ax, sol[1, t_plot_start:t_plot_end], sol[3, t_plot_start:t_plot_end],
         sol[2, t_plot_start:t_plot_end], linewidth = 0.5, color = :black);
-display(GLMakie.Screen(), f) =#
+display(GLMakie.Screen(), f)

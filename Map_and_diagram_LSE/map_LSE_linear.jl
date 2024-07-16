@@ -1,3 +1,5 @@
+include(joinpath(@__DIR__, "total_func.jl"))
+#include("/home/sergey/work/repo/dynamical-systems/Map_and_diagram_LSE/total_func.jl")
 #=
 type_inheritance 
 * from_left_to_right

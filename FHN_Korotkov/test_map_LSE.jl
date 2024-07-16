@@ -11,7 +11,7 @@ else
     include("/home/sergey/work/repo/dynamical-systems/system.jl")
 end
 
-include("/home/sergey/work/repo/dynamical-systems/Map_and_diagram_LSE/Map/linear/map_LSE_linear.jl");
+include("/home/sergey/work/repo/dynamical-systems/Map_and_diagram_LSE/map_LSE_linear.jl");
 
 using StaticArrays, DifferentialEquations, DynamicalSystems, JLD2
 
