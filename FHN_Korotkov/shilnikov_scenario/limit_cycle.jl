@@ -56,7 +56,7 @@ parameters[8] = 64.76190476190476
 
 u0_start = [-1.0836728460611933, -0.6318417392022484, -0.9017528537331925, -0.624049721609583, -0.0077920175930263]
 u0_start = SVector{5}(u0_start);
-
+fixed_point = [-1.01, -0.6367552038435214, -1.01, -0.6367552038435204, -3.620190802273638e-13];
 t_end = 50_000;
 tspan = (0.0, t_end);
 
@@ -93,10 +93,12 @@ ax = Axis3(f[1, 1], xlabel = L"y_1", ylabel = L"y_2", zlabel = L"x_1",
     protrusions = (30, 30,120, 30));
 lines!(ax, sol[2, t_plot_start:t_plot_end], sol[4, t_plot_start:t_plot_end],
         sol[1, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
-display(GLMakie.Screen(), f);
-
+scatter!(ax, fixed_point[2], fixed_point[4], fixed_point[1], markersize = 15, color = :red)
+text!(ax, fixed_point[2], fixed_point[4], fixed_point[1], text = L"O_1", fontsize = labelsize, align = (:center, :top), offset = (0, -23))
+display(f);
 save(path_to_save * "limit_cycle.eps", f)
 
+#= 
 pmap = PoincareMap(ds, (1, -1.01))
 tr, trange = trajectory(pmap, 700000)
 
@@ -116,4 +118,4 @@ ax = Axis(f[1, 1], xlabel = L"x_2", ylabel = L"y_2", xlabelsize = labelsize, yla
 scatter!(ax, tr[t_plot_start_map:t_plot_end_map, 3], tr[t_plot_start_map:t_plot_end_map, 4], markersize = 1.0, color = :black);
 display(GLMakie.Screen(), f);
 
-save(path_to_save * "limit_cycle_poincare.eps", f)
+save(path_to_save * "limit_cycle_poincare.eps", f) =#

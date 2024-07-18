@@ -52,10 +52,10 @@ filename = "/k1_k2_extended.pdf"
 fullpath = pathtosave * filename 
 save(fullpath, f) =#
 
-index_p1 = 323
-index_p2 = 101
-println("k1: $(k1range[index_p1])")
-println("k2: $(k2range[index_p2])")
+index_p1 = 324
+index_p2 = 324
+println("k1: $(k1range[index_p1]); k1 index: $index_p1")
+println("k2: $(k2range[index_p2]); k2 index: $index_p2")
 println("u0: $(init_point[index_p1, index_p2, :])")
 println("λs: $(Λs[index_p1, index_p2, index]) ")
 println("last pont: $(last_point[index_p1,index_p2,:])")

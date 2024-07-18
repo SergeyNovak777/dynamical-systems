@@ -56,7 +56,7 @@ parameters[8] = 64.76190476190476
 
 u0_start = [-0.9360696995816414, -0.6351313634256814, -1.0845375861056596, -0.6267357723580731, -0.008395591068021761]
 u0_start = SVector{5}(u0_start);
-
+fixed_point = [-1.01, -0.6367552038435214, -1.01, -0.6367552038435204, -3.6193006726209e-13]
 t_end = 50_000;
 tspan = (0.0, t_end);
 
@@ -88,18 +88,21 @@ ax = Axis3(f[1, 1], xlabel = L"y_1", ylabel = L"y_2", zlabel = L"x_1",
     xlabelsize = labelsize, ylabelsize = labelsize, zlabelsize = labelsize,
     xticklabelsize = ticksize, yticklabelsize = ticksize, zticklabelsize = ticksize,
     xgridvisible = false, ygridvisible = false, zgridvisible = false,
-    xticks = [-0.61, -0.625, -0.64], yticks = [-0.61, -0.625, -0.64], zticks = [-1.1, -1.0, -0.9],
+    xticks = [-0.61, -0.634], yticks = [-0.61, -0.634], zticks = [-1.1, -0.9],
     xlabeloffset = 85, ylabeloffset = 85, zlabeloffset = 115,
     protrusions = (30, 30,120, 30),
     xtickformat = "{:.2f}",
-    ytickformat = "{:.2f}",);
+    ytickformat = "{:.2f}",
+    elevation = 0.1pi);
 lines!(ax, sol[2, t_plot_start:t_plot_end], sol[4, t_plot_start:t_plot_end],
         sol[1, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
+scatter!(ax, fixed_point[2], fixed_point[4], fixed_point[1], markersize = 15, color = :red)
+text!(ax, fixed_point[2], fixed_point[4], fixed_point[1], text = L"O_1", fontsize = labelsize, align = (:center, :top), offset = (0, -23))
 display(GLMakie.Screen(), f);
 save(path_to_save * "limit_cycle_fluffed.eps", f)
 
 
-pmap = PoincareMap(ds, (1, -1.01))
+#= pmap = PoincareMap(ds, (1, -1.01))
 tr, trange = trajectory(pmap, 700000)
 
 len_tr_map = length(trange);
@@ -114,4 +117,4 @@ ax = Axis(f[1, 1], xlabel = L"x_2", ylabel = L"y_2", xlabelsize = labelsize, yla
     xgridvisible = false, ygridvisible = false);
 scatter!(ax, tr[t_plot_start_map:t_plot_end_map, 3], tr[t_plot_start_map:t_plot_end_map, 4], markersize = 1.0, color = :black);
 display(GLMakie.Screen(), f);
-save(path_to_save * "limit_cycle_fluffed_poincare.eps", f)
+save(path_to_save * "limit_cycle_fluffed_poincare.eps", f) =#

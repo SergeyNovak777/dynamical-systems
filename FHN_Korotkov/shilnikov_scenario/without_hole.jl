@@ -84,23 +84,24 @@ t_plot_end = t_plot_start + 100_000; #len_sol;
 path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/scenario/"
 
 CairoMakie.activate!();
-indexx = 1; indexy  = 3; indexz = 2;
+indexx = 1; indexy  = 2; indexz = 3;
 f = Figure(size = (1200 ,600));
-ax = Axis3(f[1, 1], xlabel = L"x_1", ylabel = L"x_2", zlabel = L"y_1",
+ax = Axis3(f[1, 1], xlabel = L"x_1", ylabel = L"y_1", zlabel = L"x_2",
     xlabelsize = labelsize, ylabelsize = labelsize, zlabelsize = labelsize,
     xticklabelsize = ticksize, yticklabelsize = ticksize, zticklabelsize = ticksize,
     xgridvisible = false, ygridvisible = false, zgridvisible = false,
-    xlabeloffset = 60, ylabeloffset = 60, zlabeloffset = 115,
-    protrusions = (30, 30,120, 30));
-
+    xlabeloffset = 60, ylabeloffset = 60, zlabeloffset = 115,   
+    protrusions = (30, 30,120, 30))#,
+    #xticks = [-0.5, 0.5], yticks = [-0.5, 0.5], zticks = [-1.5, -1.0],
+    #elevation = 0.04pi);
 lines!(ax, sol[indexx, t_plot_start:t_plot_end], sol[indexy, t_plot_start:t_plot_end],
         sol[indexz, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
-
-scatter!(ax, fixed_point[indexx], fixed_point[indexy], fixed_point[indexz], markersize = 10, color = :red)
-
+scatter!(ax, fixed_point[indexx], fixed_point[indexy], fixed_point[indexz], markersize = 15, color = :red)
+text!(ax, fixed_point[2], fixed_point[4], fixed_point[1], text = L"O_1", fontsize = labelsize, align = (:center, :top), offset = (0, -30))
 display(GLMakie.Screen(), f);
 
 save(path_to_save * "homoclinic.eps", f)
+
 function d(p1, p2)
     p1x1, p1y1, p1x2, p1y2, p1z = p1
     p2x1, p2y1, p2x2, p2y2, p2z = p2
@@ -116,10 +117,6 @@ end
 
 minimum(distance)
 
-
-
-
-
 pmap = PoincareMap(ds, (1, -1.01))
 tr, trange = trajectory(pmap, 700000)
 
@@ -134,6 +131,5 @@ ax = Axis(f[1, 1], xlabel = L"x_2", ylabel = L"y_2", xlabelsize = labelsize, yla
     xticklabelsize = ticksize, yticklabelsize = ticksize,
     xgridvisible = false, ygridvisible = false);
 scatter!(ax, tr[t_plot_start_map:t_plot_end_map, 3], tr[t_plot_start_map:t_plot_end_map, 4], markersize = 2.0, color = :black);
-scatter!(ax, fixed_point[3], fixed_point[4], markersize = 10, color = :red)
 display(f);
 save(path_to_save * "homoclinic_poincare.eps", f)

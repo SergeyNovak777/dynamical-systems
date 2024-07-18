@@ -56,7 +56,7 @@ parameters[8] = 64.76190476190476
 
 u0_start = [-0.9798003248827628, -0.6383465491099544, -1.0605530310994677, -0.6227816012836277, -0.015564947826729007]
 u0_start = SVector{5}(u0_start);
-
+fixed_point = [-1.01, -0.6367552038435214, -1.01, -0.6367552038435204, -3.6191235412894934e-13]
 t_end = 50_000;
 tspan = (0.0, t_end);
 
@@ -90,15 +90,17 @@ ax = Axis3(f[1, 1], xlabel = L"y_1", ylabel = L"y_2", zlabel = L"x_1",
     xgridvisible = false, ygridvisible = false, zgridvisible = false,
     xticks = [-0.63, -0.6], yticks = [-0.63, -0.6], zticks = [-1.07, -0.8],
     xlabeloffset = 85, ylabeloffset = 85, zlabeloffset = 115,
-    protrusions = (30, 30,120, 30),);
+    protrusions = (30, 30,120, 30),
+    elevation = 0.08pi);
 lines!(ax, sol[2, t_plot_start:t_plot_end], sol[4, t_plot_start:t_plot_end],
         sol[1, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
-
+scatter!(ax, fixed_point[2], fixed_point[4], fixed_point[1], markersize = 15, color = :red)
+text!(ax, fixed_point[2], fixed_point[4], fixed_point[1], text = L"O_1", fontsize = labelsize, align = (:center, :top), offset = (0, -23))
 display(GLMakie.Screen(), f);
 save(path_to_save * "tubes.eps", f)
 
 
-pmap = PoincareMap(ds, (1, -1.01))
+#= pmap = PoincareMap(ds, (1, -1.01))
 tr, trange = trajectory(pmap, 700000)
 
 len_tr_map = length(trange);
@@ -114,4 +116,4 @@ ax = Axis(f[1, 1], xlabel = L"x_2", ylabel = L"y_2", xlabelsize = labelsize, yla
     xticks = [-1.075, -1.025]);
 scatter!(ax, tr[t_plot_start_map:t_plot_end_map, 3], tr[t_plot_start_map:t_plot_end_map, 4], markersize = 2.0, color = :black);
 display(GLMakie.Screen(), f);
-save(path_to_save * "tubes_poincare.eps", f)
+save(path_to_save * "tubes_poincare.eps", f) =#
