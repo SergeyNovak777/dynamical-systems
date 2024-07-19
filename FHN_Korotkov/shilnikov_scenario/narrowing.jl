@@ -98,7 +98,7 @@ scatter!(ax, fixed_point[2], fixed_point[4], fixed_point[1], markersize = 15, co
 text!(ax, fixed_point[2], fixed_point[4], fixed_point[1], text = L"O_1", fontsize = labelsize, align = (:center, :top), offset = (0, -50))
 display(f);
 
-save(path_to_save * "narrowing.eps", f)
+#save(path_to_save * "narrowing.eps", f)
 
 
 #= pmap = PoincareMap(ds, (1, -1.01))

@@ -41,19 +41,35 @@ mksize = 12
 ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 50,
             xticklabelsize = ticksize, yticklabelsize = ticksize,
             xgridvisible  = false, ygridvisible = false,
-            xticklabelpad = tickpad, yticklabelpad = tickpad)
+            xticklabelpad = tickpad, yticklabelpad = tickpad,
+            xticks = [0.0, 0.5, 1.0, 1.5, 1.9])
 
 hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :seismic,
                 colorrange = (mn, mx))
 
+lines!(ax, [0.0, 1.0], [0.090, 0.090], linewidth = lw_quad, color = color_r1)
+lines!(ax, [0.0, 1.0], [0.095, 0.095], linewidth = lw_quad, color = color_r1)
+lines!(ax, [1.0, 1.0], [0.090, 0.095], linewidth = lw_quad, color = color_r1)
+lines!(ax, [0.0, 0.0], [0.090, 0.095], linewidth = lw_quad, color = color_r1)
+text!(ax, 0.5, 0.07, text = L"R_2", fontsize = ticksize * 1.5)
+
+#=
+k1range = range( 0.010, 0.016, length = length_range);
+k2range = range(0.9, 1.2, length = length_range);
+=#
+lines!(ax, [0.9, 1.2], [0.010, 0.010], linewidth = lw_quad, color = color_r1)
+lines!(ax, [0.9, 1.2], [0.016, 0.016], linewidth = lw_quad, color = color_r1)
+lines!(ax, [0.9, 0.9], [0.010, 0.016], linewidth = lw_quad, color = color_r1)
+lines!(ax, [1.2, 1.2], [0.010, 0.016], linewidth = lw_quad, color = color_r1)
+
 display(GLMakie.Screen(), f);
 
-#= pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
-filename = "/k1_k2_left_angle.pdf"
+pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
+filename = "/k1_k2_left_angle.eps"
 fullpath = pathtosave * filename 
-save(fullpath, f) =#
+save(fullpath, f)
 
-findall(x->x==-1,Λs[:, :, index] )
+#= findall(x->x==-1,Λs[:, :, index] )
 
 index_p1 = 339
 index_p2 = 134
@@ -61,4 +77,4 @@ println("k1: $(k1range[index_p1])")
 println("k2: $(k2range[index_p2])")
 println("u0: $(init_point[index_p1, index_p2, :])")
 println("λs: $(Λs[index_p1, index_p2, index]) ")
-println("last pont: $(last_point[index_p1,index_p2,:])")
+println("last pont: $(last_point[index_p1,index_p2,:])") =#

@@ -51,14 +51,14 @@ max_iters = 1e8;
 integrator_setting = get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters);
 
 parameters = FHN2_try3_params();
-parameters[3]= 0.17
-parameters[7] =  0.09203007518796992
-parameters[8] = 64.76190476190476
+parameters[3]= 0.105
+parameters[7] =  0.03
+parameters[8] = 57.0
 
 u0_start = [-1.0073393282360215, -0.6392350435710693, -1.022720802290101, -0.6276963254782901, -0.011538718093154163]
 u0_start = SVector{5}(u0_start);
 fixed_point = [-1.01, -0.6367552038435214, -1.01, -0.6367552038435204, -3.620121549323092e-13]
-t_end = 10_000;
+t_end = 5_000;
 tspan = (0.0, t_end);
 
 prob = ODEProblem(FHN2_try3, u0_start, tspan, parameters)
@@ -66,11 +66,11 @@ sol = solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive
                 abstol = integrator_setting.abstol, reltol = integrator_setting.reltol, 
                 maxiters = integrator_setting.maxiters);
 
-#= ds = CoupledODEs(FHN2_try3, u0_start, parameters,
+ds = CoupledODEs(FHN2_try3, sol[end], parameters,
 diffeq = integrator_setting);
 
 LSE = lyapunovspectrum(ds, 10000);
-println(LSE); =#
+println(LSE);
 
 len_sol = length(sol.t);
 ttr = t_truncate(len_sol);
@@ -93,20 +93,14 @@ lines!(ax, sol[1, t_plot_start:t_plot_end], sol[3, t_plot_start:t_plot_end],
         sol[2, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
 display(f);
 
-#= ds = CoupledODEs(FHN2_try3, u0_start, parameters,
-diffeq = integrator_setting);
-
-LSE = lyapunovspectrum(ds, 10000);
-println(LSE);
-
-pmap = PoincareMap(ds, (1, -1.01))
-tr, trange = trajectory(pmap, 200000)
+#= pmap = PoincareMap(ds, (1, -1.01))
+tr, trange = trajectory(pmap, 100000)
 
 len_tr_map = length(trange);
 ttr_map = t_truncate(len_tr_map);
 
-t_plot_start_map = 200000;
-t_plot_end_map = t_plot_start_map + 80_000;
+t_plot_start_map = 50_000;
+t_plot_end_map = t_plot_start_map + 30_000;
 
 f = Figure(size = (900 ,900));
 ax = Axis(f[1, 1], xlabel = L"x_2", ylabel = L"y_2", xlabelsize = labelsize, ylabelsize = labelsize,

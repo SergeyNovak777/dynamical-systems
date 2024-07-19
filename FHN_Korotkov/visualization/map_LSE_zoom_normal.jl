@@ -35,14 +35,17 @@ mksize = 12
 ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 50,
             xticklabelsize = ticksize, yticklabelsize = ticksize,
             xgridvisible  = false, ygridvisible = false,
-            xticklabelpad = tickpad, yticklabelpad = tickpad)
+            xticklabelpad = tickpad, yticklabelpad = tickpad,
+            xtickformat = "{:.2f}",
+            xticks = [0.9, 1.0, 1.1, 1.17],
+            yticks = [0.010, 0.012, 0.014, 0.016])
 
 hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :seismic,
                 colorrange = (mn, mx))
 
 display(GLMakie.Screen(), f);
 
-#= pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
-filename = "/g=0_1_k1_k2_zoom_chaos.pdf"
+pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
+filename = "/g=0_1_k1_k2_zoom_chaos.eps"
 fullpath = pathtosave * filename 
-save(fullpath, f) =#
+save(fullpath, f)

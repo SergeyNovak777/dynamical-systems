@@ -62,7 +62,7 @@ function solver(prob, integrator_setting)
 end
 
 function distance_between_point(X1, X2)
-    return sqrt( (X1[1] - X2[1])^2 + ( X1[2] - X2[2] )^2 + ( X1[3] - X2[3] )^2 )
+    return sqrt( (X1[1] - X2[1])^2 + ( X1[2] - X2[2] )^2 + ( X1[3] - X2[3] )^2 + ( X1[4] - X2[4] )^2 + ( X1[5] - X2[5] )^2)
 end
 
 function difference_between_points(solution, len_matrix)
