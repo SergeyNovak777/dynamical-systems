@@ -13,7 +13,7 @@ end
 using JLD2, CairoMakie, MAT
 
 
-Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/map_LSE_k1_k2_to_2_g_0_1 debil/LSE_200x200_k_1_k_2.jld2")["λs"]
+Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/map_LSE_k1_k2_to_2_g_0_1 ___/LSE_200x200_k_1_k_2.jld2")["λs"]
 
 length_range = 200;
 k1range = range(0.0, 0.1, length = length_range);

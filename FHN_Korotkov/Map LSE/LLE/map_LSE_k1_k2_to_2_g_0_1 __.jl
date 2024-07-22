@@ -25,7 +25,7 @@ end
 #---------------------------------------------------------------------
 function main()
         
-    path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/map_LSE_k1_k2_to_2_g_0_1 debil/"
+    path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/map_LSE_k1_k2_to_2_g_0_1 ___/"
     cd(path_to_save)
         
     sys = FHN2_try3;
