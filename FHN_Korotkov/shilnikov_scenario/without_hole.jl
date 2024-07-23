@@ -12,6 +12,7 @@ else
 end
 
 using StaticArrays, DifferentialEquations, DynamicalSystems, CairoMakie, GLMakie
+using LinearAlgebra
 
 function get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters)
     integrator_setting = (alg = alg, adaptive = adaptive, abstol = abs_tol, reltol = rel_tol, maxiters = max_iters);
@@ -54,7 +55,10 @@ parameters = FHN2_try3_params();
 parameters[7] =  0.091695
 parameters[8] = 64.76190476190476
 
-fixed_point = [-1.01, -0.636755203843491, -1.01, -0.6367552038434884, -3.4202882178147864e-13];
+fixed_point = [-1.01, -0.636755203843491, -1.01, -0.6367552038434884, -3.4203139675502085e-13];
+jac = Matrix(jac_FHN(fixed_point, parameters, 0.0));
+eigen_vals = eigvals(jac);
+
 
 u0_start = [-1.0221779287339454, -0.6359770136715965, -1.0119938655496694, -0.6322079892358413, -0.003769024436094622]
 u0_start = SVector{5}(u0_start);
@@ -100,7 +104,7 @@ scatter!(ax, fixed_point[indexx], fixed_point[indexy], fixed_point[indexz], mark
 text!(ax, fixed_point[2], fixed_point[4], fixed_point[1], text = L"O_1", fontsize = labelsize, align = (:center, :top), offset = (0, -30))
 display(GLMakie.Screen(), f);
 
-save(path_to_save * "homoclinic.eps", f)
+#save(path_to_save * "homoclinic.eps", f)
 
 function d(p1, p2)
     p1x1, p1y1, p1x2, p1y2, p1z = p1
@@ -132,4 +136,4 @@ ax = Axis(f[1, 1], xlabel = L"x_2", ylabel = L"y_2", xlabelsize = labelsize, yla
     xgridvisible = false, ygridvisible = false);
 scatter!(ax, tr[t_plot_start_map:t_plot_end_map, 3], tr[t_plot_start_map:t_plot_end_map, 4], markersize = 2.0, color = :black);
 display(f);
-save(path_to_save * "homoclinic_poincare.eps", f)
+#save(path_to_save * "homoclinic_poincare.eps", f)
