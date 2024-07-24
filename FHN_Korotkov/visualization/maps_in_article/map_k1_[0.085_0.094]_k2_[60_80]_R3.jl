@@ -41,22 +41,16 @@ f = Figure()
 ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 50,
             xticklabelsize = ticksize, yticklabelsize = ticksize,
             xgridvisible  = false, ygridvisible = false,
-            xticklabelpad = tickpad, yticklabelpad = tickpad)
-#Λs[324:400, :, 1] .= -1
+            xticklabelpad = tickpad, yticklabelpad = tickpad,
+            xticks = [63, 70, 79],
+            yticks = [0.086, 0.090, 0.093])
+
 hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :seismic,
                 colorrange = (mn, mx))
-#ylims!(0.0, 0.097)
+
 display(GLMakie.Screen(), f);
 
 pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
-filename = "/R3.pdf"
+filename = "/map_R3.pdf"
 fullpath = pathtosave * filename 
 save(fullpath, f)
-
-index_p1 = 324
-index_p2 = 324
-println("k1: $(k1range[index_p1]); k1 index: $index_p1")
-println("k2: $(k2range[index_p2]); k2 index: $index_p2")
-println("u0: $(init_point[index_p1, index_p2, :])")
-println("λs: $(Λs[index_p1, index_p2, index]) ")
-println("last pont: $(last_point[index_p1,index_p2,:])")

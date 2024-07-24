@@ -58,6 +58,7 @@ array_IEI = get_IEI(t_EEs)
 array_PDF_IEI = get_PDF_IEI(array_IEI; shift = 10)
 
 Hs_IEI_coeff_8 = Hs(array_IEI, 8)
+Hs_IEI_coeff_6 = Hs(array_IEI, 6)
 
 labelsize = 40;
 ticksize = 30;
@@ -76,8 +77,10 @@ xticklabelsize = ticksize, yticklabelsize = ticksize,
 xgridvisible = false, ygridvisible = false)
 hist!(ax, array_IEI, weights = array_PDF_IEI, bins = 100)
 vlines!(ax, Hs_IEI_coeff_8, linewidth = 5.0, linestyle = :dash, color = :red, label = L"H_s=4612")
-#text!(ax, 3900, 1, text = "Hs", fontsize = labelsize)
-axislegend(ax, labelsize = labelsize, position = :ct)
+vlines!(ax, Hs_IEI_coeff_6, linewidth = 5.0, linestyle = :dash, color = :green)
+text!(ax, 4700, 1, text = L"Hs_8", fontsize = labelsize)
+text!(ax, 3600, 1, text = L"Hs_6", fontsize = labelsize)
+#axislegend(ax, labelsize = labelsize, position = :ct)
 display(f)
 save(path_to_save*filename_hist, f)
 
@@ -88,6 +91,10 @@ xticklabelsize = ticksize, yticklabelsize = ticksize,
 xgridvisible = false, ygridvisible = false)
 lines!(ax, t_EEs[2:end], array_IEI, linewidth = 1.0)
 hlines!(ax, Hs_IEI_coeff_8, linewidth = 5.0, linestyle = :dash, color = :red, label = L"H_s=4612")
-axislegend(ax, labelsize = labelsize, position = :cb)
+hlines!(ax, Hs_IEI_coeff_6, linewidth = 5.0, linestyle = :dash, color = :green)
+
+#axislegend(ax, labelsize = labelsize, position = :cb)
+text!(ax, 20_000_000,4600, text = L"Hs_8", fontsize = labelsize)
+text!(ax, 12_500_000,3650, text = L"Hs_6", fontsize = labelsize)
 display(f)
 save(path_to_save*filename_tEE_IEI, f)

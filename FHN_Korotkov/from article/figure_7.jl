@@ -60,8 +60,6 @@ end
 distance_to_fp = minimum(distance)
 println("distance between fp and trajectory: $distance_to_fp");
 
-labelsize = 85;
-ticksize = 50;
 
 t_plot_start =  1
 t_plot_end = 20_500;
@@ -69,7 +67,6 @@ t_plot_end = 20_500;
 path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/fig_7/";
 
 index_x = 1; index_y = 3; index_z = 2;
-
 f = Figure(size = (1200,600));
 GLMakie.activate!();
 ax = LScene(f[1, 1])
@@ -79,22 +76,92 @@ scatter!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], m
 scale!(ax.scene, 1, 1, 1)
 display(GLMakie.Screen(), f)
 
+labelsize = 105;
+ticksize = 70;
 CairoMakie.activate!();
 f = Figure(size = (1200 ,600));
 ax = Axis3(f[1, 1], xlabel = L"x_1", ylabel = L"x_2", zlabel = L"y_1",
     xlabelsize = labelsize, ylabelsize = labelsize, zlabelsize = labelsize,
     xticklabelsize = ticksize, yticklabelsize = ticksize, zticklabelsize = ticksize,
     xgridvisible = false, ygridvisible = false, zgridvisible = false,
-    xlabeloffset = 100, ylabeloffset = 60, zlabeloffset = 130,   
+    xlabeloffset = 100, ylabeloffset = 60, zlabeloffset = 180,   
     protrusions = (30, 30,120, 30));
 xlims!(ax, -1.1, -0.8);
 ylims!(ax, -1.2, -0.6);
 zlims!(ax, -0.64, -0.60)
-
-
 lines!(ax, sol[index_x, t_plot_start:t_plot_end], sol[index_y, t_plot_start:t_plot_end],
         sol[index_z, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
 scatter!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], markersize = 15, color = :red)
+text!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], text = L"O_1", fontsize = labelsize, offset = (30, -120));
 display(GLMakie.Screen(), f)
+
 display(f)
-save(path_to_save*"zoom.eps", f);
+save(path_to_save*"spiral_attractor_zoom.eps", f);
+
+#--------------------------------------------------------------
+labelsize = 85;
+ticksize = 50;
+index_x = 1; index_y = 2; index_z = 3;
+t_plot_start =  1
+t_plot_end = 100_000;
+CairoMakie.activate!();
+f = Figure(size = (1200 ,600));
+ax = Axis3(f[1, 1], xlabel = L"x_1", ylabel = L"y_1", zlabel = L"x_2",
+    xlabelsize = labelsize, ylabelsize = labelsize, zlabelsize = labelsize,
+    xticklabelsize = ticksize, yticklabelsize = ticksize, zticklabelsize = ticksize,
+    xgridvisible = false, ygridvisible = false, zgridvisible = false,
+    xlabeloffset = 60, ylabeloffset = 60, zlabeloffset = 100,   
+    protrusions = (30, 30,120, 30),
+    xticks = [-1.7, 0.0, 1.7], zticks = [-1.7, 0.0, 1.7],
+    yticks = [-0.6, 0.0, 0.6]);
+lines!(ax, sol[index_x, t_plot_start:t_plot_end], sol[index_y, t_plot_start:t_plot_end],
+        sol[index_z, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
+scatter!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], markersize = 10, color = :red)
+text!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], text = L"O_1", fontsize = labelsize,
+offset = (-72, -95));
+
+display(f)
+save(path_to_save*"spiral_attractor.eps", f);
+
+
+x_mean = (sol[1, :] + sol[3, :]) / 2;
+t_start_plot_timeseries = 1; t_end_plot_timeseries = 500_000;
+labelsize = 85;
+ticksize = 50;
+f = Figure(size = (1200, 400));
+ax = Axis(f[1, 1], xlabel = L"t", ylabel = L"\overline{x}",
+    xlabelsize = labelsize, ylabelsize = labelsize,
+    xticklabelsize = ticksize, yticklabelsize = ticksize,
+    xgridvisible = false, ygridvisible = false,
+    xticks = [0, 2000, 4000, 6000])
+
+lines!(ax, sol.t[t_start_plot_timeseries:t_end_plot_timeseries], x_mean[t_start_plot_timeseries:t_end_plot_timeseries],
+linewidth = 1.0, color = :blue)
+display(f);
+save(path_to_save*"x_mean_timeseries.eps", f)
+
+
+t_start_plot_timeseries = 1; t_end_plot_timeseries = 400_000;
+f = Figure(size = (1200, 700));
+ax_x_mean = Axis(f[1, 1], ylabel = L"\overline{x}",
+    xlabelsize = labelsize, ylabelsize = labelsize,
+    xticklabelsize = ticksize, yticklabelsize = ticksize,
+    xgridvisible = false, ygridvisible = false, xticklabelsvisible = false,
+    xticks = [0, 2000, 4000])
+
+ax_x1_2 = Axis(f[2, 1], xlabel = L"t", ylabel = L"x_i",
+xlabelsize = labelsize, ylabelsize = labelsize,
+xticklabelsize = ticksize, yticklabelsize = ticksize,
+xgridvisible = false, ygridvisible = false,
+xticks = [0, 2000, 4000])
+
+lines!(ax_x_mean, sol.t[t_start_plot_timeseries:t_end_plot_timeseries], x_mean[t_start_plot_timeseries:t_end_plot_timeseries],
+linewidth = 1.0, color = :blue)
+
+lines!(ax_x1_2, sol.t[t_start_plot_timeseries:t_end_plot_timeseries], sol[1, t_start_plot_timeseries:t_end_plot_timeseries],
+linewidth = 1.0, color = :red)
+lines!(ax_x1_2, sol.t[t_start_plot_timeseries:t_end_plot_timeseries], sol[3, t_start_plot_timeseries:t_end_plot_timeseries],
+linewidth = 1.0, color = :green)
+display(f);
+
+save(path_to_save*"x_mean_and_x1_x2_timeseries.pdf", f)

@@ -49,38 +49,34 @@ absmax_k2_0_9_1_2 = maximum(abs.(Λs_k2_0_9_1_2[:, :, index]))
 mn_k2_0_9_1_2, mx_k2_0_9_1_2 =  -absmax_k2_0_9_1_2, absmax_k2_0_9_1_2
 
 CairoMakie.activate!()
-
-ticksize = 35
+ticksize = 30
 tickpad = 10.0
-textsize = 25
-textsizecurve = 30
-lw = 3.5
-mksize = 12
+
 color_r1 = :mediumorchid3;
 lw_quad = 5.0;
-window_width =  350;
-window_height = 300;
-f = Figure(size=(1150,1150))
+window_width =  280;
+window_height = 200;
+f = Figure(size=(900,680)) # 1150
 
 ax_k2_0_80 = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 50,
             xticklabelsize = ticksize, yticklabelsize = ticksize,
             xgridvisible  = false, ygridvisible = false,
             xticklabelpad = tickpad, yticklabelpad = tickpad,
-            xticks = [0, 20, 40, 60, 78],
+            xticks = [0, 40, 78],
             height = window_height, width = window_width)
 
 ax_k2_0_10 = Axis(f[1, 2], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 50,
             xticklabelsize = ticksize, yticklabelsize = ticksize,
             xgridvisible  = false, ygridvisible = false,
             xticklabelpad = tickpad, yticklabelpad = tickpad,
-            xticks = [0, 4 , 8],
+            xticks = [0, 5 , 8],
             height = window_height, width = window_width)
 
 ax_k2_0_2 = Axis(f[2, 2], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 50,
             xticklabelsize = ticksize, yticklabelsize = ticksize,
             xgridvisible  = false, ygridvisible = false,
             xticklabelpad = tickpad, yticklabelpad = tickpad,
-            xticks = [0.0, 0.5, 1.0, 1.5, 1.9],
+            xticks = [0.0, 1.0, 1.9],
             height = window_height, width = window_width)
 
 ax_k2_0_9_1_2 = Axis(f[2, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 50,
@@ -88,8 +84,8 @@ ax_k2_0_9_1_2 = Axis(f[2, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, 
             xgridvisible  = false, ygridvisible = false,
             xticklabelpad = tickpad, yticklabelpad = tickpad,
             xtickformat = "{:.2f}",
-            xticks = [0.9, 1.0, 1.1, 1.17],
-            yticks = [0.010, 0.012, 0.014, 0.016],
+            xticks = [0.9, 1.05, 1.17],
+            yticks = [0.010, 0.013, 0.016],
             height = window_height, width = window_width)
 
 Λs_k2_0_80[324:400, :, 1] .= -1
@@ -111,7 +107,7 @@ lines!(ax_k2_0_80, [60.0, 80.0], [0.085, 0.085], linewidth = lw_quad, color = co
 lines!(ax_k2_0_80, [60.0, 80.0], [0.094, 0.094], linewidth = lw_quad, color = color_r1)
 lines!(ax_k2_0_80, [60.0, 60.0], [0.085, 0.094], linewidth = lw_quad, color = color_r1)
 lines!(ax_k2_0_80, [80.0, 80.0], [0.085, 0.094], linewidth = lw_quad, color = color_r1)
-text!(ax_k2_0_80, 67, 0.052, text = L"R_3", fontsize = ticksize * 1.5)
+text!(ax_k2_0_80, 66, 0.052, text = L"R_3", fontsize = ticksize * 1.5)
 
 hm = heatmap!(ax_k2_0_10, k2range_k2_0_10, k1range_k2_0_10, transpose(Λs_k2_0_10[:, :, index]), colormap = :seismic,
                 colorrange = (mn_k2_0_10, mx_k2_0_10))
@@ -143,12 +139,12 @@ lines!(ax_k2_0_2, [1.2, 1.2], [0.010, 0.016], linewidth = lw_quad, color = color
 hm = heatmap!(ax_k2_0_9_1_2, k2range_k2_0_9_1_2, k1range_k2_0_9_1_2, transpose(Λs_k2_0_9_1_2[:, :, index]), colormap = :seismic,
                 colorrange = (mn_k2_0_9_1_2, mx_k2_0_9_1_2))
 
-rowgap!(f.layout, 100)
-colgap!(f.layout, 100)
+rowgap!(f.layout, 30)
+colgap!(f.layout, 30)
 
 display(GLMakie.Screen(), f);
-display(f);
+#display(f);
 #= pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
-filename = "/k1_k2_extended.eps"
+filename = "/k1_k2_merged_map_smaller.pdf"
 fullpath = pathtosave * filename 
 save(fullpath, f) =#
