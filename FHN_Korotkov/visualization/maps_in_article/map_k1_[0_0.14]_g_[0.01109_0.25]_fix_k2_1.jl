@@ -22,7 +22,7 @@ index = 1
 absmax = maximum((Λs[:, :, index]))
 
 mn, mx =  -absmax, absmax
-GLMakie.activate!()  
+CairoMakie.activate!()  
 f = Figure()    
 ticksize = 35
 tickpad = 10.0
@@ -35,7 +35,7 @@ ax = Axis(f[1, 1], xlabel = L"g",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 
             xticklabelsize = ticksize, yticklabelsize = ticksize,
             xgridvisible  = false, ygridvisible = false,
             xticklabelpad = tickpad, yticklabelpad = tickpad,
-            xtickformat = "{:.2f}", xticks = [0.05, 0.10, 0.15, 0.22])#,
+            xtickformat = "{:.2f}", xticks = [0.04, 0.14, 0.22], yticks = [0.0, 0.06, 0.12])#,
             #xticks = [0.0, 0.05, 0.1, 0.15, 0.2, 0.25], yticks = [0.0, 0.02, 0.04, 0.06, 0.08, 0.1, 0.12, 0.14])
 
 hm = heatmap!(ax, grange, k1range, transpose(Λs[:, :, index]), colormap = :seismic,
@@ -43,7 +43,7 @@ hm = heatmap!(ax, grange, k1range, transpose(Λs[:, :, index]), colormap = :seis
 
 display(GLMakie.Screen(), f);
 
-#= pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
+pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
 filename = "/k2=1_k1_g.pdf"
 fullpath = pathtosave * filename 
-save(fullpath, f) =#
+save(fullpath, f)

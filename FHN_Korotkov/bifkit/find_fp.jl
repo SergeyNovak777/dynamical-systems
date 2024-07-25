@@ -15,7 +15,7 @@ using BifurcationKit, Setfield, LinearAlgebra, Plots, Parameters
 function FHN2_try3_params_set()
     ϵ = 0.01; a = -1.01;
     g = 0.1; k = 50.0; σ = 50.0 * pi / 180; α = 160.0 * pi / 180;
-    k1 = 0.094589; k2 = 45; # 64.76190476190476;
+    k1 = 0.0942836676217765; k2 = 0.5128939828080229; # 64.76190476190476;
     return (ϵ = ϵ, a = a, g = g, k = k, σ = σ, α = α, k1 = k1, k2 = k2)
 end
 
@@ -38,14 +38,14 @@ function FHN2_try3(u, p)
 end
 
 
-u0 = [-1.0221779287339454, -0.6359770136715965, -1.0119938655496694, -0.6322079892358413, -0.003769024436094622]
+u0 = [-1.0098465952613516, -0.6367180648287176, -1.0104331204244255, -0.6367069077861245, -1.1157042260726197e-5]
 
 params = FHN2_try3_params_set();
 
 opt_new = NewtonPar(tol = 1e-9, max_iterations = 10, linsolver=GMRESKrylovKit(), verbose =true);
 
-pmax = 0.094589;
-pmin = 0.094589;
+pmax = 0.0942836676217765;
+pmin = 0.0942836676217765;
 
 opts_con = ContinuationPar(p_min = pmin, p_max = pmax,
                             ds = 0.0001, dsmin = 1e-10, dsmax = 1e-3,
