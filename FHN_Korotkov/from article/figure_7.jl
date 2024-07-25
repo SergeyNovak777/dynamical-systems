@@ -76,15 +76,17 @@ scatter!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], m
 scale!(ax.scene, 1, 1, 1)
 display(GLMakie.Screen(), f)
 
-labelsize = 105;
-ticksize = 70;
+#= labelsize = 105;
+ticksize = 70; =#
+labelsize = 85;
+ticksize = 50;
 CairoMakie.activate!();
 f = Figure(size = (1200 ,600));
 ax = Axis3(f[1, 1], xlabel = L"x_1", ylabel = L"x_2", zlabel = L"y_1",
     xlabelsize = labelsize, ylabelsize = labelsize, zlabelsize = labelsize,
     xticklabelsize = ticksize, yticklabelsize = ticksize, zticklabelsize = ticksize,
     xgridvisible = false, ygridvisible = false, zgridvisible = false,
-    xlabeloffset = 100, ylabeloffset = 60, zlabeloffset = 180,   
+    xlabeloffset = 70, ylabeloffset = 60, zlabeloffset = 180,   
     protrusions = (30, 30,120, 30));
 xlims!(ax, -1.1, -0.8);
 ylims!(ax, -1.2, -0.6);
@@ -92,7 +94,7 @@ zlims!(ax, -0.64, -0.60)
 lines!(ax, sol[index_x, t_plot_start:t_plot_end], sol[index_y, t_plot_start:t_plot_end],
         sol[index_z, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
 scatter!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], markersize = 15, color = :red)
-text!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], text = L"O_1", fontsize = labelsize, offset = (30, -120));
+text!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], text = L"O_1", fontsize = labelsize, offset = (0, -120));
 display(GLMakie.Screen(), f)
 
 display(f)
@@ -128,18 +130,6 @@ x_mean = (sol[1, :] + sol[3, :]) / 2;
 t_start_plot_timeseries = 1; t_end_plot_timeseries = 500_000;
 labelsize = 85;
 ticksize = 50;
-f = Figure(size = (1200, 400));
-ax = Axis(f[1, 1], xlabel = L"t", ylabel = L"\overline{x}",
-    xlabelsize = labelsize, ylabelsize = labelsize,
-    xticklabelsize = ticksize, yticklabelsize = ticksize,
-    xgridvisible = false, ygridvisible = false,
-    xticks = [0, 2000, 4000, 6000])
-
-lines!(ax, sol.t[t_start_plot_timeseries:t_end_plot_timeseries], x_mean[t_start_plot_timeseries:t_end_plot_timeseries],
-linewidth = 1.0, color = :blue)
-display(f);
-save(path_to_save*"x_mean_timeseries.eps", f)
-
 
 t_start_plot_timeseries = 1; t_end_plot_timeseries = 400_000;
 f = Figure(size = (1200, 700));
