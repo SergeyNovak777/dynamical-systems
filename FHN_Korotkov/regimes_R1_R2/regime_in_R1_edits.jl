@@ -21,17 +21,17 @@ end
 
 t_truncate(t) = floor(Int64, t / 2)
 
-Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/strip_chaos/LSE_350x350_k_1_k_2.jld2")["λs"]
-u0s = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/strip_chaos/u0s_350x350_k_1_k_2.jld2")
+Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/zoom_chaos_k1_k2_g=0.1/LSE_350x350_k_1_k_2.jld2")["λs"]
+u0s = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/zoom_chaos_k1_k2_g=0.1/u0s_350x350_k_1_k_2.jld2")
 init_point = u0s["init_points"]
 last_point = u0s["last_points"]
 
 length_range = 350;
-k1range = range( 0.090, 0.095, length = length_range);
-k2range = range(0.0, 1.0, length = length_range);
+k1range = range( 0.010, 0.016, length = length_range);
+k2range = range(0.9, 1.2, length = length_range);
 
-index_p1 = 300
-index_p2 = 180
+index_p1 = 275
+index_p2 = 170
 println("k1: $(k1range[index_p1])")
 println("k2: $(k2range[index_p2])")
 println("u0: $(init_point[index_p1, index_p2, :])")
@@ -52,7 +52,7 @@ parameters[8] = k2range[index_p2]
 
 u0_start = init_point[index_p1, index_p2, :]
 u0_start = SVector{5}(u0_start);
-fixed_point = [-1.01, -0.6367552038435674, -1.01, -0.6367552038435417, 3.0674543491693373e-13]
+fixed_point = [-1.01, -0.6367552038434853, -1.01, -0.6367552038434857, 1.5691351231693862e-12]
 jac = Matrix(jac_FHN(fixed_point, parameters, 0));
 eigen_values = eigvals(jac);
 println("eigen values: $eigen_values");
@@ -97,19 +97,6 @@ t_plot_end = t_plot_start + 50_000;
 path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/"
 
 CairoMakie.activate!();
-t_start_plot_timeseries = 1; t_end_plot_timeseries = 5_000;
-f = Figure(size = (1400, 450));
-ax = Axis(f[1, 1], xlabel = L"t", ylabel = L"x_i",
-xlabelsize = labelsize, ylabelsize = labelsize,
-xticklabelsize = ticksize, yticklabelsize = ticksize,
-xgridvisible = false, ygridvisible = false)
-lines!(ax, sol.t[t_start_plot_timeseries:t_end_plot_timeseries], sol[1, t_start_plot_timeseries:t_end_plot_timeseries],
-linewidth = 1.0, color = :red)
-lines!(ax, sol.t[t_start_plot_timeseries:t_end_plot_timeseries], sol[3, t_start_plot_timeseries:t_end_plot_timeseries],
-linewidth = 1.0, color = :green)
-#display(GLMakie.Screen(), f)
-display(f)
-save(path_to_save*"timeseries_R2.pdf", f)
 
 f = Figure(size = (1200 ,600));
 ax = Axis3(f[1, 1], xlabel = L"x_1", ylabel = L"x_2", zlabel = L"y_1",
@@ -126,35 +113,49 @@ scatter!(ax, fixed_point[1], fixed_point[3], fixed_point[2], markersize = 15, co
 text!(ax, fixed_point[1], fixed_point[3], fixed_point[2], text = L"O_1", fontsize = labelsize, align = (:center, :top))
 display(GLMakie.Screen(), f);
 display(f);
-save(path_to_save*"atractor_R2.pdf", f)
+save(path_to_save*"atractor_R1.pdf", f)
 
-index_x = 2; index_y = 4; index_z =5;
+#= 
 f = Figure(size = (1200,600));
 ax = LScene(f[1, 1])
 lines!(ax, sol[index_x, t_plot_start:t_plot_end], sol[index_y, t_plot_start:t_plot_end],
         sol[index_z, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
 scatter!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], markersize = 10, color = :red)
-display(GLMakie.Screen(), f)
+display(GLMakie.Screen(), f) =#
 
-
+index_x = 2; index_y = 4; index_z =5;
 f = Figure(size = (1200,600));
 ax = Axis3(f[1, 1], xlabel = L"y_1", ylabel = L"y_2", zlabel = L"z",
     xlabelsize = labelsize, ylabelsize = labelsize, zlabelsize = labelsize,
     xticklabelsize = ticksize, yticklabelsize = ticksize, zticklabelsize = ticksize,
     xgridvisible = false, ygridvisible = false, zgridvisible = false,
     xlabeloffset = 95, ylabeloffset = 75, zlabeloffset = 115,
-    protrusions = (30, 30,120, 30))#,
-    #zticks = [-0.04, 0.0, 0.04], xticks = [-0.56, -0.60, -0.64], yticks = [-0.56, -0.60, -0.64]);
-#= xlims!(-0.65, -0.55)
+    protrusions = (30, 30,120, 30),
+    zticks = [-0.04, 0.0, 0.04], xticks = [-0.56, -0.60, -0.64], yticks = [-0.56, -0.60, -0.64]);
+xlims!(-0.65, -0.55)
 ylims!(-0.65, -0.55)
-zlims!(-0.05, 0.05) =#
+zlims!(-0.05, 0.05)
 lines!(ax, sol[index_x, t_plot_start:t_plot_end], sol[index_y, t_plot_start:t_plot_end],
 sol[index_z, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
 scatter!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], markersize = 15, color = :red)
 text!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], text = L"O_1", fontsize = labelsize, align = (:center, :top), offset = (0, -23))
 display(GLMakie.Screen(), f)
 display(f)
-save(path_to_save*"atractor_zoom_R2.pdf", f)
+save(path_to_save*"atractor_zoom_R1.pdf", f)
+
+t_start_plot_timeseries = 1; t_end_plot_timeseries = 20_000;
+f = Figure(size = (1400, 450));
+ax = Axis(f[1, 1], xlabel = L"t", ylabel = L"x_i",
+xlabelsize = labelsize, ylabelsize = labelsize,
+xticklabelsize = ticksize, yticklabelsize = ticksize,
+xgridvisible = false, ygridvisible = false)
+lines!(ax, sol.t[t_start_plot_timeseries:t_end_plot_timeseries], sol[1, t_start_plot_timeseries:t_end_plot_timeseries],
+linewidth = 1.0, color = :red)
+lines!(ax, sol.t[t_start_plot_timeseries:t_end_plot_timeseries], sol[3, t_start_plot_timeseries:t_end_plot_timeseries],
+linewidth = 1.0, color = :green)
+#display(GLMakie.Screen(), f)
+display(f)
+save(path_to_save*"timeseries_R1.pdf", f)
 
 
 
