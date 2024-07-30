@@ -48,7 +48,7 @@ hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :sei
 
 display(GLMakie.Screen(), f);
 
-#= pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
-filename = "/map_R3.pdf"
+pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
+filename = "/map_R3_zoom.pdf"
 fullpath = pathtosave * filename 
-save(fullpath, f) =#
+save(fullpath, f)
