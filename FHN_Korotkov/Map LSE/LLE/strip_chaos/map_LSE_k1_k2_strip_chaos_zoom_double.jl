@@ -25,23 +25,22 @@ end
 #---------------------------------------------------------------------
 function main()
         
-    path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/change_k2[0_80]_g_[0.01109_0.25]_fix_k1/"
+    path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/strip_chaos_zoom_double/"
     cd(path_to_save)
         
     sys = FHN2_try3;
 
     params = FHN2_try3_params()
-    params[7] = 0.09
-    u0 = [-1.0421826508045808, -0.6270622406846756, -1.0152278251163065, -0.632604603509773, 0.005542362825099361];
+    u0 = [-1.2474030523575463, -0.5126487323506749, -1.2617979624766422, -0.5028559472138074, -0.009792785136875625];
     
     length_range = 350;
-    range_parameter_1 = range( 0.01109, 0.25, length = length_range);
-    range_parameter_2 = range(0.0, 80.0, length = length_range);
+    range_parameter_1 = range( 0.0905, 0.091, length = length_range);
+    range_parameter_2 = range(0.2, 0.4, length = length_range);
     
-    index_parameter_1 = 3;
+    index_parameter_1 = 7;
     index_parameter_2 = 8;
     
-    name_parameter_1 = "g";
+    name_parameter_1 = "k_1";
     name_parameter_2 = "k_2";
     
     time_attract = 3000
