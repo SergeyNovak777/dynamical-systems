@@ -13,11 +13,11 @@ end
 using JLD2, CairoMakie, GLMakie
 
 
-Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/strip_chaos/LSE_350x350_k_1_k_2.jld2")["λs"]
+Λs = load("/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/data/maps_LSE/strip_chaos_zoom_double/LSE_350x350_k_1_k_2.jld2")["λs"]
 
 length_range = 350;
-k1range = range( 0.090, 0.095, length = length_range);
-k2range = range(0.0, 1.0, length = length_range);
+k1range = range( 0.0905, 0.091, length = length_range);
+k2range = range(0.2, 0.4, length = length_range);
 
 index = 1
 absmax = maximum(abs.(Λs[:, :, index]))
@@ -37,8 +37,8 @@ ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize 
             xticklabelsize = ticksize, yticklabelsize = ticksize,
             xgridvisible  = false, ygridvisible = false,
             xticklabelpad = tickpad, yticklabelpad = tickpad,
-            xtickformat = "{:.1f}",
-            xticks = [0.0, 0.5, 0.97])
+            xtickformat = "{:.1f}",)
+            #xticks = [0.0, 0.5, 0.97])
 
 hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :seismic,
                 colorrange = (mn, mx))

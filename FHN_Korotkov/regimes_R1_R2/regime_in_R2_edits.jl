@@ -115,12 +115,12 @@ display(f); =#
 #save(path_to_save*"atractor_R2.pdf", f)
 
 index_x = 2; index_y = 4; index_z =1;
-f = Figure(size = (1200,600));
+#= f = Figure(size = (1200,600));
 ax = LScene(f[1, 1])
 lines!(ax, sol[index_x, t_plot_start:t_plot_end], sol[index_y, t_plot_start:t_plot_end],
         sol[index_z, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
 scatter!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], markersize = 10, color = :red)
-display(GLMakie.Screen(), f)
+display(GLMakie.Screen(), f) =#
 
 
 f = Figure(size = (1200,600));
@@ -129,19 +129,35 @@ ax = Axis3(f[1, 1], xlabel = L"y_1", ylabel = L"y_2", zlabel = L"x_1",
     xticklabelsize = ticksize, yticklabelsize = ticksize, zticklabelsize = ticksize,
     xgridvisible = false, ygridvisible = false, zgridvisible = false,
     xlabeloffset = 95, ylabeloffset = 75, zlabeloffset = 115,
-    protrusions = (30, 30,120, 30))#,
-    #zticks = [-0.04, 0.0, 0.04], xticks = [-0.56, -0.60, -0.64], yticks = [-0.56, -0.60, -0.64]);
-xlims!(-0.61, -0.55)
-ylims!(-0.61, -0.55)
-zlims!(-1.4, -1.0)
+    protrusions = (30, 30,120, 30),
+    xticks = [-0.64, -0.62, -0.60], yticks = [-0.64, -0.62, -0.60], zticks = [-1.15, -1.04, -0.95]);
+xlims!(-0.65, -0.60)
+ylims!(-0.65, -0.60)
+zlims!(-1.2, -0.90)
 lines!(ax, sol[index_x, t_plot_start:t_plot_end], sol[index_y, t_plot_start:t_plot_end],
 sol[index_z, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
 scatter!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], markersize = 15, color = :red)
 text!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], text = L"O_1", fontsize = labelsize,
-    align = (:center, :top), offset = (0, -43))
+    align = (:center, :top), offset = (-110, -70))
 display(GLMakie.Screen(), f)
 display(f)
-#save(path_to_save*"atractor_zoom_R2.pdf", f)
+save(path_to_save*"atractor_zoom_R2_v4.pdf", f)
+
+
+#= CairoMakie.activate!();
+t_start_plot_timeseries = 1; t_end_plot_timeseries = 5_495;
+f = Figure(size = (1400, 450));
+ax = Axis(f[1, 1], xlabel = L"t", ylabel = L"x_i",
+xlabelsize = labelsize, ylabelsize = labelsize,
+xticklabelsize = ticksize, yticklabelsize = ticksize,
+xgridvisible = false, ygridvisible = false)
+lines!(ax, sol.t[t_start_plot_timeseries:t_end_plot_timeseries], sol[1, t_start_plot_timeseries:t_end_plot_timeseries],
+linewidth = 1.0, color = :red)
+lines!(ax, sol.t[t_start_plot_timeseries:t_end_plot_timeseries], sol[3, t_start_plot_timeseries:t_end_plot_timeseries],
+linewidth = 1.0, color = :green)
+#display(GLMakie.Screen(), f)
+display(f)
+save(path_to_save*"timeseries_R2.pdf", f) =#
 
 
 

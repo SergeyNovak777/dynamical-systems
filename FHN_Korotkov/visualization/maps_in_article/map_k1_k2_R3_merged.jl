@@ -44,7 +44,7 @@ color_r1 = :black
 lw_quad = 5.0;
 window_width =  280;
 window_height = 200;
-f = Figure(size=(900,680))
+f = Figure(size=(920,340))
 
 
 ax_R3_norm = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 50,
