@@ -14,7 +14,7 @@ else
 end
 
 using StaticArrays, DifferentialEquations, JLD2, Statistics
-using CairoMakie 
+using CairoMakie, GLMakie 
 
 t_truncate(t) = floor(Int64, t / 2)
 Hs(x, k) = Statistics.mean(x) + k * Statistics.std(x)
@@ -23,18 +23,18 @@ alg = Vern9()
 abs_tol = 1e-10;
 rel_tol = 1e-10;
 max_iters = 1e8;
-println("alg: $alg"); println("abstol: $abs_tol; reltol: $(rel_tol)")
-integrator_setting = (alg = alg, abs_tol = abs_tol, rel_tol = rel_tol, max_iters = max_iters)
+#= println("alg: $alg"); println("abstol: $abs_tol; reltol: $(rel_tol)")
+integrator_setting = (alg = alg, abs_tol = abs_tol, rel_tol = rel_tol, max_iters = max_iters) =#
 
 path_to_save = "/home/sergey/timeseries_k2_75_74_save_x1_x2/"
 parameters = FHN2_try3_params()
 parameters[7] = 0.09
-parameters[8] = 75
-
+parameters[8] = 75.0;
+println("k2: $(parameters[8])")
 u0 = [1.7, 0.7, -1.4, 0.35, 0.7 - 0.35]   
 u0 = SVector{5}(u0)
 
-t_point = 50000.0;
+t_point = 100_000.0;
 tspan = (0.0, t_point);
 
 prob = ODEProblem(FHN2_try3, u0, tspan, parameters)
@@ -71,51 +71,47 @@ peaks_EEs = peaks_spikes[index_EEs]
 t_EEs = t_peaks_spikes[index_EEs]
 println("count EEs: $(length(peaks_EEs))")
 
+labelsize = 35;
+ticksize = 20;
+
+f = Figure()
+ax = Axis(f[1, 1], xlabel = L"t", ylabel = L"x_1",
+xgridvisible = false, ygridvisible = false,
+xlabelsize = labelsize, ylabelsize = labelsize, xticklabelsize = ticksize, yticklabelsize = ticksize)
+lines!(ax, sol.t[1:250_000], sol[3, 1:250_000], linewidth = 1.0)
+display(GLMakie.Screen(), f)
+
 
 f = Figure()
 ax = Axis(f[1, 1], xlabel = L"t", ylabel = L"peaks_{x1}",
-xgridvisible = false, ygridvisible = false)
+xgridvisible = false, ygridvisible = false,
+xlabelsize = labelsize, ylabelsize = labelsize, xticklabelsize = ticksize, yticklabelsize = ticksize)
 lines!(ax, t_peaks_spikes[1:end], peaks_spikes[1:end], linewidth = 1.0)
-hlines!(ax, Hs_x, linewidth = 3.0, linestyle = :dash, color = :red)
-display(f)
+display(GLMakie.Screen(), f)
 
 
-array_IEI = get_IEI(t_EEs)
-#array_IEI = sort(array_IEI)
-array_PDF_IEI = get_PDF_IEI(array_IEI; shift = 10)
+array_ISI = get_IEI(t_peaks_spikes);
+array_PDF_ISI = get_PDF_IEI(array_ISI; shift = 10)
 
-Hs_IEI_coeff_8 = Hs(array_IEI, 8)
-Hs_IEI_coeff_6 = Hs(array_IEI, 6)
-
-labelsize = 40;
-ticksize = 30;
-
-CairoMakie.activate!()
-
+Hs_ISI_coeff_8 = Hs(array_ISI, 8)
+Hs_ISI_coeff_6 = Hs(array_ISI, 6)
 
 f = Figure()
-ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10,
+ax = Axis(f[1, 1], xlabel = L"ISI", ylabel = L"PDF_{ISI}", yscale = log10,
 xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticksize, yticklabelsize = ticksize,
 xgridvisible = false, ygridvisible = false)
-hist!(ax, array_IEI, weights = array_PDF_IEI, bins = 100)
-vlines!(ax, Hs_IEI_coeff_8, linewidth = 5.0, linestyle = :dash, color = :red, label = L"H_s=4612")
-vlines!(ax, Hs_IEI_coeff_6, linewidth = 5.0, linestyle = :dash, color = :green)
-text!(ax, 4700, 1, text = L"Hs_8", fontsize = labelsize)
-text!(ax, 3600, 1, text = L"Hs_6", fontsize = labelsize)
-#axislegend(ax, labelsize = labelsize, position = :ct)
-display(f)
+hist!(ax, array_ISI, weights = array_PDF_ISI, bins = 50)
+vlines!(ax, Hs_ISI_coeff_8, linewidth = 5.0, linestyle = :dash, color = :red)
+vlines!(ax, Hs_ISI_coeff_6, linewidth = 5.0, linestyle = :dash, color = :green)
+display(GLMakie.Screen(), f)
 
 f = Figure()
 ax = Axis(f[1, 1], xlabel = L"t_{EE}", ylabel = L"IEI",
 xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticksize, yticklabelsize = ticksize,
 xgridvisible = false, ygridvisible = false)
-lines!(ax, t_EEs[2:end], array_IEI, linewidth = 1.0)
-hlines!(ax, Hs_IEI_coeff_8, linewidth = 5.0, linestyle = :dash, color = :red, label = L"H_s=4612")
-hlines!(ax, Hs_IEI_coeff_6, linewidth = 5.0, linestyle = :dash, color = :green)
-
-#axislegend(ax, labelsize = labelsize, position = :cb)
-text!(ax, 20_000_000,4600, text = L"Hs_8", fontsize = labelsize)
-text!(ax, 12_500_000,3650, text = L"Hs_6", fontsize = labelsize)
-display(f)
+lines!(ax, t_peaks_spikes[2:end], array_ISI, linewidth = 1.0)
+hlines!(ax, Hs_ISI_coeff_8, linewidth = 5.0, linestyle = :dash, color = :red)
+hlines!(ax, Hs_ISI_coeff_6, linewidth = 5.0, linestyle = :dash, color = :green)
+display(GLMakie.Screen(), f)

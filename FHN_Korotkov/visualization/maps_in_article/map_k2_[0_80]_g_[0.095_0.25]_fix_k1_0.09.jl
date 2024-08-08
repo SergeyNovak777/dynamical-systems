@@ -25,10 +25,17 @@ k2range = range(0.0, 80.0, length = length_range);
 
 
 index = 1
-absmax = maximum((Λs[:, :, index]))
 
-mn, mx =  -absmax, absmax
+mn, mx =  minimum((Λs[:, :, index])), maximum((Λs[:, :, index]))
 CairoMakie.activate!()  
+
+index_p1 = 262
+index_p2 = 324
+println("g: $(grange[index_p1]); g index: $index_p1")
+println("k2: $(k2range[index_p2]); k2 index: $index_p2")
+println("u0: $(init_point[index_p1, index_p2, :])")
+println("λs: $(Λs[index_p1, index_p2, index]) ")
+println("last pont: $(last_point[index_p1,index_p2,:])")
 
 ticksize = 35
 tickpad = 10.0
@@ -42,21 +49,21 @@ ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"g", xlabelsize = 50, ylabelsize = 
             xticklabelsize = ticksize, yticklabelsize = ticksize,
             xgridvisible  = false, ygridvisible = false,
             xticklabelpad = tickpad, yticklabelpad = tickpad)
-#Λs[324:400, :, 1] .= -1
+
 hm = heatmap!(ax, k2range, grange, transpose(Λs[:, :, index]), colormap = :seismic,
-                colorrange = (mn, mx))
-#ylims!(0.0, 0.097)
+                colorrange = (-0.3, 0.3))
+
+#scatter!(ax, k2range[index_p2], grange[index_p1], markersize = 5, color = :lime)
+
 display(GLMakie.Screen(), f);
 
-#= pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
-filename = "/map_k2_g_fix_k1.pdf"
+pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
+filename = "/map_k2_g_fix_k1_extended.pdf"
 fullpath = pathtosave * filename 
-save(fullpath, f) =#
+save(fullpath, f)
 
-#= index_p1 = 324
-index_p2 = 324
-println("k1: $(grange[index_p1]); g index: $index_p1")
-println("k2: $(k2range[index_p2]); k2 index: $index_p2")
-println("u0: $(init_point[index_p1, index_p2, :])")
-println("λs: $(Λs[index_p1, index_p2, index]) ")
-println("last pont: $(last_point[index_p1,index_p2,:])") =#
+
+
+#findall(x->x== maximum((Λs[:, :, index])), Λs[:, :, index])
+
+#findall(x-> x == mx, Λs[:, :, 1])

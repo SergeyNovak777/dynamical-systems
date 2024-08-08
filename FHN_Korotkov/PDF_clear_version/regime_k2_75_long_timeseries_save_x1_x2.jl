@@ -90,10 +90,10 @@ max_iters = 1e8;
 println("alg: $alg"); println("abstol: $abs_tol; reltol: $(rel_tol)")
 integrator_setting = (alg = alg, abs_tol = abs_tol, rel_tol = rel_tol, max_iters = max_iters)
 
-path_to_save = "/home/sergey/timeseries_k2_75_74_save_x1_x2/"
+path_to_save = "/home/sergey/timeseries_k2_75_save_x1_x2/"
 parameters = FHN2_try3_params()
 parameters[7] = 0.09
-parameters[8] = 75.74
+parameters[8] = 75
 
 u0_start = [1.7, 0.7, -1.4, 0.35, 0.7 - 0.35]   
 u0_start = SVector{5}(u0_start)

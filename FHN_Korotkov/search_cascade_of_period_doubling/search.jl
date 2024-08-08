@@ -32,12 +32,12 @@ parameters = FHN2_try3_params();
 #0.091695    # 0.091695
 
 #0.0932625
-parameters[3] = 0.095;
+parameters[3] = 0.21091690544412608;
 parameters[7] = 0.09;
-parameters[8] = 0.0;
+parameters[8] = 74.04011461318052;
 # 64.76190476190476
 
-u0_start = [-1.0221779287339454, -0.6359770136715965, -1.0119938655496694, -0.6322079892358413, -0.003769024436094622]
+u0_start = [-1.0390736207780393, -0.5113730619238268, -0.9762558582868187, -0.4758065055184689, -0.03556655640510134]
 u0_start = SVector{5}(u0_start);
 #fixed_point = [-1.01, -0.6367552038434912, -1.01, -0.6367552038434885, -3.421437503947531e-13]
 
@@ -54,7 +54,7 @@ sol = solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive
 ds = CoupledODEs(FHN2_try3, u0_start, parameters,
 diffeq = integrator_setting);
 
-LSE = lyapunovspectrum(ds, 100_000);
+LSE = lyapunovspectrum(ds, 200_000);
 println("LSE: $LSE");
 
 len_sol = length(sol.t);
@@ -85,7 +85,7 @@ t_plot_end = t_plot_start + 4_700; #len_sol;
 CairoMakie.activate!();
 
 index_x = 1; index_y = 3; index_z =2;
-#= f = Figure(size = (1200 ,600));
+f = Figure(size = (1200 ,600));
 ax = Axis3(f[1, 1], xlabel = L"x_1", ylabel = L"x_2", zlabel = L"y_1",
     xlabelsize = labelsize, ylabelsize = labelsize, zlabelsize = labelsize,
     xticklabelsize = ticksize, yticklabelsize = ticksize, zticklabelsize = ticksize,
@@ -98,7 +98,7 @@ lines!(ax, sol[index_x, t_plot_start:t_plot_end], sol[index_y, t_plot_start:t_pl
         sol[index_z, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
 #scatter!(ax, fixed_point[2], fixed_point[4], fixed_point[1], markersize = 10, color = :red)
 display(GLMakie.Screen(), f)
-display(f) =#
+display(f)
 
 f = Figure(size = (1200,600));
 ax = LScene(f[1, 1])

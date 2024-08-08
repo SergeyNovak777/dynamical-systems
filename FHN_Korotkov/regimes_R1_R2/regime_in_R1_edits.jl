@@ -56,7 +56,7 @@ fixed_point = [-1.01, -0.6367552038434853, -1.01, -0.6367552038434857, 1.5691351
 jac = Matrix(jac_FHN(fixed_point, parameters, 0));
 eigen_values = eigvals(jac);
 println("eigen values: $eigen_values");
-t_end = 30_000;
+t_end = 10_000;
 tspan = (0.0, t_end);
 
 prob = ODEProblem(FHN2_try3, u0_start, tspan, parameters)
@@ -67,7 +67,7 @@ sol = solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive
 ds = CoupledODEs(FHN2_try3, last_point[index_p1,index_p2,:], parameters,
 diffeq = integrator_setting);
 
-LSE = lyapunovspectrum(ds, 50000);
+LSE = lyapunovspectrum(ds, 10_000);
 println(LSE);
 
 len_sol = length(sol.t);
@@ -144,7 +144,7 @@ display(GLMakie.Screen(), f)
 display(f)
 #save(path_to_save*"atractor_zoom_R1_v5.pdf", f)
 
-t_start_plot_timeseries = 1; t_end_plot_timeseries = 18_000;
+#= t_start_plot_timeseries = 1; t_end_plot_timeseries = 18_000;
 f = Figure(size = (1400, 450));
 ax = Axis(f[1, 1], xlabel = L"t", ylabel = L"x_i",
 xlabelsize = labelsize, ylabelsize = labelsize,
@@ -157,6 +157,6 @@ linewidth = 1.0, color = :green)
 #display(GLMakie.Screen(), f)
 display(f)
 save(path_to_save*"timeseries_R1.pdf", f)
-println("t: $(sol.t[t_end_plot_timeseries])")
+println("t: $(sol.t[t_end_plot_timeseries])") =#
 
 
