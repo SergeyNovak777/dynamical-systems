@@ -72,19 +72,21 @@ function get_PDF_IEI_parallel(IEI; shift = 10)
 end
 
 
-count_peaks = 1_000_000;
+count_peaks = 2_000_000;
 println("t_end: $(t_peaks_spikes[count_peaks])");
-array_ISI = get_IEI(t_peaks_spikes[1:count_peaks])
+array_ISI = get_IEI(t_peaks_spikes[1:count_peaks]);
 #array_IEI = sort(array_IEI)
 
-array_PDF_ISI = get_PDF_IEI(array_ISI; shift = 10)
+#array_PDF_ISI = get_PDF_IEI(array_ISI; shift = 10)
 array_PDF_ISI_parallel, array_ISI_par = get_PDF_IEI_parallel(array_ISI; shift = 10)
 
-Hs_ISI_coeff_8 = Hs(array_ISI, 8)
-Hs_ISI_coeff_6 = Hs(array_ISI, 6)
+jldsave(path_to_folder*"PDF_ISI.jld2"; array_PDF_ISI_parallel)
+jldsave(path_to_folder*"ISI.jld2"; array_ISI_par)
+#= Hs_ISI_coeff_8 = Hs(array_ISI, 8)
+Hs_ISI_coeff_6 = Hs(array_ISI, 6) =#
 
-Hs_ISI_coeff_8_par = Hs(array_ISI_par, 8)
-Hs_ISI_coeff_6_par = Hs(array_ISI_par, 6)
+Hs_ISI_coeff_8_par = Hs(array_ISI_par, 8);
+Hs_ISI_coeff_6_par = Hs(array_ISI_par, 6);
 
 labelsize = 40;
 ticksize = 30;
@@ -94,7 +96,7 @@ filename_hist = "PDF_IEE_hist_x1.eps"
 filename_tEE_IEI = "t_EE_IEI_x1.eps"
 filename_peaks_EE_IEI = "peaks_EE_IEI_x1.eps" =#
 
-f = Figure()
+#= f = Figure()
 ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10,
 xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticksize, yticklabelsize = ticksize,
@@ -104,32 +106,24 @@ vlines!(ax, Hs_ISI_coeff_8, linewidth = 5.0, linestyle = :dash, color = :red, la
 vlines!(ax, Hs_ISI_coeff_6, linewidth = 5.0, linestyle = :dash, color = :green)
 #axislegend(ax, labelsize = labelsize, position = :ct)
 display(GLMakie.Screen(), f)
-#save(path_to_save*filename_hist, f)
+#save(path_to_save*filename_hist, f) =#
 
 f = Figure()
-ax = Axis(f[1, 1], xlabel = L"par IEI", ylabel = L"par PDF_{IEI}", yscale = log10,
+ax = Axis(f[1, 1], xlabel = L"IEI", ylabel = L"PDF_{IEI}", yscale = log10,
 xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticksize, yticklabelsize = ticksize,
 xgridvisible = false, ygridvisible = false)
 hist!(ax, array_ISI_par, weights = array_PDF_ISI_parallel, bins = 50)
 vlines!(ax, Hs_ISI_coeff_8_par, linewidth = 5.0, linestyle = :dash, color = :red, label = L"H_s=4612")
 vlines!(ax, Hs_ISI_coeff_6_par, linewidth = 5.0, linestyle = :dash, color = :green)
-#axislegend(ax, labelsize = labelsize, position = :ct)
 display(GLMakie.Screen(), f)
 
-
-#= 
 f = Figure()
 ax = Axis(f[1, 1], xlabel = L"t_{EE}", ylabel = L"IEI",
 xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticksize, yticklabelsize = ticksize,
 xgridvisible = false, ygridvisible = false)
-lines!(ax, t_EEs[2:end], array_ISI, linewidth = 1.0)
-hlines!(ax, Hs_ISI_coeff_8, linewidth = 5.0, linestyle = :dash, color = :red, label = L"H_s=4612")
-hlines!(ax, Hs_ISI_coeff_6, linewidth = 5.0, linestyle = :dash, color = :green)
-
-#axislegend(ax, labelsize = labelsize, position = :cb)
-text!(ax, 20_000_000,4600, text = L"Hs_8", fontsize = labelsize)
-text!(ax, 12_500_000,3650, text = L"Hs_6", fontsize = labelsize)
-display(f)
-#save(path_to_save*filename_tEE_IEI, f) =#
+lines!(ax, t_peaks_spikes[2:count_peaks], array_ISI_par, linewidth = 1.0)
+hlines!(ax, Hs_ISI_coeff_8_par, linewidth = 5.0, linestyle = :dash, color = :red, label = L"H_s=4612")
+hlines!(ax, Hs_ISI_coeff_6_par, linewidth = 5.0, linestyle = :dash, color = :green)
+display(GLMakie.Screen(), f)
