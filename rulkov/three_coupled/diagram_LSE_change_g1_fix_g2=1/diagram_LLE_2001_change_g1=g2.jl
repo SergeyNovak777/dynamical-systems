@@ -43,9 +43,10 @@ function first_iter_out_loop(u0_first)
 
     params[10] =  g1_range[1];
     params[11] =  g1_range[1];
+    
     u0_first_iteration_f = three_coupled_rulkov_first_iteration(u0_first, params);
 
-    prob = DiscreteProblem(three_coupled_rulkov, SVector{length(u0_first_iteration_f)}(u0_first_iteration_f), tspan, params);
+    prob = DiscreteProblem(three_coupled_rulkov, SVector{length(u0_first)}(u0_first), tspan, params);
     sol = solve(prob);
     point_from_attractor = sol[:, end];
 
@@ -97,12 +98,11 @@ end
 
 window_width = 1000; window_height = 350;
 f = Figure(size = (window_width, window_height))
-ax = Axis(f[1, 1], xlabel = L"g_1", ylabel = L"λ_1",
-xticks = [0.0, 2.5, 5.0, 7.5, 10.0], yticks = [-0.1, -0.05, 0.0, 0.05, 0.1])
+ax = Axis(f[1, 1], xlabel = L"g_1", ylabel = L"λ_1")
 scatter!(ax, g1_range, vector_LLE[:, 1], markersize = 2.5, color = :blue)
 hlines!(ax, 0.0, linewidth = 1.0, color = :black)
-xlims!(ax, 0.0, 10.0)
-ylims!(ax, -0.1, 0.1)
+#= xlims!(ax, 0.0, 10.0)
+ylims!(ax, -0.1, 0.1) =#
 display(GLMakie.Screen(), f)
 
 #= jldsave(path_to_save * "LLE_g2=1_len_1001.jld2"; vector_LLE)

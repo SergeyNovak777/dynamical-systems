@@ -598,6 +598,17 @@ function three_coupled_rulkov(u, p, t)
         end
     end
 
+    function get_x_y_z(u0)
+        x1, y1, z1 = u0[1:3]
+        x2, y2, z2 = u0[6:8]
+        x3, y3, z3 = u0[11:13]
+    
+        return SVector(x1, y1, z1, x2, y2, z2, x3, y3, z3)
+    end
+
+    #u = get_x_y_z(u);
+    #u = three_coupled_rulkov_first_iteration(u, p)
+
     x1, y1, z1, I21prev, I31prev, x2, y2, z2, I12prev, I32prev, x3, y3, z3, I13prev, I23prev = u
     α, σ, μ, β_syn, σ_syn, x_rp, x_th, γ_1, γ_2, g1, g2 = p
 
