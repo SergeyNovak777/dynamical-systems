@@ -510,3 +510,129 @@ function jac_FHN(u, p, t)
                         x1y2, y1y2, x2y2, y2y2, zy2,
                         x1z,  y1z,  x2z,  y2z,  zz)
 end
+
+# ---------------------------------------------------------------------------------
+# model three coupled Rulkov
+function three_coupled_rulkov_first_iteration(u, p)
+
+    function right_part_x(x, y, z)
+        if x <= 0.0
+            return α/(1.0 - x) + y
+        elseif (0.0 < x < (α + y)) && (z <=0.0)
+            return α  +y
+        elseif (x >= α + y) || (z > 0)
+            return -1.0
+        else
+            return -1.0;
+        end
+    end
+
+    function right_part_y(x, y, sum_inhibitory)
+        return y + μ * ( -x - 1.0 + σ + sum_inhibitory )
+    end
+
+    function xi(x)
+        if x > x_th
+            return 1.0;
+        elseif x <=x_th
+            return 0.0;
+        end
+    end
+
+    x1, y1, z1, x2, y2, z2, x3, y3, z3 = u
+    α, σ, μ, β_syn, σ_syn, x_rp, x_th, γ_1, γ_2, g1, g2 = p
+
+    if g1 > 0 && g2 >0
+        k = 2
+    else
+        k = 1
+    end
+
+    I21 = g2 * ( x_rp - x1 ) * xi(x2)
+    I31 = g1 * ( x_rp - x1 ) * xi(x3)
+
+    I12 = g1 * ( x_rp - x2 ) * xi(x1)
+    I32 = g2 * ( x_rp - x2 ) * xi(x3)
+
+    I13 = g2 * ( x_rp - x3 ) * xi(x1)
+    I23 = g1 * ( x_rp - x3 ) * xi(x2)
+
+    x1n = right_part_x(x1, y1 + (β_syn/k) * (I21 + I31), z1)    
+    y1n = right_part_y(x1, y1, (σ_syn/k) * (I21 + I31))
+    z1n = x1
+
+    x2n = right_part_x(x2, y2 + (β_syn/k) * (I12 + I32), z2)
+    y2n = right_part_y(x2, y2, (σ_syn/k) * (I12 + I32))
+    z2n = x2
+
+    x3n =  right_part_x(x3, y3 + (β_syn/k) * (I13 + I23), z3)
+    y3n = right_part_y(x3, y3, (σ_syn/k) * (I13 + I23))
+    z3n = x3
+
+    return SVector(x1n, y1n, z1n, I21, I31, x2n, y2n, z2n, I12, I32, x3n, y3n, z3n, I13, I23)
+end
+
+function three_coupled_rulkov(u, p, t)
+
+    function right_part_x(x, y, z)
+        if x <= 0.0
+            return α/(1.0 - x) + y
+        elseif (0.0 < x < (α + y)) && (z <=0.0)
+            return α  +y
+        elseif (x >= α + y) || (z > 0)
+            return -1.0
+        else
+            return -1.0;
+        end
+    end
+
+    function right_part_y(x, y, sum_inhibitory)
+        return y + μ * ( -x - 1.0 + σ + sum_inhibitory )
+    end
+
+    function xi(x)
+        if x > x_th
+            return 1.0;
+        elseif x <=x_th
+            return 0.0;
+        end
+    end
+
+    x1, y1, z1, I21prev, I31prev, x2, y2, z2, I12prev, I32prev, x3, y3, z3, I13prev, I23prev = u
+    α, σ, μ, β_syn, σ_syn, x_rp, x_th, γ_1, γ_2, g1, g2 = p
+
+    if g1 > 0 && g2 >0
+        k = 2
+    else
+        k = 1
+    end
+
+    I21 =  γ_2 * I21prev + g2 * ( x_rp - x1 ) * xi(x2)
+    I31 =  γ_1 * I31prev + g1 * ( x_rp - x1 ) * xi(x3)
+    x1n = right_part_x(x1, y1 + (β_syn/k) * (I21 + I31), z1)
+    y1n = right_part_y(x1, y1, (σ_syn/k) * (I21 + I31))
+    z1n = x1
+
+    I12 = γ_1 * I12prev + g1 * ( x_rp - x2 ) * xi(x1)
+    I32 = γ_2 * I32prev + g2 * ( x_rp - x2 ) * xi(x3)
+    x2n = right_part_x(x2, y2 + (β_syn/k) * (I12 + I32), z2)
+    y2n = right_part_y(x2, y2, (σ_syn/k) * (I12 + I32))
+    z2n = x2
+
+    I13 = γ_2 * I13prev +  g2 * ( x_rp - x3 ) * xi(x1)
+    I23 = γ_1 * I23prev + g1 * ( x_rp - x3 ) * xi(x2)
+    x3n =  right_part_x(x3, y3 + (β_syn/k) * (I13 + I23), z3)
+    y3n = right_part_y(x3, y3, (σ_syn/k) * (I13 + I23))
+    z3n = x3
+
+    return SVector(x1n, y1n, z1n, I21, I31, x2n, y2n, z2n, I12, I32, x3n, y3n, z3n, I13, I23)
+end
+
+function get_params_three_coupled_rulkov()
+    α = 3.9; σ =1.0; μ = 0.001;
+    β_syn = 0.0001; σ_syn = 1.0;
+    x_rp = -1.5; x_th = -0.8;
+    γ_1 = 0.0; γ_2 = 0.0;
+    g1 = 1.0; g2 = 7.0;
+    return [α, σ, μ, β_syn, σ_syn, x_rp, x_th, γ_1, γ_2, g1, g2]
+end

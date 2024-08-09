@@ -56,7 +56,7 @@ end
 
 params = get_params_two_coupled_rulkov();
 params[1] = 3.9; #4.4;
-params[2] = 0.15; #0.1;
+params[2] = 1.0; #0.1;
 u0 = [1.0, 0.3, 0.01];
 tspan = (0, 100000);
 
@@ -64,16 +64,17 @@ prob = DiscreteProblem(two_coupled_rulkov, SVector{3}(u0), tspan, params);
 sol = solve(prob);
 
 t_start = 50000;
-t_end = 55200;
+t_end = 50200;
 
-f = Figure()
+window_height = 400; window_width = 1200;
+f = Figure(size = (window_width, window_height))
 ax = Axis(f[1, 1])
 lines!(ax, sol.t[t_start:t_end], sol[1, t_start:t_end], linewidth = 1.0, color = :blue)
 display(GLMakie.Screen(), f)
 
 f = Figure()
 ax = Axis(f[1, 1])
-scatter!(ax, sol[1, t_start:t_end], sol[2, t_start:t_end], markersize = 1.0, color = :blue)
+scatter!(ax, sol[1, t_start:t_end], sol[2, t_start:t_end], markersize = 5.0, color = :blue)
 display(GLMakie.Screen(), f)
 
 ds = DeterministicIteratedMap(two_coupled_rulkov, sol[end], params)
