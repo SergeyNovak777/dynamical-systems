@@ -16,8 +16,8 @@ using JLD2, CairoMakie, GLMakie
 Λs = load("/home/sergey/MEGA/dynamical-systems/Rulkov/data/Maps/without_gamma/LSE_350x350_g_1_g_2.jld2")["λs"]
 
 length_range = 350;
-g_1_range = range( 0.0, 10.0, length = length_range);
-g_2_range = range(0.0, 10.0, length = length_range);
+g_1_range = range( 10.0, 0.0, length = length_range);
+g_2_range = range( 10.0, 0.0, length = length_range);
 
 index = 1
 absmax = maximum(abs.(Λs[:, :, index]))
