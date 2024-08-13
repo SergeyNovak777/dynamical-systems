@@ -23,11 +23,11 @@ end
 path_to_save = "/home/sergey/work/repo/dynamical-systems/rulkov/three_coupled/diagram_LSE_change_g1_fix_g2=1/"
 
 params = get_params_three_coupled_rulkov()
-params[11] =  1.0;
-tspan = (0, 10_000);
-t_LLE = 10_000;
+#params[11] =  1.0;
+tspan = (0, 20_000);
+t_LLE = 20_000;
 
-g_start = 10.0; g_end = 0.0; length_range_g = 2001;
+g_start = 10.0; g_end = 0.0; length_range_g = 1001;
 g1_range = range(g_start, g_end, length_range_g);
 
 vector_LLE = zeros(length_range_g, 15);
@@ -45,8 +45,8 @@ function first_iter_out_loop(u0_first)
     params[11] =  g1_range[1];
     
     u0_first_iteration_f = three_coupled_rulkov_first_iteration(u0_first, params);
-
-    prob = DiscreteProblem(three_coupled_rulkov, SVector{length(u0_first)}(u0_first), tspan, params);
+    # SVector{length(u0_first_iteration_f)}(u0_first_iteration_f)
+    prob = DiscreteProblem(three_coupled_rulkov, u0_first_iteration_f, tspan, params);
     sol = solve(prob);
     point_from_attractor = sol[:, end];
 
@@ -98,11 +98,12 @@ end
 
 window_width = 1000; window_height = 350;
 f = Figure(size = (window_width, window_height))
-ax = Axis(f[1, 1], xlabel = L"g_1", ylabel = L"λ_1")
+ax = Axis(f[1, 1], xlabel = L"g_i", ylabel = L"λ_1",
+xticks = [0.0, 2.5, 5.0, 7.5, 10.0], yticks = [-0.1, -0.05, 0.0, 0.05, 0.1])
 scatter!(ax, g1_range, vector_LLE[:, 1], markersize = 2.5, color = :blue)
 hlines!(ax, 0.0, linewidth = 1.0, color = :black)
-#= xlims!(ax, 0.0, 10.0)
-ylims!(ax, -0.1, 0.1) =#
+xlims!(ax, 0.0, 10.0)
+ylims!(ax, -0.1, 0.1)
 display(GLMakie.Screen(), f)
 
 #= jldsave(path_to_save * "LLE_g2=1_len_1001.jld2"; vector_LLE)

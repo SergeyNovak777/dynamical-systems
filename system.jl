@@ -513,128 +513,93 @@ end
 
 # ---------------------------------------------------------------------------------
 # model three coupled Rulkov
+
+@inline function right_part_x(x, y, z, α)
+    if x <= 0.0
+        return α / (1.0 - x) + y
+    elseif 0.0 < x < (α + y) && z <= 0.0
+        return α + y
+    else
+        return x >= α + y || z > 0 ? -1.0 : -1.0
+    end
+end
+
+@inline function right_part_y(x, y, sum_inhibitory, μ, σ)
+    return y + μ * ( -x - 1.0 + σ + sum_inhibitory )
+end
+
+@inline function xi(x, x_th)
+    return x > x_th ? 1.0 : 0.0
+end
+
 function three_coupled_rulkov_first_iteration(u, p)
 
-    function right_part_x(x, y, z)
-        if x <= 0.0
-            return α/(1.0 - x) + y
-        elseif (0.0 < x < (α + y)) && (z <=0.0)
-            return α  +y
-        elseif (x >= α + y) || (z > 0)
-            return -1.0
-        else
-            return -1.0;
-        end
-    end
+    #x1, y1, z1, x2, y2, z2, x3, y3, z3 = u
+    #α, σ, μ, β_syn, σ_syn, x_rp, x_th, γ_1, γ_2, g1, g2 = p
 
-    function right_part_y(x, y, sum_inhibitory)
-        return y + μ * ( -x - 1.0 + σ + sum_inhibitory )
-    end
+    #u[1], u[2], u[3], u[4], u[5], u[6], u[7], u[8], u[9] = u
+    #p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11] = p
 
-    function xi(x)
-        if x > x_th
-            return 1.0;
-        elseif x <=x_th
-            return 0.0;
-        end
-    end
+    k = p[10] > 0.0 && p[11] > 0.0 ? 2.0 : 1.0;
 
-    x1, y1, z1, x2, y2, z2, x3, y3, z3 = u
-    α, σ, μ, β_syn, σ_syn, x_rp, x_th, γ_1, γ_2, g1, g2 = p
+    I21 = p[11] * ( p[6] - u[1] ) * xi(u[4], p[7])
+    I31 = p[10] * ( p[6] - u[1] ) * xi(u[7], p[7])
 
-    if g1 > 0 && g2 >0
-        k = 2
-    else
-        k = 1
-    end
+    I12 = p[10] * ( p[6] - u[4] ) * xi(u[1], p[7])
+    I32 = p[11] * ( p[6] - u[4] ) * xi(u[7], p[7])
 
-    I21 = g2 * ( x_rp - x1 ) * xi(x2)
-    I31 = g1 * ( x_rp - x1 ) * xi(x3)
+    I13 = p[11] * ( p[6] - u[7] ) * xi(u[1], p[7])
+    I23 = p[10] * ( p[6] - u[7] ) * xi(u[4], p[7])
 
-    I12 = g1 * ( x_rp - x2 ) * xi(x1)
-    I32 = g2 * ( x_rp - x2 ) * xi(x3)
+    x1n = right_part_x(u[1], u[2] + (p[4]/k) * (I21 + I31), u[3], p[1])
+    y1n = right_part_y(u[1], u[2], (p[5]/k) * (I21 + I31), p[3], p[2])
+    z1n = u[1]
 
-    I13 = g2 * ( x_rp - x3 ) * xi(x1)
-    I23 = g1 * ( x_rp - x3 ) * xi(x2)
+    x2n = right_part_x(u[4], u[5] + (p[4]/k) * (I12 + I32), u[6], p[1])
+    y2n = right_part_y(u[4], u[5], (p[5]/k) * (I12 + I32), p[3], p[2])
+    z2n = u[4]
 
-    x1n = right_part_x(x1, y1 + (β_syn/k) * (I21 + I31), z1)    
-    y1n = right_part_y(x1, y1, (σ_syn/k) * (I21 + I31))
-    z1n = x1
-
-    x2n = right_part_x(x2, y2 + (β_syn/k) * (I12 + I32), z2)
-    y2n = right_part_y(x2, y2, (σ_syn/k) * (I12 + I32))
-    z2n = x2
-
-    x3n =  right_part_x(x3, y3 + (β_syn/k) * (I13 + I23), z3)
-    y3n = right_part_y(x3, y3, (σ_syn/k) * (I13 + I23))
-    z3n = x3
+    x3n =  right_part_x(u[7], u[8] + (p[4]/k) * (I13 + I23), u[9], p[1])
+    y3n = right_part_y(u[7], u[8], (p[5]/k) * (I13 + I23), p[3], p[2])
+    z3n = u[7]
 
     return SVector(x1n, y1n, z1n, I21, I31, x2n, y2n, z2n, I12, I32, x3n, y3n, z3n, I13, I23)
 end
 
+function get_x_y_z(u0)
+    x1, y1, z1 = u0[1:3]
+    x2, y2, z2 = u0[6:8]
+    x3, y3, z3 = u0[11:13]
+    return SVector(x1, y1, z1, x2, y2, z2, x3, y3, z3)
+end
+
 function three_coupled_rulkov(u, p, t)
 
-    function right_part_x(x, y, z)
-        if x <= 0.0
-            return α/(1.0 - x) + y
-        elseif (0.0 < x < (α + y)) && (z <=0.0)
-            return α  +y
-        elseif (x >= α + y) || (z > 0)
-            return -1.0
-        else
-            return -1.0;
-        end
-    end
+    #x1, y1, z1, I21prev, I31prev, x2, y2, z2, I12prev, I32prev, x3, y3, z3, I13prev, I23prev = u
+    #α, σ, μ, β_syn, σ_syn, x_rp, x_th, γ_1, γ_2, g1, g2 = p
 
-    function right_part_y(x, y, sum_inhibitory)
-        return y + μ * ( -x - 1.0 + σ + sum_inhibitory )
-    end
+    #u[1], u[2], u[3], u[4], u[5], u[6], u[7], u[8], u[9], u[10], u[11], u[12], u[13], u[14], u[15] = u
+    #p[1], p[2], p[3], p[4], p[5], p[6], p[7], p[8], p[9], p[10], p[11] = p
 
-    function xi(x)
-        if x > x_th
-            return 1.0;
-        elseif x <=x_th
-            return 0.0;
-        end
-    end
+    k = p[10] > 0.0 && p[11] > 0.0 ? 2.0 : 1.0;
 
-    function get_x_y_z(u0)
-        x1, y1, z1 = u0[1:3]
-        x2, y2, z2 = u0[6:8]
-        x3, y3, z3 = u0[11:13]
-    
-        return SVector(x1, y1, z1, x2, y2, z2, x3, y3, z3)
-    end
+    I21 =  p[9] * u[4] + p[11] * ( p[6] - u[1] ) * xi(u[6], p[7])
+    I31 =  p[8] * u[5] + p[10] * ( p[6] - u[1] ) * xi(u[11], p[7])
+    x1n = right_part_x(u[1], u[2] + (p[4]/k) * (I21 + I31), u[3], p[1])
+    y1n = right_part_y(u[1], u[2], (p[5]/k) * (I21 + I31), p[3], p[2])
+    z1n = u[1]
 
-    #u = get_x_y_z(u);
-    #u = three_coupled_rulkov_first_iteration(u, p)
+    I12 = p[8] * u[9] + p[10] * ( p[6] - u[6] ) * xi(u[1], p[7])
+    I32 = p[9] * u[10] + p[11] * ( p[6] - u[6] ) * xi(u[11], p[7])
+    x2n = right_part_x(u[6], u[7] + (p[4]/k) * (I12 + I32), u[8], p[1])
+    y2n = right_part_y(u[6], u[7], (p[5]/k) * (I12 + I32), p[3], p[2])
+    z2n = u[6]
 
-    x1, y1, z1, I21prev, I31prev, x2, y2, z2, I12prev, I32prev, x3, y3, z3, I13prev, I23prev = u
-    α, σ, μ, β_syn, σ_syn, x_rp, x_th, γ_1, γ_2, g1, g2 = p
-
-    if g1 > 0 && g2 >0
-        k = 2
-    else
-        k = 1
-    end
-
-    I21 =  γ_2 * I21prev + g2 * ( x_rp - x1 ) * xi(x2)
-    I31 =  γ_1 * I31prev + g1 * ( x_rp - x1 ) * xi(x3)
-    x1n = right_part_x(x1, y1 + (β_syn/k) * (I21 + I31), z1)
-    y1n = right_part_y(x1, y1, (σ_syn/k) * (I21 + I31))
-    z1n = x1
-
-    I12 = γ_1 * I12prev + g1 * ( x_rp - x2 ) * xi(x1)
-    I32 = γ_2 * I32prev + g2 * ( x_rp - x2 ) * xi(x3)
-    x2n = right_part_x(x2, y2 + (β_syn/k) * (I12 + I32), z2)
-    y2n = right_part_y(x2, y2, (σ_syn/k) * (I12 + I32))
-    z2n = x2
-
-    I13 = γ_2 * I13prev +  g2 * ( x_rp - x3 ) * xi(x1)
-    I23 = γ_1 * I23prev + g1 * ( x_rp - x3 ) * xi(x2)
-    x3n =  right_part_x(x3, y3 + (β_syn/k) * (I13 + I23), z3)
-    y3n = right_part_y(x3, y3, (σ_syn/k) * (I13 + I23))
-    z3n = x3
+    I13 = p[9] * u[14] +  p[11] * ( p[6] - u[11] ) * xi(u[1], p[7])
+    I23 = p[8] * u[15] + p[10] * ( p[6] - u[11] ) * xi(u[6], p[7])
+    x3n = right_part_x(u[11], u[12] + (p[4]/k) * (I13 + I23), u[13], p[1])
+    y3n = right_part_y(u[11], u[12], (p[5]/k) * (I13 + I23), p[3], p[2])
+    z3n = u[11]
 
     return SVector(x1n, y1n, z1n, I21, I31, x2n, y2n, z2n, I12, I32, x3n, y3n, z3n, I13, I23)
 end

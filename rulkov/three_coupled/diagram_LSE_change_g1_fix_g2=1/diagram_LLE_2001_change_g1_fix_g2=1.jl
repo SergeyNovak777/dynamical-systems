@@ -24,10 +24,10 @@ path_to_save = "/home/sergey/work/repo/dynamical-systems/rulkov/three_coupled/di
 
 params = get_params_three_coupled_rulkov()
 params[11] =  1.0;
-tspan = (0, 10_000);
-t_LLE = 10_000;
+tspan = (0, 20_000);
+t_LLE = 20_000;
 
-g_start = 10.0; g_end = 0.0; length_range_g = 2001;
+g_start = 10.0; g_end = 0.0; length_range_g = 1001;
 g1_range = range(g_start, g_end, length_range_g);
 
 vector_LLE = zeros(length_range_g, 15);
