@@ -84,8 +84,8 @@ array_ISI = get_IEI(t_peaks_spikes[1:count_peaks]);
 #array_PDF_ISI = get_PDF_IEI(array_ISI; shift = 0.0)
 array_PDF_ISI_parallel, array_ISI_par = get_PDF_IEI_parallel(array_ISI; shift = 0.0)
 
-#= jldsave(path_to_folder*"PDF_ISI.jld2"; array_PDF_ISI_parallel)
-jldsave(path_to_folder*"ISI.jld2"; array_ISI_par) =#
+jldsave(path_to_folder*"PDF_ISI.jld2"; array_PDF_ISI_parallel)
+jldsave(path_to_folder*"ISI.jld2"; array_ISI_par)
 
 #= Hs_ISI_coeff_8 = Hs(array_ISI, 8);
 Hs_ISI_coeff_6 = Hs(array_ISI, 6); =#
@@ -94,9 +94,9 @@ Hs_ISI_coeff_8_par = Hs(array_ISI_par, 8);
 Hs_ISI_coeff_6_par = Hs(array_ISI_par, 6);
 
 path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/EEs/"
-filename_hist = "k2=75_PDF_IEE_hist_x1.pdf"
-filename_tEE_IEI = "k2=75_t_EE_IEI_x1.pdf"
-filename_peaks_EE_IEI = "k2=75_peaks_EE_IEI_x1.pdf"
+filename_hist = "k2=75_PDF_ISI_hist_x1.pdf"
+filename_tEE_IEI = "k2=75_t_spikes_ISI_x1.pdf"
+filename_peaks_EE_IEI = "k2=75_peaks_spikes_ISI_x1.pdf"
 
 GLMakie.activate!()
 
@@ -124,25 +124,28 @@ display(GLMakie.Screen(), f2) =#
 #-----------------------------------------------------------------------------------
 # parallel version
 f1 = Figure()
-ax = Axis(f1[1, 1], xlabel = L"par ISI", ylabel = L"par PDF_{ISI}", yscale = log10,
+ax = Axis(f1[1, 1], xlabel = L"ISI", ylabel = L"PDF_{ISI}", yscale = log10,
 xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticksize, yticklabelsize = ticksize,
 xgridvisible = false, ygridvisible = false)
 hist!(ax, array_ISI_par, weights = array_PDF_ISI_parallel, bins = 100)
 vlines!(ax, Hs_ISI_coeff_8_par, linewidth = 5.0, linestyle = :dash, color = :red)
 vlines!(ax, Hs_ISI_coeff_6_par, linewidth = 5.0, linestyle = :dash, color = :green)
-#= text!(ax, 25.5, 15.5, text = L"Hs_8", fontsize = labelsize)
-text!(ax, 18, 15.5, text = L"Hs_6", fontsize = labelsize) =#
-display(GLMakie.Screen(), f1)
-#save(path_to_save*filename_hist, f1)
+text!(ax, 25.5, 0.001, text = L"Hs_8", fontsize = labelsize)
+text!(ax, 18, 0.001, text = L"Hs_6", fontsize = labelsize)
+display(f1)
+save(path_to_save*filename_hist, f1)
 
+
+t_interval = 5_000_000;
+CairoMakie.activate!();
 f2 = Figure()
-ax = Axis(f2[1, 1], xlabel = L"par t_{spike}", ylabel = L"par ISI",
+ax = Axis(f2[1, 1], xlabel = L"t_{spike}", ylabel = L"ISI",
 xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticksize, yticklabelsize = ticksize,
 xgridvisible = false, ygridvisible = false)
-lines!(ax, t_peaks_spikes[2:count_peaks], array_ISI_par[1:end], linewidth = 1.0)
+lines!(ax, t_peaks_spikes[2:t_interval], array_ISI_par[1:t_interval-1], linewidth = 1.0)
 hlines!(ax, Hs_ISI_coeff_8_par, linewidth = 5.0, linestyle = :dash, color = :red, label = L"H_s=4612")
 hlines!(ax, Hs_ISI_coeff_6_par, linewidth = 5.0, linestyle = :dash, color = :green)
-display(GLMakie.Screen(), f2)
-#save(path_to_save*filename_tEE_IEI, f)
+display(f2)
+save(path_to_save*filename_tEE_IEI, f)
