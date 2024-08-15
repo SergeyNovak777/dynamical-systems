@@ -13,7 +13,9 @@ end
 using JLD2, CairoMakie, GLMakie
 
 
-Λs = load("/home/sergey/MEGA/dynamical-systems/Rulkov/data/Maps/without_gamma/LSE_350x350_g_1_g_2.jld2")["λs"]
+Λs = load("/home/sergey/MEGA/dynamical-systems/Rulkov/data/Maps/without_gamma_inh_from_colab/LSE_350x350_g_1_g_2.jld2")["λs"]
+#load("/home/sergey/MEGA/dynamical-systems/Rulkov/data/Maps/without_gamma_inh_from_colab/LSE_350x350_g_1_g_2.jld2")["λs"]
+#load("/home/sergey/MEGA/dynamical-systems/Rulkov/data/Maps/without_gamma/LSE_350x350_g_1_g_2.jld2")["λs"]
 
 length_range = 350;
 g_1_range = range( 10.0, 0.0, length = length_range);
@@ -41,7 +43,7 @@ ax = Axis(f[1, 1], xlabel = L"g_2",ylabel = L"g_1", xlabelsize = 50, ylabelsize 
             xticks = vector_ticks, yticks = vector_ticks)
 
 hm = heatmap!(ax, g_1_range, g_2_range, Λs[:, :, index], colormap = :seismic,
-                colorrange = (mn, mx))
+                colorrange = (-0.1, 0.1))
 
 display(GLMakie.Screen(), f);
 
