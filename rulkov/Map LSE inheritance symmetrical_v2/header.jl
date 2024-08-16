@@ -48,21 +48,17 @@ function print_in_file(index_cycle_p1, index_cycle_p2, value_p1, value_p2, name_
     end
 end
 
-function inheritance_diagonal_print(sys, params, u0, range_p1, range_p2, index_p1, index_p2, name_p1, name_p2,
+function inheritance_diagonal_print(sys, params, u0,
+    range_p1, range_p2, index_p1, index_p2, name_p1, name_p2, length_range_p1, length_range_p2,
     time_setting,
     namefile_LSE, namefile_u0s, namefile_last_points, namefile_print)
 
-        length_range_p1 = length(range_p1);
-        length_range_p2 = length(range_p2);
+        u0_local = u0;
 
         for index_cycle_p1 in 1:length_range_p1
             for index_cycle_p2 in 1:length_range_p2
 
                 if index_cycle_p1 == index_cycle_p2
-
-                    if index_cycle_p1 == 1
-                        global u0_local = u0;
-                    end
                     
                     u0_before = u0_local;
                     u0_local = get_x_y_z(u0_local);
