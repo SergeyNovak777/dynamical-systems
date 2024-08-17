@@ -1,5 +1,34 @@
 #---------------------------------------------------------------------------------------------
 # Tsodyks Markram
+
+@inbounds function TM_4(u, p ,t)
+    
+    U(y) = U0 + ΔU0 / ( 1 + exp( -50.0 * ( y - ythr ) ) )
+    σ(x)= 1.0 / (1.0 + exp(-20.0 * (x - xthr)))
+
+    E, x, u_, y = u
+    τ, τ_D, τ_F, τ_y, α, β, J, ΔU0, xthr, ythr, U0, I0 = p
+    
+    du1 = (-E + α * log( 1 + exp( ( J * u_ * x * E + I0 ) / α ) )) / τ
+    du2 = ( 1 - x ) / τ_D - u_ * x * E
+    du3 = (U(y) - u_) / τ_F + U(y) * ( 1 - u_ ) * E
+    du4 = -y /  τ_y + β * σ(x)
+    
+    return SVector(du1, du2, du3, du4)
+    
+end
+
+function TM_4_get_params()
+
+    τ = 0.013; τ_D = 0.15; τ_F = 1.0; τ_y = 1.8;
+    α = 1.5; β = 0.4375; J = 3.07;
+    ΔU0 = 0.305;
+    I0 = -1.45; U0 = 0.23;
+    xthr = 0.9; ythr = 0.5;
+
+    return [τ, τ_D, τ_F, τ_y, α, β, J, ΔU0, xthr, ythr, U0, I0]
+end
+
 @inbounds function TM(u, p, t)
     U(y, p) = p[8] + p[9] / ( 1.0 + exp( -50.0 * (y - p[7]) ) )
     σ(x, p) = 1.0 / ( 1.0 + exp( -20.0 * (x-p[6]) ) )
