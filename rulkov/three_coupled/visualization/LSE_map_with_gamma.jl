@@ -13,11 +13,13 @@ end
 using JLD2, CairoMakie, GLMakie
 
 
-Λs = load("/home/sergey/MEGA/dynamical-systems/Rulkov/data/Maps/with_gamma/LSE_350x350_g_1_g_2.jld2")["λs"]
+Λs = load("/home/sergey/MEGA/dynamical-systems/Rulkov/data/Maps/with_gamma_inh_from_colab/LSE_350x350_g_1_g_2.jld2")["λs"]
+#load("/home/sergey/MEGA/dynamical-systems/Rulkov/data/Maps/with_gamma_inh_from_colab/LSE_350x350_g_1_g_2.jld2")["λs"]
+#load("/home/sergey/MEGA/dynamical-systems/Rulkov/data/Maps/with_gamma/LSE_350x350_g_1_g_2.jld2")["λs"]
 
 length_range = 350;
-g_1_range = range( 0.0, 10.0, length = length_range);
-g_2_range = range(0.0, 10.0, length = length_range);
+g_1_range = range(10.0, 0.0, length = length_range);
+g_2_range = range(10.0, 0.0, length = length_range);
 
 index = 1
 absmax = maximum(abs.(Λs[:, :, index]))
@@ -41,8 +43,8 @@ ax = Axis(f[1, 1], xlabel = L"g_2",ylabel = L"g_1", xlabelsize = 50, ylabelsize 
             xticks = vector_ticks, yticks = vector_ticks)
 
 hm = heatmap!(ax, g_1_range, g_2_range, Λs[:, :, index], colormap = :seismic,
-                colorrange = (mn, mx))
-
+                colorrange = (-0.1, 0.1))
+Colorbar(f[:, end+1], hm)
 display(GLMakie.Screen(), f);
 
 #= pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"

@@ -34,7 +34,7 @@ g1_range_1001 = range(0.0, 10.0, 1001);
 
 params = get_params_three_coupled_rulkov()
 params[10] = 0.0;
-params[11] = 7.0;
+params[11] = 0.0;
 tspan = (0, 300_000);
 
 #u0 = [-0.8653188666707976, -2.9297157423087055, -0.8883590191587176, -0.0, -0.0, -0.8462350817031328, -2.935527209875546, -0.8658876364860313, -0.0, -0.0, -0.9763100224806378, -2.9412769453476204, -0.9837730458388576, -0.0, -0.0]
@@ -45,22 +45,24 @@ tspan = (0, 300_000);
 # SVector{length(u0_first_iteration)}(u0_first_iteration)
 
 
-u0_first_iteration_atr1 = vector_u0s_1001[end, :]
+u0_first_iteration_atr1 = [-0.1, -0.1, -0.1, -0.1, -0.1, -0.1, -0.1, -0.1, -0.1]
+u0_first_iteration_atr1 = three_coupled_rulkov_first_iteration(u0_first_iteration_atr1, params)
+#vector_u0s_1001[end, :]
 prob_atr1 = DiscreteProblem(three_coupled_rulkov, u0_first_iteration_atr1, tspan, params);
 sol_atr1 = solve(prob_atr1);
 Ttr = 200_000;
 point_from_attractor_atr1 = sol_atr1[:, end]
 
-x_sum_atr1 = sol_atr1[1, Ttr:end] + sol_atr1[6, Ttr:end] + sol_atr1[11, Ttr:end]
+#= x_sum_atr1 = sol_atr1[1, Ttr:end] + sol_atr1[6, Ttr:end] + sol_atr1[11, Ttr:end]
 sol_t_atr1 = sol_atr1.t[Ttr:end]
 
 ds_atr1 = DeterministicIteratedMap(three_coupled_rulkov, point_from_attractor_atr1, params)
 Λs_atr1 = lyapunov(ds_atr1, 50_000)
 Λss_atr1 = lyapunovspectrum(ds_atr1, 50_000)
 println("Λs atr1: $Λs_atr1");
-println("Λss atr1: $Λss_atr1");
+println("Λss atr1: $Λss_atr1"); =#
 
-
+#= 
 u0_first_iteration_atr2 = vector_u0s_501[end, :]
 prob_atr2 = DiscreteProblem(three_coupled_rulkov, u0_first_iteration_atr2, tspan, params);
 sol_atr2 = solve(prob_atr2);
@@ -74,7 +76,7 @@ ds_atr2 = DeterministicIteratedMap(three_coupled_rulkov, point_from_attractor_at
 Λs_atr2 = lyapunov(ds_atr2, 50_000)
 Λss_atr2 = lyapunovspectrum(ds_atr2, 50_000)
 println("Λs atr2: $Λs_atr2");
-println("Λss atr2: $Λss_atr2");
+println("Λss atr2: $Λss_atr2"); =#
 
 labelsize = 20;
 ticksize = 15;
@@ -112,9 +114,9 @@ lines!(ax1, sol_atr1.t[Ttr:Ttr + t_plot_end], sol_atr1[1, Ttr:Ttr + t_plot_end],
 lines!(ax2, sol_atr1.t[Ttr:Ttr + t_plot_end], sol_atr1[6, Ttr:Ttr + t_plot_end], linewidth = 1.0, color = :red);
 lines!(ax3, sol_atr1.t[Ttr:Ttr + t_plot_end], sol_atr1[11, Ttr:Ttr + t_plot_end], linewidth = 1.0, color = :red);
 
-lines!(ax1, sol_atr2.t[Ttr:Ttr + t_plot_end], sol_atr2[1, Ttr:Ttr + t_plot_end], linewidth = 1.0, color = :blue);
+#= lines!(ax1, sol_atr2.t[Ttr:Ttr + t_plot_end], sol_atr2[1, Ttr:Ttr + t_plot_end], linewidth = 1.0, color = :blue);
 lines!(ax2, sol_atr2.t[Ttr:Ttr + t_plot_end], sol_atr2[6, Ttr:Ttr + t_plot_end], linewidth = 1.0, color = :blue);
-lines!(ax3, sol_atr2.t[Ttr:Ttr + t_plot_end], sol_atr2[11, Ttr:Ttr + t_plot_end], linewidth = 1.0, color = :blue);
+lines!(ax3, sol_atr2.t[Ttr:Ttr + t_plot_end], sol_atr2[11, Ttr:Ttr + t_plot_end], linewidth = 1.0, color = :blue); =#
 display(GLMakie.Screen(), f);
 
 # timeseris x1, x2, x3 in one axis
@@ -133,5 +135,5 @@ display(GLMakie.Screen(), f); =#
 f = Figure(size = (400, 400));
 ax = Axis3(f[1, 1], xlabel = L"x_1", ylabel = L"x_{2}", zlabel = L"x_3");
 scatter!(ax, sol_atr1[1, Ttr:end], sol_atr1[6, Ttr:end], sol_atr1[11, Ttr:end], markersize = 5.0, color = :red);
-scatter!(ax, sol_atr2[1, Ttr:end], sol_atr2[6, Ttr:end], sol_atr2[11, Ttr:end], markersize = 5.0, color = :blue);
+#= scatter!(ax, sol_atr2[1, Ttr:end], sol_atr2[6, Ttr:end], sol_atr2[11, Ttr:end], markersize = 5.0, color = :blue); =#
 display(GLMakie.Screen(), f);
