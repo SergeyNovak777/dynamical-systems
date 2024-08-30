@@ -139,14 +139,23 @@ display(f1)
 save(path_to_save*filename_hist, f1)
 
 
-t_interval = 8_000_000;
+t_interval_start = 8_000_000;
+t_interval_end = count_peaks;
+
 f2 = Figure()
 ax = Axis(f2[1, 1], xlabel = L"t_{spike}", ylabel = L"ISI",
 xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticksize, yticklabelsize = ticksize,
-xgridvisible = false, ygridvisible = false)
-lines!(ax, t_peaks_spikes[2:t_interval], array_ISI_par[1:t_interval-1], linewidth = 1.0)
+xgridvisible = false, ygridvisible = false,
+xticks = [ 2.5e7, 3.5e7, 4.5e7], yticks = [0, 10, 20, 30])
+ylims!(ax, 0, 38)
+
+lines!(ax, t_peaks_spikes[t_interval_start+1:t_interval_end], array_ISI_par[t_interval_start:t_interval_end-1], linewidth = 1.0)
 hlines!(ax, Hs_ISI_coeff_8_par, linewidth = 5.0, linestyle = :dash, color = :red)
 hlines!(ax, Hs_ISI_coeff_6_par, linewidth = 5.0, linestyle = :dash, color = :green)
+text!(ax, 4.4e7, 31, text = L"Hs_8", fontsize = labelsize)
+text!(ax, 3.5e7, 24, text = L"Hs_6", fontsize = labelsize)
+
 display(f2)
+
 save(path_to_save*filename_tEE_IEI, f2)
