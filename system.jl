@@ -555,8 +555,8 @@ function three_coupled_rulkov_first_iteration(u, p)
     y1n = right_part_y(u[1], u[2], (p[5]/k) * (I21 + I31), p[3], p[2])
     z1n = u[1]
 
-    x2n = right_part_x(u[4], u[5] + (p[4]/k) * (I12 + I32), u[6], p[1])
-    y2n = right_part_y(u[4], u[5], (p[5]/k) * (I12 + I32), p[3], p[2])
+    x2n = right_part_x(u[4], u[5] + (p[4]/k) * (I12), u[6], p[1])
+    y2n = right_part_y(u[4], u[5], (p[5]/k) * (I12), p[3], p[2])
     z2n = u[4]
 
     x3n =  right_part_x(u[7], u[8] + (p[4]/k) * (I13 + I23), u[9], p[1])

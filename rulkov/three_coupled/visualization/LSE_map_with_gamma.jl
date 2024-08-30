@@ -19,9 +19,9 @@ using JLD2, CairoMakie, GLMakie
 
 length_range = 350;
 g_1_range = range(10.0, 0.0, length = length_range);
-g_2_range = range(10.0, 0.0, length = length_range);
+g_2_range = range(10.0, 0.0, length = length_range);                                                                                                                                                                                                                                        
 
-index = 1
+index = 1                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
 absmax = maximum(abs.(Λs[:, :, index]))
 
 mn, mx =  -absmax, absmax
@@ -38,7 +38,7 @@ vector_ticks = [0, 2, 4, 6, 8, 10]
 
 ax = Axis(f[1, 1], xlabel = L"g_2",ylabel = L"g_1", xlabelsize = 50, ylabelsize = 50,
             xticklabelsize = ticksize, yticklabelsize = ticksize,
-            xgridvisible  = false, ygridvisible = false,
+            xgridvisible  = false, ygridvisible = false,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
             xticklabelpad = tickpad, yticklabelpad = tickpad,
             xticks = vector_ticks, yticks = vector_ticks)
 
