@@ -25,8 +25,8 @@ filename_data_local_min = "data_local_min_x1.jld2"
 data_local_max = load(path_to_folder*filename_data_local_max)["data_local_max"]
 data_local_min = load(path_to_folder*filename_data_local_min)["data_local_min"]
 
-#= array_PDF_ISI_parallel = load(path_to_folder*"PDF_ISI.jld2")["array_PDF_ISI_parallel"];
-array_ISI_par = load(path_to_folder*"ISI.jld2")["array_ISI_par"]; =#
+array_PDF_ISI_parallel = load(path_to_folder*"PDF_ISI.jld2")["array_PDF_ISI_parallel"];
+array_ISI_par = load(path_to_folder*"ISI.jld2")["array_ISI_par"];
 
 
 all_amplitudes = get_amplitudes_all_events(data_local_max[1], data_local_min[1])
@@ -78,14 +78,15 @@ end
 
 count_peaks = length(t_peaks_spikes);
 println("t_end: $(t_peaks_spikes[count_peaks])");
-array_ISI = get_IEI(t_peaks_spikes[1:count_peaks]);
+#array_ISI = get_IEI(t_peaks_spikes[1:count_peaks]);
 #array_IEI = sort(array_IEI)
 
 #array_PDF_ISI = get_PDF_IEI(array_ISI; shift = 0.0)
-array_PDF_ISI_parallel, array_ISI_par = get_PDF_IEI_parallel(array_ISI; shift = 0.0)
+
+#= array_PDF_ISI_parallel, array_ISI_par = get_PDF_IEI_parallel(array_ISI; shift = 0.0)
 
 jldsave(path_to_folder*"PDF_ISI.jld2"; array_PDF_ISI_parallel)
-jldsave(path_to_folder*"ISI.jld2"; array_ISI_par)
+jldsave(path_to_folder*"ISI.jld2"; array_ISI_par) =#
 
 #= Hs_ISI_coeff_8 = Hs(array_ISI, 8);
 Hs_ISI_coeff_6 = Hs(array_ISI, 6); =#
@@ -123,6 +124,7 @@ display(GLMakie.Screen(), f2) =#
 
 #-----------------------------------------------------------------------------------
 # parallel version
+CairoMakie.activate!();
 f1 = Figure()
 ax = Axis(f1[1, 1], xlabel = L"ISI", ylabel = L"PDF_{ISI}", yscale = log10,
 xlabelsize = labelsize, ylabelsize = labelsize,
@@ -137,15 +139,14 @@ display(f1)
 save(path_to_save*filename_hist, f1)
 
 
-t_interval = 5_000_000;
-CairoMakie.activate!();
+t_interval = 8_000_000;
 f2 = Figure()
 ax = Axis(f2[1, 1], xlabel = L"t_{spike}", ylabel = L"ISI",
 xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticksize, yticklabelsize = ticksize,
 xgridvisible = false, ygridvisible = false)
 lines!(ax, t_peaks_spikes[2:t_interval], array_ISI_par[1:t_interval-1], linewidth = 1.0)
-hlines!(ax, Hs_ISI_coeff_8_par, linewidth = 5.0, linestyle = :dash, color = :red, label = L"H_s=4612")
+hlines!(ax, Hs_ISI_coeff_8_par, linewidth = 5.0, linestyle = :dash, color = :red)
 hlines!(ax, Hs_ISI_coeff_6_par, linewidth = 5.0, linestyle = :dash, color = :green)
 display(f2)
-save(path_to_save*filename_tEE_IEI, f)
+save(path_to_save*filename_tEE_IEI, f2)
