@@ -45,7 +45,7 @@ hm = heatmap!(ax, g_1_range, g_2_range, EEs, colormap = :seismic,
 
 display(GLMakie.Screen(), f);
 
-#= pathtosave = "/home/sergey/MEGA/dynamical-systems/Rulkov/Images/maps/"
-filename = "/g=LSE_without_gamma.pdf"
+pathtosave = "/home/sergey/MEGA/dynamical-systems/Rulkov/Images/maps/"
+filename = "/g=EEs_without_gamma.pdf"
 fullpath = pathtosave * filename 
-save(fullpath, f) =#
+save(fullpath, f)
