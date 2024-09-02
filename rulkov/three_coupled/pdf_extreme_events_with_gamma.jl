@@ -61,6 +61,11 @@ data_local_min = get_local_min(data)
 drop_artifacts(data_local_max, data_local_min)
 
 Hs_xsum = Hs(data_local_max[1] ,6);
+
+println("count EEs: $(length(data_local_max[1][ data_local_max[1] .>= Hs_xsum ]))")
+
+# length(data_local_max[1][ data_local_max[1] .>= Hs_xsum ])
+
 thesholds = range(0.1, 3, 5_000_000);
 PDF_old = CALCPDF_debil(data_local_max[1], thesholds, 0.05);
 
