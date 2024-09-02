@@ -95,9 +95,9 @@ Hs_ISI_coeff_8_par = Hs(array_ISI_par, 8);
 Hs_ISI_coeff_6_par = Hs(array_ISI_par, 6);
 
 path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/EEs/"
-filename_hist = "k2=75_PDF_ISI_hist_x1.pdf"
+filename_hist = "k2=75_PDF_ISI_hist_x1.eps"
 filename_tEE_IEI = "k2=75_t_spikes_ISI_x1.pdf"
-filename_peaks_EE_IEI = "k2=75_peaks_spikes_ISI_x1.jpg"
+filename_peaks_EE_IEI = "k2=75_peaks_spikes_ISI_x1.pdf"
 
 GLMakie.activate!()
 

@@ -47,7 +47,8 @@ integrator_setting = get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_
 parameters = FHN2_try3_params();
 parameters[3] = 0.1;
 parameters[7] = 0.09;
-parameters[8] = 0.0;
+parameters[8] = 75.5;
+filename_hist = "fig_15_g.eps"
 
 u0_start = [-0.9816946043747945, -0.6320919525134647, -1.0342265829731392, -0.638226338524071];
 u0_start = SVector{4}(u0_start);
@@ -55,13 +56,13 @@ u0_start = SVector{4}(u0_start);
 t_end = 10_000;
 tspan = (0.0, t_end);
 
-prob = ODEProblem(FHN2_4d, u0_start, tspan, parameters)
+prob = ODEProblem(FHN2_4d, sol[end], tspan, parameters)
 sol = solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive,
                 abstol = integrator_setting.abstol, reltol = integrator_setting.reltol, 
                 maxiters = integrator_setting.maxiters);
 
 path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/rewrite_images/"
-filename_hist = "fig_13_a_phase_space.eps"
+
 
 labelsize = 80;
 ticksize = 50;
@@ -69,43 +70,19 @@ CairoMakie.activate!();
 length_sol = length(sol);
 ttr = t_truncate(length_sol)
 t_plot_start =  ttr
-t_plot_end = t_plot_start + 100_000;
+t_plot_end = t_plot_start + 50_000;
                 
 indexx = 1; indexy  = 3; indexz = 4;
-f = Figure(size = (1000 ,600));
+f = Figure(size = (1100 ,600));
 ax = Axis3(f[1, 1], xlabel = L"x_1", ylabel = L"x_2", zlabel = L"y_2",
     xlabelsize = labelsize, ylabelsize = labelsize, zlabelsize = labelsize,
     xticklabelsize = ticksize, yticklabelsize = ticksize, zticklabelsize = ticksize,
     xgridvisible = false, ygridvisible = false, zgridvisible = false,
-    xlabeloffset = 60, ylabeloffset = 60, zlabeloffset = 85, protrusions = (20, 20,100, 20))
+    xlabeloffset = 60, ylabeloffset = 60, zlabeloffset = 160, protrusions = (30, 30, 120, 30))#,
+    #xticks = [-0.7, -0.9, -1.12], yticks = [-0.7, -0.9, -1.12], zticks = [-0.635, -0.61, -0.58])
 
 lines!(ax, sol[indexx, t_plot_start:t_plot_end], sol[indexy, t_plot_start:t_plot_end],
         sol[indexz, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
 display(GLMakie.Screen(), f);
+
 save(path_to_save*filename_hist, f)
-
-ds = CoupledODEs(FHN2_4d, sol[end], parameters,
-diffeq = integrator_setting);
-pmap = PoincareMap(ds, (4, 0.0))
-
-tr, trange = trajectory(pmap, 250_000)
-
-tstartpo = 50_000; tendpo= 250_000
-
-f = Figure(size = (1000, 600))
-ax = Axis(f[1, 1], xgridvisible = false, ygridvisible = false,
-xlabel = L"x_1", ylabel = L"x_2", xlabelsize = labelsize, ylabelsize = labelsize,
-xticklabelsize = ticksize, yticklabelsize = ticksize)
-scatter!(tr[tstartpo:tendpo, 1], tr[tstartpo:tendpo, 3], color = :red, markersize = 1.0)
-xlims!(1.65, 1.815)
-ylims!(1.73, 1.77)
-display(GLMakie.Screen(), f);
-
-f = Figure(size = (1000, 600))
-ax = Axis(f[1, 1], xgridvisible = false, ygridvisible = false,
-xlabel = L"x_1", ylabel = L"x_2", xlabelsize = labelsize, ylabelsize = labelsize,
-xticklabelsize = ticksize, yticklabelsize = ticksize)#,
-#xticks = [1.786, 1.788, 1.79], yticks = [1.7407, 1.74075, 1.7408], ytickformat = "{:.5f}")
-scatter!(tr[tstartpo:tendpo, 1], tr[tstartpo:tendpo, 3], color = :red, markersize = 1.0)
-xlims!(1.7954, 1.7956)
-display(GLMakie.Screen(), f);

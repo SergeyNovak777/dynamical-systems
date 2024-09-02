@@ -37,15 +37,15 @@ vector_ticks = [0, 2, 4, 6, 8, 10]
 ax = Axis(f[1, 1], xlabel = L"g_2",ylabel = L"g_1", xlabelsize = 50, ylabelsize = 50,
             xticklabelsize = ticksize, yticklabelsize = ticksize,
             xgridvisible  = false, ygridvisible = false,
-            xticklabelpad = tickpad, yticklabelpad = tickpad,
-            xticks = vector_ticks, yticks = vector_ticks)
+            xticklabelpad = tickpad, yticklabelpad = tickpad)#,
+            #xticks = vector_ticks, yticks = vector_ticks)
 
 hm = heatmap!(ax, g_1_range, g_2_range, EEs, colormap = :seismic,
             colorrange = (mn, mx))
 
 display(GLMakie.Screen(), f);
 
-pathtosave = "/home/sergey/MEGA/dynamical-systems/Rulkov/Images/maps/"
+#= pathtosave = "/home/sergey/MEGA/dynamical-systems/Rulkov/Images/maps/"
 filename = "/g=EEs_without_gamma.pdf"
 fullpath = pathtosave * filename 
-save(fullpath, f)
+save(fullpath, f) =#
