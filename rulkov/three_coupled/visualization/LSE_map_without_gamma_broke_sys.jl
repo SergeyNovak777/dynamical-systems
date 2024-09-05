@@ -44,10 +44,10 @@ ax = Axis(f[1, 1], xlabel = L"g_2",ylabel = L"g_1", xlabelsize = 50, ylabelsize 
 
 hm = heatmap!(ax, g_1_range, g_2_range, Λs[:, :, index], colormap = :seismic,
             colorrange = (-0.08, 0.08))
-
+Colorbar(f[:, end+1], hm)
 display(GLMakie.Screen(), f);
 
-pathtosave = "/home/sergey/MEGA/dynamical-systems/Rulkov/Images/maps/"
+#= pathtosave = "/home/sergey/MEGA/dynamical-systems/Rulkov/Images/maps/"
 filename = "/g=LSE_without_gamma.pdf"
 fullpath = pathtosave * filename 
-save(fullpath, f)
+save(fullpath, f) =#

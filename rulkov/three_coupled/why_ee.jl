@@ -44,7 +44,8 @@ g_1_range = range( 0.0, 10.0, length = length_range);
 g_2_range = range( 0.0, 10.0, length = length_range);
 absmax = maximum(abs.(matrix_EEs[:, :]))
 mn, mx =  -100, 100
-CairoMakie.activate!()  
+
+#= CairoMakie.activate!()  
 f = Figure()    
 ticksize = 35
 tickpad = 10.0
@@ -59,17 +60,15 @@ ax = Axis(f[1, 1], xlabel = L"g_2",ylabel = L"g_1", xlabelsize = 50, ylabelsize 
 hm = heatmap!(ax, g_1_range, g_2_range, matrix_EEs, colormap = :seismic,
             colorrange = (mn, mx))
 scatter!(ax, range_parameter_1[index_p1], range_parameter_2[index_p2], markersize = 5, color = :black)
-display(GLMakie.Screen(), f);
-
-
+display(GLMakie.Screen(), f); =#
 
 params[10] = range_parameter_1[index_p1];
 params[11] = range_parameter_2[index_p2];
 
 u0 =   matrix_last_point[index_p1, index_p2, :]
 prob = DiscreteProblem(three_coupled_rulkov, u0, tspan, params);
+ds = DeterministicIteratedMap(three_coupled_rulkov, u0, params)
 sol = solve(prob);
-
 
 Ttr = 1;
 point_from_attractor = sol[:, Ttr]
@@ -83,7 +82,6 @@ drop_artifacts(data_local_max, data_local_min)
 
 Hs_xsum = Hs(data_local_max[1] ,6);
 
-ds = DeterministicIteratedMap(three_coupled_rulkov, u0, params)
 Λs = lyapunovspectrum(ds, 10_000)
 println("Λs: $Λs")
 
@@ -91,7 +89,7 @@ labelsize = 40;
 ticksize = 30;
 
 # timeseries of xsum
-t_plot_start = 1; t_plot_end = 3_000_000;
+t_plot_start = 200_000; t_plot_end = 300_000;
 f = Figure(size = (1000, 400));
 ax = Axis(f[1, 1], xlabel = L"time", ylabel = L"x_{sum}",
 xlabelsize = labelsize, ylabelsize = labelsize,
