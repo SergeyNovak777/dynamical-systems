@@ -143,8 +143,8 @@ ax_LSE = Axis(f[2, 1], xlabel = L"g_1", ylabel = L"λ_1",
         xticklabelsize = tick_size, yticklabelsize = tick_size,
         xticks = x_ticks, yticks = [-0.1, 0.0, 0.1],
         xgridvisible = false, ygridvisible = false)
-ax_EE = Axis(f[1, 1], xlabel = L"g_1", ylabel = L"count EE",
-xlabelsize = x_y_label_size, ylabelsize = x_y_label_size,
+ax_EE = Axis(f[1, 1], xlabel = L"g_1", ylabel = L"count \ EE",
+xlabelsize = x_y_label_size, ylabelsize = x_y_label_size-5,
 xticklabelsize = tick_size, yticklabelsize = tick_size, xticks = x_ticks, yticks = [0, 400, 800],
 xgridvisible = false, ygridvisible = false)
 
@@ -157,5 +157,6 @@ xlims!(ax_EE, 0.0, 10.0)
 display(GLMakie.Screen(), f)    
 save(path_to_save_image*name_image, f);
 
-#= jldsave(path_to_save * "LLE_g2=1_len_1001.jld2"; vector_LLE)
-    jldsave(path_to_save * "u0s_g2=1_len_1001.jld2"; vector_u0s) =#
+jldsave(path_to_save * "LLE_g2=6_len_1001.jld2"; vector_LLE)
+jldsave(path_to_save * "u0s_g2=6_len_1001.jld2"; vector_u0s)
+jldsave(path_to_save * "EEs_g2=6_len_1001.jld2"; vector_EEs)

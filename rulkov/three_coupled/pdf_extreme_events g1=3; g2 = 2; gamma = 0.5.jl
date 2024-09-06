@@ -101,7 +101,7 @@ xgridvisible = false, ygridvisible = false,
 xticks = [0.12, 0.50, 1.99]);
 lines!(thesholds, EE_mapcopy, linewidth = 1.0, color = :blue);
 vlines!(ax, Hs_xsum, linewidth = 3.0, linestyle = :dash, color = :red);
-display(GLMakie.Screen(), f);
+display(GLMakie.Screen(), f);   
 save(path_to_save_PDF*"PDF_g1=3.0_g2=2.0_with_gamma.eps", f)
 
 
