@@ -47,8 +47,8 @@ integrator_setting = get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_
 parameters = FHN2_try3_params();
 parameters[3] = 0.1;
 parameters[7] = 0.09;
-parameters[8] = 75.74;
-filename_hist = "fig_14_f.eps"
+parameters[8] = 80.0;
+filename_hist = "fig_15_c.eps"
 
 u0_start = [-0.9816946043747945, -0.6320919525134647, -1.0342265829731392, -0.638226338524071];
 u0_start = SVector{4}(u0_start);
@@ -70,15 +70,20 @@ CairoMakie.activate!();
 length_sol = length(sol);
 ttr = t_truncate(length_sol)
 t_plot_start =  ttr
-t_plot_end = t_plot_start + 80_000;
-                
+t_plot_end = t_plot_start + 5_000;
+           
+xticks = [-1.13, -0.96, -0.79];
+yticks = [-1.12, -0.97, -0.84];
+zticks = [-0.635, -0.62, -0.605];
 indexx = 1; indexy  = 3; indexz = 4;
-f = Figure(size = (1000 ,600));
+f = Figure(size = (1100 ,600));
 ax = Axis3(f[1, 1], xlabel = L"x_1", ylabel = L"x_2", zlabel = L"y_2",
     xlabelsize = labelsize, ylabelsize = labelsize, zlabelsize = labelsize,
     xticklabelsize = ticksize, yticklabelsize = ticksize, zticklabelsize = ticksize,
     xgridvisible = false, ygridvisible = false, zgridvisible = false,
-    xlabeloffset = 60, ylabeloffset = 60, zlabeloffset = 85, protrusions = (20, 20,100, 20))
+    xlabeloffset = 60, ylabeloffset = 65, zlabeloffset = 170, protrusions = (30, 30, 120, 30),
+    xticks = xticks, yticks = yticks, zticks = zticks)#,
+    #xticks = [-0.7, -0.9, -1.12], yticks = [-0.7, -0.9, -1.12], zticks = [-0.635, -0.61, -0.58])
 
 lines!(ax, sol[indexx, t_plot_start:t_plot_end], sol[indexy, t_plot_start:t_plot_end],
         sol[indexz, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);

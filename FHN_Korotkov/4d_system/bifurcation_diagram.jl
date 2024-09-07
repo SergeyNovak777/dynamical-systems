@@ -36,19 +36,19 @@ end
 
 u0 = [-0.9816946043747945, -0.6320919525134647, -1.0342265829731392, -0.638226338524071];
 params = FHN2_try3_params()
-params[8] = 64.76190476190476; 
+params[7] = 0.09; 
 integ_set = (alg = Vern9(), adaptive = true, abstol=1e-13, reltol=1e-13, maxiters = 1e8)
 
 ds = CoupledODEs(FHN2_4d, u0, params, diffeq = integ_set)
 
-t = 2000
-ttr = 1000
+t = 5000
+ttr = 5000
 
-k1_start = 0.09686
-k1_end = 0.09
-len = 200
-rangek1 = range(k1_start, k1_end, length = len)
-index_control_param = 7
+k2_start = 100.0
+k2_end = 0.0
+len = 1000
+rangek2 = range(k2_start, k2_end, length = len)
+index_control_param = 8
 
 index_saving_var = 1
 index_fixed_var = 3
@@ -57,20 +57,20 @@ surface = (index_fixed_var, value_fixed_var)
 setting_root = (xrtol = 1e-11, atol = 1e-11)
 pmap = PoincareMap(ds, surface, rootkw = setting_root)
 
-output = orbitdiagram(pmap, index_saving_var, index_control_param, rangek1;
+output = orbitdiagram(pmap, index_saving_var, index_control_param, rangek2;
  n = t, Ttr = ttr, show_progress = true)
 
 
- markersize = 0.5;
+markersize = 0.5;
 lbsize = 30;
 ticksize = 30;
 fig = Figure(size = (1200, 350))
 axis = Axis(fig[1,1],
-xlabel = L"k_1",  ylabel = L"x_1",
+xlabel = L"k_2",  ylabel = L"x_1",
 xlabelsize = lbsize, ylabelsize = lbsize,
 xticklabelsize = ticksize,yticklabelsize = ticksize)
 
-for (j, p) in enumerate(rangek1)
+for (j, p) in enumerate(rangek2)
 scatter!(axis, fill(p, length(output[j])), output[j]; color = ("black", 0.5), markersize = markersize)
 end
 display(GLMakie.Screen(), fig)
