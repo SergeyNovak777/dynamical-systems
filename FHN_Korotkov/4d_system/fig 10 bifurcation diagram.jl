@@ -41,7 +41,7 @@ integ_set = (alg = Vern9(), adaptive = true, abstol=1e-13, reltol=1e-13, maxiter
 
 ds = CoupledODEs(FHN2_4d, u0, params, diffeq = integ_set)
 
-t = 5000
+t = 2500
 ttr = 5000
 
 k2_start = 100.0
@@ -60,6 +60,8 @@ pmap = PoincareMap(ds, surface, rootkw = setting_root)
 output = orbitdiagram(pmap, index_saving_var, index_control_param, rangek2;
  n = t, Ttr = ttr, show_progress = true)
 
+filename= "fig_12.eps"
+path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/rewrite_images/"
 
 markersize = 0.5;
 lbsize = 30;
@@ -68,9 +70,13 @@ fig = Figure(size = (1200, 350))
 axis = Axis(fig[1,1],
 xlabel = L"k_2",  ylabel = L"x_1",
 xlabelsize = lbsize, ylabelsize = lbsize,
-xticklabelsize = ticksize,yticklabelsize = ticksize)
+xticklabelsize = ticksize,yticklabelsize = ticksize,
+xgridvisible = false, ygridvisible = false)
 
+CairoMakie.activate!();
 for (j, p) in enumerate(rangek2)
 scatter!(axis, fill(p, length(output[j])), output[j]; color = ("black", 0.5), markersize = markersize)
 end
 display(GLMakie.Screen(), fig)
+display(fig);
+save(path_to_save*filename, fig)

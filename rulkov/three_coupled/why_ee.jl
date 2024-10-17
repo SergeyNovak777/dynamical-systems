@@ -29,8 +29,8 @@ matrix_last_point = load("/home/sergey/MEGA/dynamical-systems/Rulkov/data/Maps/w
 matrix_first_point = load("/home/sergey/MEGA/dynamical-systems/Rulkov/data/Maps/without_gamma_broke_first_iter/u0s_400x400_g_1_g_2.jld2")["u0s"]
 matrix_EEs = load("/home/sergey/MEGA/dynamical-systems/Rulkov/data/Maps/without_gamma_broke_first_iter/EEs/EEs_400x400_g_1_g_2.jld2")["matrix_EEs"]
 
-index_p1 = 150;
-index_p2 = 250;
+index_p1 = 199;
+index_p2 = 359;
 
 println("g_1: $(range_parameter_1[index_p1])");
 println("g_2: $(range_parameter_2[index_p2])");

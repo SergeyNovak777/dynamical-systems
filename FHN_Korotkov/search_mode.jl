@@ -42,23 +42,23 @@ end
 
 t_truncate(t) = floor(Int64, t / 2)
 
-alg = Vern9();
+alg = DP8();
 adaptive = true;
-abs_tol = 1e-12;
-rel_tol = 1e-12;
-max_iters = 1e8;
+abs_tol = 1e-11;
+rel_tol = 1e-11;
+max_iters = 1e6;
 
 integrator_setting = get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters);
 
 parameters = FHN2_try3_params();
-parameters[3]= 0.105
-parameters[7] =  0.03
-parameters[8] = 57.0
+parameters[3]= 0.1
+parameters[7] =  0.0812
+parameters[8] = -1.2586
 
 u0_start = [-1.0073393282360215, -0.6392350435710693, -1.022720802290101, -0.6276963254782901, -0.011538718093154163]
 u0_start = SVector{5}(u0_start);
 fixed_point = [-1.01, -0.6367552038435214, -1.01, -0.6367552038435204, -3.620121549323092e-13]
-t_end = 5_000;
+t_end = 10_000;
 tspan = (0.0, t_end);
 
 prob = ODEProblem(FHN2_try3, u0_start, tspan, parameters)
@@ -68,8 +68,8 @@ sol = solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive
 
 ds = CoupledODEs(FHN2_try3, sol[end], parameters,
 diffeq = integrator_setting);
-
-LSE = lyapunovspectrum(ds, 10000);
+sol = nothing;
+LSE = lyapunovspectrum(ds, 20000);
 println(LSE);
 
 len_sol = length(sol.t);
@@ -78,7 +78,7 @@ ttr = t_truncate(len_sol);
 labelsize = 85;
 ticksize = 50;
 t_plot_start = ttr;
-t_plot_end = t_plot_start + 150_000;
+t_plot_end = t_plot_start + 50_000;
 
 
 f = Figure(size = (1200 ,600));

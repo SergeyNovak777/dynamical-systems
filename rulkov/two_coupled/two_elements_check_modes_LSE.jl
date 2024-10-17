@@ -1,4 +1,4 @@
-if Sys.iswindows()
+    if Sys.iswindows()
     username = "Alex"
     pathtorepo = "C:\\Users\\" *username *  "\\Desktop\\"
     using Pkg
@@ -181,4 +181,3 @@ scatter!(ax, sol[1, t_start:t_plot_end], sol[5, t_start:t_plot_end], sol[2, t_st
 display(GLMakie.Screen(), f)
 
 println("syn: $Λs");
-println("asyn: $Λs_asyn")

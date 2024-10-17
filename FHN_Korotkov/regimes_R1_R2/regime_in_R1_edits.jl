@@ -129,7 +129,7 @@ ax = Axis3(f[1, 1], xlabel = L"y_1", ylabel = L"y_2", zlabel = L"x_1",
     xlabelsize = labelsize, ylabelsize = labelsize, zlabelsize = labelsize,
     xticklabelsize = ticksize, yticklabelsize = ticksize, zticklabelsize = ticksize,
     xgridvisible = false, ygridvisible = false, zgridvisible = false,
-    xlabeloffset = 95, ylabeloffset = 75, zlabeloffset = 115,
+    xlabeloffset = 55, ylabeloffset = 55, zlabeloffset = 115,
     protrusions = (30, 30,120, 30),
     xticks = [-0.64, -0.62, -0.60], yticks = [-0.64, -0.62, -0.60], zticks = [-1.15, -0.9]);
 xlims!(-0.65, -0.60)
@@ -139,10 +139,10 @@ lines!(ax, sol[index_x, t_plot_start:t_plot_end], sol[index_y, t_plot_start:t_pl
 sol[index_z, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
 scatter!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], markersize = 15, color = :red)
 text!(ax, fixed_point[index_x], fixed_point[index_y], fixed_point[index_z], text = L"O_1", fontsize = labelsize,
-        align = (:center, :top), offset = (0, -70))
+        align = (:center, :top), offset = (20, -20))
 display(GLMakie.Screen(), f)
 display(f)
-#save(path_to_save*"atractor_zoom_R1_v5.pdf", f)
+save(path_to_save*"atractor_zoom_R1_v1.pdf", f)
 
 #= t_start_plot_timeseries = 1; t_end_plot_timeseries = 18_000;
 f = Figure(size = (1400, 450));
