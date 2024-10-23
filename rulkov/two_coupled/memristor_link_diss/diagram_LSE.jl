@@ -24,4 +24,4 @@ sol =
 length_range_g2 = 500;
 range_g2 = range(0.0, 10.0, length = length_range_g2);
 array_LSEs = zeros(length_range_g2, length(u0));
-array_u0s = zeros(length_range_g2, length(u0));
+array_u0s = zeros(length_range_g2, length(u0)); 
