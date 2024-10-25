@@ -9,19 +9,79 @@ include("/home/sergey/work/repo/dynamical-systems/system.jl");
 include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/detect_spike.jl");
 include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/IEI.jl");
 
-t_tr = (0, 3_000_000);
-t_calc_LSE = 1_000_000;
+t_tr = (0, 2_000_000);
+t_calc_LSE = 500_000;
 
-u0 = SVector([-2.083638390440308, -3.9302148554862937, -2.0867818075436624,
+u0 = SVector(-2.083638390440308, -3.9302148554862937, -2.0867818075436624,
             -1.97137793066347, -3.819163877171352, -1.9745518175123469,
-            -0.11222999003131551])
+            -0.11222999003131551)
 
-prob = DiscreteProblem(rulkov_two_coupled_chem_mem, SVector{7}(u0), tspan, params);
-
-# first iteration
-sol = 
+params = get_params_rulkov_two_coupled_chem_mem()
+params[10] = 5.0; # g1
+params[12] = 0.3; # k1
+params[13] = 0.005; # k2
 
 length_range_g2 = 500;
+index_control_parameter = 11;;
 range_g2 = range(0.0, 10.0, length = length_range_g2);
 array_LSEs = zeros(length_range_g2, length(u0));
 array_u0s = zeros(length_range_g2, length(u0)); 
+
+params[index_control_parameter] = range_g2[1]; # g2
+
+prob = DiscreteProblem(rulkov_two_coupled_chem_mem, SVector{7}(u0), t_tr, params);
+ds = DeterministicIteratedMap(rulkov_two_coupled_chem_mem, SVector{7}(u0), params)
+
+#= array_probs = [deepcopy(prob) for _ in 1:Threads.nthreads()-1];
+array_ds = [deepcopy(ds) for _ in 1:Threads.nthreads()-1];
+pushfirst!(array_probs, prob);
+pushfirst!(array_ds, ds); =#
+
+# first iteration
+sol = solve(prob);
+Λs = lyapunovspectrum(ds, t_calc_LSE, u0 = sol[end])
+
+array_u0s[1, :] = sol[end];
+array_LSEs[1, :] = Λs;
+
+println("control_param: $(params[index_control_parameter])");
+println("u0: $u0");
+println("last point: $(array_u0s[1, :])");
+println("Λs: $(array_LSEs[1, :])");
+println("---------------------------------");
+println("");
+#= sol = nothing;
+Λs = nothing;
+GC.gc(); =#
+
+for index_cycle in range(2, length_range_g2, step = 1)
+
+    newp = copy(prob.p)
+    newp[index_control_parameter] = range_g2[index_cycle];
+    u0_local = array_u0s[index_cycle - 1 , :];
+
+    set_parameter!(ds, index_control_parameter, newp[index_control_parameter]);
+    prob_local = remake(prob, u0 = u0_local, p = newp);
+    sol_local = solve(prob_local);
+
+    Λs_local = lyapunovspectrum(ds, t_calc_LSE, u0 = u0_local);
+
+    array_u0s[index_cycle, :] = sol_local[end];
+    array_LSEs[index_cycle, :] = Λs_local;
+
+    println("index cycle: $(index_cycle)");
+    println("control param prob: $(prob_local.p[index_control_parameter])");
+    println("control param ds: $(ds.p[index_control_parameter])");
+    println("u0: $u0_local");
+    println("last point: $(array_u0s[index_cycle, :])")
+    println("Λs: $(array_LSEs[index_cycle, :])");
+    println("---------------------------------");
+    println("");
+end
+
+
+fig = Figure();
+ax = Axis(fig[1, 1]);
+lines!(ax, range_g2, array_LSEs[:, 1], linewidth = 1.0, color = :red);
+lines!(ax, range_g2, array_LSEs[:, 2], linewidth = 1.0, color = :green);
+display(GLMakie.Screen(), fig);

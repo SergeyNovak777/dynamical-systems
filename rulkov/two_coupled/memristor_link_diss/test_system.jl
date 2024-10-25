@@ -14,14 +14,12 @@ t_tr = 1_000_000;
 t_window_plot = t_tr + 500_000;
 
 params = get_params_rulkov_two_coupled_chem_mem()
-params[10] = 6.0; # g1
-params[11] = 6.5; # g2
+params[10] = 0.0 #6.0; # g1
+params[11] = 10.0; # g2
 params[12] = 0.3; # k1
 params[13] = 0.005; # k2
 
-u0 = SVector(1.2, -0.3, 0.7,
-    2.1, 0.7, 0.1,
-    1.2 - 2.1);
+u0 = SVector(-1.953578330045283, -3.991607526888279, -1.9574210901468836, -1.46916966508604, -3.5865593516810397, -1.4738167754245777, -0.4836043147223059);
 
 prob = DiscreteProblem(rulkov_two_coupled_chem_mem, SVector{7}(u0), tspan, params);
 sol = solve(prob);
