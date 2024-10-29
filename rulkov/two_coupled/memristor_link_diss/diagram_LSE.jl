@@ -24,8 +24,8 @@ params[10] = 5.0; # g1
 params[12] = 0.3; # k1
 params[13] = 0.005; # k2
 
-length_range_g2 = 1_000;
-index_control_parameter = 11;;
+length_range_g2 = 2_000;
+index_control_parameter = 11;
 range_g2 = range(0.0, 10.0, length = length_range_g2);
 
 array_LSEs = zeros(length_range_g2, length(u0));
@@ -71,9 +71,6 @@ println("Λs: $(array_LSEs[1, :])");
 println("count EEs: $(array_EEs[1])");
 println("---------------------------------");
 println("");
-#= sol = nothing;
-Λs = nothing;
-GC.gc(); =#
 
 for index_cycle in range(2, length_range_g2, step = 1)
 
@@ -138,11 +135,17 @@ lines!(ax, range_g2, array_LSEs[:, 1], linewidth = linewidth, color = :red);
 lines!(ax, range_g2, array_LSEs[:, 2], linewidth = linewidth, color = :green);
 display(GLMakie.Screen(), fig);
 
-path_to_save_data = "/home/sergey/MEGA/dynamical-systems/rulkov_2_elements_with_mem_chem/data/";
-file_name_data = "g1=5_change_g2_LSE_diagram.jld2";
+path_to_save = "/home/sergey/MEGA/dynamical-systems/rulkov_2_elements_with_mem_chem/data/";
+file_name_LSEs = "g1=5_change_g2_LSE_diagram_LSEs.jld2";
+file_name_u0s = "g1=5_change_g2_LSE_diagram_u0s.jld2";
+file_name_EEs = "g1=5_change_g2_LSE_diagram_EEs.jld2";
+
 
 path_to_save_image = "/home/sergey/MEGA/dynamical-systems/rulkov_2_elements_with_mem_chem/images/";
 file_name_image = "g1=5_change_g2_LSE_diagram.eps";
 
-jldsave(path_to_save*file_name_data; array_LSEs);
+jldsave(path_to_save*file_name_LSEs; array_LSEs);
+jldsave(path_to_save*file_name_u0s; array_u0s);
+jldsave(path_to_save*file_name_EEs; array_EEs);
+
 save(path_to_save_image*file_name_image, fig);
