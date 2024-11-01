@@ -120,19 +120,29 @@ labelsize = 40;
 ticklabelsize = 20;
 gridvisible = true;
 xticks = [0, 2, 5, 8, 10];
+yticks_EEs = [0, 2000, 4000, 6000];
 linewidth = 2.0;
 
 CairoMakie.activate!();
 fig = Figure(figsize = (1000, 400));
-ax = Axis(fig[1, 1],
+
+ax_LSE = Axis(fig[2, 1],
 xlabel = xlabel, ylabel = ylabel,
 xgridvisible = gridvisible, ygridvisible = gridvisible,
 xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticklabelsize, yticklabelsize = ticklabelsize,
 xticks = xticks);
 
-lines!(ax, range_g2, array_LSEs[:, 1], linewidth = linewidth, color = :red);
-lines!(ax, range_g2, array_LSEs[:, 2], linewidth = linewidth, color = :green);
+ax_EEs = Axis(fig[1, 1],
+xlabel = xlabel, ylabel = L"EEc",
+xgridvisible = gridvisible, ygridvisible = gridvisible,
+xlabelsize = labelsize, ylabelsize = labelsize,
+xticklabelsize = ticklabelsize, yticklabelsize = ticklabelsize,
+xticks = xticks, yticks = yticks_EEs);
+
+lines!(ax_LSE, range_g2, array_LSEs[:, 1], linewidth = linewidth, color = :red);
+lines!(ax_LSE, range_g2, array_LSEs[:, 2], linewidth = linewidth, color = :green);
+lines!(ax_EEs, range_g2, array_EEs, linewidth = linewidth, color = :black);
 display(GLMakie.Screen(), fig);
 
 path_to_save = "/home/sergey/MEGA/dynamical-systems/rulkov_2_elements_with_mem_chem/data/";

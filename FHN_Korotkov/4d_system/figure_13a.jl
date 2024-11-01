@@ -46,8 +46,8 @@ integrator_setting = get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_
 
 parameters = FHN2_try3_params();
 parameters[3] = 0.1;
-parameters[7] = 0.09;
-parameters[8] = 0.0;
+parameters[7] = 0.09; #0.09;
+parameters[8] = 75.0; # 75.7;
 
 u0_start = [-0.9816946043747945, -0.6320919525134647, -1.0342265829731392, -0.638226338524071];
 u0_start = SVector{4}(u0_start);
@@ -82,30 +82,34 @@ ax = Axis3(f[1, 1], xlabel = L"x_1", ylabel = L"x_2", zlabel = L"y_2",
 lines!(ax, sol[indexx, t_plot_start:t_plot_end], sol[indexy, t_plot_start:t_plot_end],
         sol[indexz, t_plot_start:t_plot_end], linewidth = 1.5, color = :black);
 display(GLMakie.Screen(), f);
-save(path_to_save*filename_hist, f)
+#save(path_to_save*filename_hist, f)
 
 ds = CoupledODEs(FHN2_4d, sol[end], parameters,
 diffeq = integrator_setting);
-pmap = PoincareMap(ds, (4, 0.0))
 
-tr, trange = trajectory(pmap, 250_000)
+LSE = lyapunovspectrum(ds, 25_000);
+println("LSE: $(LSE)");
 
-tstartpo = 50_000; tendpo= 250_000
+pmap = PoincareMap(ds, (4, -0.625));#0.0))
+
+tr, trange = trajectory(pmap, 500_000)
+
+tstartpo = 100_000; tendpo= 500_000;
 
 f = Figure(size = (1000, 600))
 ax = Axis(f[1, 1], xgridvisible = false, ygridvisible = false,
 xlabel = L"x_1", ylabel = L"x_2", xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticksize, yticklabelsize = ticksize)
 scatter!(tr[tstartpo:tendpo, 1], tr[tstartpo:tendpo, 3], color = :red, markersize = 1.0)
-xlims!(1.65, 1.815)
-ylims!(1.73, 1.77)
+#xlims!(1.65, 1.815)
+#ylims!(1.73, 1.77)
 display(GLMakie.Screen(), f);
 
-f = Figure(size = (1000, 600))
+#= f = Figure(size = (1000, 600))
 ax = Axis(f[1, 1], xgridvisible = false, ygridvisible = false,
 xlabel = L"x_1", ylabel = L"x_2", xlabelsize = labelsize, ylabelsize = labelsize,
 xticklabelsize = ticksize, yticklabelsize = ticksize)#,
 #xticks = [1.786, 1.788, 1.79], yticks = [1.7407, 1.74075, 1.7408], ytickformat = "{:.5f}")
 scatter!(tr[tstartpo:tendpo, 1], tr[tstartpo:tendpo, 3], color = :red, markersize = 1.0)
-xlims!(1.7954, 1.7956)
-display(GLMakie.Screen(), f);
+#xlims!(1.7954, 1.7956)
+display(GLMakie.Screen(), f); =#

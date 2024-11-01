@@ -14,8 +14,8 @@ t_tr = 1_000_000;
 t_window_plot = t_tr + 500_000;
 
 params = get_params_rulkov_two_coupled_chem_mem()
-params[10] = 0.0 #6.0; # g1
-params[11] = 10.0; # g2
+params[10] = 5.0 #6.0; # g1
+params[11] = 2.0; # g2
 params[12] = 0.3; # k1
 params[13] = 0.005; # k2
 
@@ -28,7 +28,7 @@ x_sum = sol[1, t_tr:end] + sol[4, t_tr:end]
 t_range = sol.t[t_tr:end]
 
 ds = DeterministicIteratedMap(rulkov_two_coupled_chem_mem, sol[end], params)
-Λs = lyapunovspectrum(ds, 500_000)
+Λs = lyapunovspectrum(ds, 5_000_000)
 println("LSE: $Λs");
 
 Hs(x, k) = Statistics.mean(x) + k * Statistics.std(x)
@@ -38,13 +38,15 @@ data_local_max = get_local_max(data)
 data_local_min = get_local_min(data)
 
 drop_artifacts(data_local_max, data_local_min)
-Hs_xsum = Hs(data_local_max[1] ,8);
+Hs_xsum = Hs(data_local_max[1] ,6);
+
+print("count EEs: $(count(data_local_max[1].>=Hs_xsum))");
 
 CairoMakie.activate!();
 f = Figure(size = (400, 400))
 ax = Axis3(f[1, 1])
 scatter!(ax, sol[1, t_tr:t_window_plot], sol[4, t_tr:t_window_plot], sol[2, t_tr:t_window_plot], markersize = 1.0, color = :black)
-display(GLMakie.Screen(), f)
+display(GLMakie.Screen(), f);
 
 f = Figure(size = (1000, 400))
 ax = Axis(f[1, 1])
@@ -52,4 +54,7 @@ lines!(ax, t_range[1:t_window_plot], x_sum[1:t_window_plot], linewidth = 1.0, co
 #= scatter!(ax, data_local_max[2], data_local_max[1], markersize = 2.5, color = :red)
 xlims!(ax, t_range[1], t_range[t_window_plot]) =#
 hlines!(ax, Hs_xsum, linestyle = :dash, color = :red, linewidth = 3.0);
-display(GLMakie.Screen(), f)
+display(GLMakie.Screen(), f);
+
+
+sort
