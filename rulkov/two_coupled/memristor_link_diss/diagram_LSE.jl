@@ -35,7 +35,7 @@ array_EEs = zeros(length_range_g2);
 params[index_control_parameter] = range_g2[1]; # g2
 
 prob = DiscreteProblem(rulkov_two_coupled_chem_mem, SVector{7}(u0), t_sol, params);
-ds = DeterministicIteratedMap(rulkov_two_coupled_chem_mem, SVector{7}(u0), params)
+ds = DeterministicIteratedMap(rulkov_two_coupled_chem_mem, SVector{7}(u0), params);
 
 #= array_probs = [deepcopy(prob) for _ in 1:Threads.nthreads()-1];
 array_ds = [deepcopy(ds) for _ in 1:Threads.nthreads()-1];
@@ -114,48 +114,12 @@ for index_cycle in range(2, length_range_g2, step = 1)
     println("");
 end
 
-xlabel = L"g_2";
-ylabel = L"\lambda";
-labelsize = 40;
-ticklabelsize = 20;
-gridvisible = true;
-xticks = [0, 2, 5, 8, 10];
-yticks_EEs = [0, 2000, 4000, 6000];
-linewidth = 2.0;
-
-CairoMakie.activate!();
-fig = Figure(figsize = (1000, 400));
-
-ax_LSE = Axis(fig[2, 1],
-xlabel = xlabel, ylabel = ylabel,
-xgridvisible = gridvisible, ygridvisible = gridvisible,
-xlabelsize = labelsize, ylabelsize = labelsize,
-xticklabelsize = ticklabelsize, yticklabelsize = ticklabelsize,
-xticks = xticks);
-
-ax_EEs = Axis(fig[1, 1],
-xlabel = xlabel, ylabel = L"EEc",
-xgridvisible = gridvisible, ygridvisible = gridvisible,
-xlabelsize = labelsize, ylabelsize = labelsize,
-xticklabelsize = ticklabelsize, yticklabelsize = ticklabelsize,
-xticks = xticks, yticks = yticks_EEs);
-
-lines!(ax_LSE, range_g2, array_LSEs[:, 1], linewidth = linewidth, color = :red);
-lines!(ax_LSE, range_g2, array_LSEs[:, 2], linewidth = linewidth, color = :green);
-lines!(ax_EEs, range_g2, array_EEs, linewidth = linewidth, color = :black);
-display(GLMakie.Screen(), fig);
-
 path_to_save = "/home/sergey/MEGA/dynamical-systems/rulkov_2_elements_with_mem_chem/data/";
 file_name_LSEs = "g1=5_change_g2_LSE_diagram_LSEs.jld2";
 file_name_u0s = "g1=5_change_g2_LSE_diagram_u0s.jld2";
 file_name_EEs = "g1=5_change_g2_LSE_diagram_EEs.jld2";
 
 
-path_to_save_image = "/home/sergey/MEGA/dynamical-systems/rulkov_2_elements_with_mem_chem/images/";
-file_name_image = "g1=5_change_g2_LSE_diagram.eps";
-
 jldsave(path_to_save*file_name_LSEs; array_LSEs);
 jldsave(path_to_save*file_name_u0s; array_u0s);
 jldsave(path_to_save*file_name_EEs; array_EEs);
-
-save(path_to_save_image*file_name_image, fig);

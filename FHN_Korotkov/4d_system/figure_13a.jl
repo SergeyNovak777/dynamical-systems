@@ -18,22 +18,6 @@ function get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters)
     return integrator_setting;
 end
 
-function FHN2_4d(u, p ,t)
-    x1, y1, x2, y2 = u
-    ϵ, a, g, k, σ, α, k1, k2 = p
-
-    I(ϕ_i) = g * (1.0/(1.0 + exp(k*(cos(σ/2) - cos(ϕ_i - α - σ/2)))))
-
-    ϕ2 = atan(y2, x2)
-    ϕ1 = atan(y1, x1)
-
-    dx1dt = (x1 - x1 ^ 3 / 3 - y1 + I(ϕ2) + (k1 + k2 * (y1 - y2)^2) * (x2 - x1) ) / ϵ
-    dy1dt = x1 - a
-    dx2dt = (x2 - x2 ^ 3 / 3 - y2 + I(ϕ1) + (k1 + k2 * (y1 - y2)^2) * (x1 - x2) ) / ϵ
-    dy2dt = x2 - a
-    return SVector(dx1dt, dy1dt, dx2dt, dy2dt)
-end
-
 t_truncate(t) = floor(Int64, t / 2)
 
 alg = Vern9();
@@ -47,7 +31,7 @@ integrator_setting = get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_
 parameters = FHN2_try3_params();
 parameters[3] = 0.1;
 parameters[7] = 0.09; #0.09;
-parameters[8] = 76.562    ; # 75.7;
+parameters[8] = 76;   ; # 75.7;
 
 u0_start = [-0.9816946043747945, -0.6320919525134647, -1.0342265829731392, -0.638226338524071];
 u0_start = SVector{4}(u0_start);
@@ -56,9 +40,14 @@ t_end = 50_000;
 tspan = (0.0, t_end);
 
 prob = ODEProblem(FHN2_4d, u0_start, tspan, parameters)
+FHN2_4d([-1.01, -0.6367552038497962, -1.01, -0.6367552038515], parameters, 0)
+
+
 sol = solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive,
                 abstol = integrator_setting.abstol, reltol = integrator_setting.reltol, 
                 maxiters = integrator_setting.maxiters);
+
+
 
 path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/rewrite_images/"
 filename_hist = "fig_13_a_phase_space.eps"
@@ -84,17 +73,26 @@ lines!(ax, sol[indexx, t_plot_start:t_plot_end], sol[indexy, t_plot_start:t_plot
 display(GLMakie.Screen(), f);
 #save(path_to_save*filename_hist, f)
 
+
 ds = CoupledODEs(FHN2_4d, sol[end], parameters,
 diffeq = integrator_setting);
+sol = nothing; GC.gc();
 
 LSE = lyapunovspectrum(ds, 100_000);
 println("LSE: $(LSE)");
 
+
+#= x_intervals = interval(-1.5, 0);
+y_intervals = interval(-1.5, 1.5);
+box = x_intervals × y_intervals × x_intervals × y_intervals;
+print("start calc fp");
+fp, eig, _ = fixedpoints(ds, box, tol = 1e-12); =#
+
 pmap = PoincareMap(ds, (4, -0.625));#0.0))
 
-tr, trange = trajectory(pmap, 200_000)
+tr, trange = trajectory(pmap, 400_000)
 
-tstartpo = 100_000; tendpo= 200_000;
+tstartpo = 100_000; tendpo= 400_000;
 
 f = Figure(size = (1000, 600))
 ax = Axis(f[1, 1], xgridvisible = false, ygridvisible = false,

@@ -15,7 +15,7 @@ using BifurcationKit, Setfield, LinearAlgebra, Plots, Parameters
 function FHN2_try3_params_set()
     ϵ = 0.01; a = -1.01;
     g = 0.1; k = 50.0; σ = 50.0 * pi / 180; α = 160.0 * pi / 180;
-    k1 = 0.09353383; k2 = 64.76190476190476; # 64.76190476190476;
+    k1 = 0.09; k2 = 75.7; # 64.76190476190476;
     return (ϵ = ϵ, a = a, g = g, k = k, σ = σ, α = α, k1 = k1, k2 = k2)
 end
 
@@ -35,7 +35,8 @@ function FHN2_4d(u, p)
     return [dx1dt, dy1dt, dx2dt, dy2dt]
 end
 
-u0 = [-0.9816946043747945, -0.6320919525134647, -1.0342265829731392, -0.638226338524071]
+u0 = [-0.9816946043747945, -0.6320919525134647, -1.0342265829731392, -0.638226338524071];
+# [-0.9816946043747945, -0.6320919525134647, -1.0342265829731392, -0.638226338524071]
 
 params = FHN2_try3_params_set();
 
@@ -47,17 +48,17 @@ pmin = 0.0 #0.09353383;
 opts_con = ContinuationPar(p_min = pmin, p_max = pmax,
                             ds = 0.00001, dsmin = 1e-10, dsmax = 1e-5,
                             nev = 5, detect_bifurcation = 3, newton_options  = opt_new,
-                            max_steps  = 1000)
+                            max_steps  = 1)
 
 
 prob =  BifurcationProblem(FHN2_4d, u0, params, (@lens _.k1));
 
 br = continuation(prob, PALC(), opts_con, verbosity=2, linear_algo = BorderingBLS(opt_new.linsolver))
 
-plot(br)
+#plot(br)
 
 
-opts_con_k2 = ContinuationPar(p_min = 30.0, p_max = 80.0,
+#= opts_con_k2 = ContinuationPar(p_min = 30.0, p_max = 80.0,
 ds = 0.01, dsmin = 1e-10, dsmax = 0.01,
 nev = 5, detect_bifurcation = 3, newton_options  = opt_new,
 max_steps  = 20000)
@@ -70,4 +71,7 @@ hp_codim2_1 = continuation(br, 1, (@lens _.k2),
         linear_algo = BorderingBLS(opt_new.linsolver),
         bothside = true)
 
-plot(hp_codim2_1)
+plot(hp_codim2_1) =#
+
+println(br.sol[2].x)
+println(br[2].eigenvals);
