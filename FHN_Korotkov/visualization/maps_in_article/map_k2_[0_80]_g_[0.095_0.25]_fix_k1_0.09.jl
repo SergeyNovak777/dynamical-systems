@@ -57,10 +57,10 @@ hm = heatmap!(ax, k2range, grange, transpose(Λs[:, :, index]), colormap = :seis
 
 display(GLMakie.Screen(), f);
 
-pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
+#= pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
 filename = "/map_k2_g_fix_k1_extended.pdf"
 fullpath = pathtosave * filename 
-save(fullpath, f)
+save(fullpath, f) =#
 
 
 
