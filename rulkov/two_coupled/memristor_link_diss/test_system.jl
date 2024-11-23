@@ -16,12 +16,12 @@ t_window_plot = t_tr + 50_000;
 params = get_params_rulkov_two_coupled_chem_mem()
 
 params[1] = 3.9; # α
-params[2] = 0.04; # σ
-params[10] = 0.3; # g1
-params[11] = 0.2; # g2
+params[2] = 1.0; # σ
+params[10] = 5.0; # g1
+params[11] = 4.0; # g2
 
 params[12] = 0.1; # k1
-params[13] = 0.000; # k2
+params[13] = 0.052; # k2
 
 u0 = SVector(-1.953578330045283, -3.991607526888279, -1.9574210901468836, -1.46916966508604, -3.5865593516810397, -1.4738167754245777, -0.4836043147223059);
 
@@ -42,7 +42,7 @@ data_local_max = get_local_max(data)
 data_local_min = get_local_min(data)
 
 drop_artifacts(data_local_max, data_local_min)
-Hs_xsum = Hs(data_local_max[1] ,6);
+Hs_xsum = Hs(data_local_max[1], 8);
 
 print("count EEs: $(count(data_local_max[1].>=Hs_xsum))");
 
@@ -53,11 +53,13 @@ scatter!(ax, sol[1, t_tr:t_window_plot], sol[4, t_tr:t_window_plot], sol[2, t_tr
 display(GLMakie.Screen(), f);
 
 f = Figure(size = (1000, 400))
-ax = Axis(f[1, 1])
-lines!(ax, sol.t[t_tr:t_window_plot], sol[1, t_tr:t_window_plot], linewidth = 1.0, color = :green)
-lines!(ax, sol.t[t_tr:t_window_plot], sol[4, t_tr:t_window_plot], linewidth = 1.0, color = :blue)
-#lines!(ax, t_range[1:t_window_plot], x_sum[1:t_window_plot], linewidth = 1.0, color = :black)
-#= scatter!(ax, data_local_max[2], data_local_max[1], markersize = 2.5, color = :red)
-xlims!(ax, t_range[1], t_range[t_window_plot]) =#
-#hlines!(ax, Hs_xsum, linestyle = :dash, color = :red, linewidth = 3.0);
+axx1 = Axis(f[1, 1])
+axx2 = Axis(f[2, 1])
+axxsum = Axis(f[3, 1])
+lines!(axx1, sol.t[t_tr:t_window_plot], sol[1, t_tr:t_window_plot], linewidth = 1.0, color = :green)
+lines!(axx2, sol.t[t_tr:t_window_plot], sol[4, t_tr:t_window_plot], linewidth = 1.0, color = :blue)
+lines!(axxsum, t_range[1:t_window_plot], x_sum[1:t_window_plot], linewidth = 1.0, color = :black)
+#scatter!(axxsum, data_local_max[2], data_local_max[1], markersize = 2.5, color = :red)
+#xlims!(axxsum, t_range[1], t_range[t_window_plot])
+hlines!(axxsum, Hs_xsum, linestyle = :dash, color = :red, linewidth = 3.0);
 display(GLMakie.Screen(), f);

@@ -21,24 +21,19 @@ u0 = SVector(-2.083638390440308, -3.9302148554862937, -2.0867818075436624,
 
 params = get_params_rulkov_two_coupled_chem_mem()
 params[1] = 3.9; # α
-params[2] = 0.04; # σ
-params[10] = 1.0; # g1
-params[11] = 0.0; # g2
+params[2] = 1.0; # σ
+params[10] = 5.0; # g1
+params[11] = 1.0; # g2
 
 params[12] = 0.0; # k1
 params[13] = 0.000; # k2
 
-array_LSEs = zeros(length_range_k1, length(u0));
-array_u0s = zeros(length_range_k1, length(u0)); 
-array_EEs = zeros(length_range_k1);
-
-
 index_save_variable = 1;
 index_change_parameter = 12;
 length_range_change_parameter = 5000;
-range_change_parameter = range(0.0, 0.3, length = length_range_change_parameter);
+range_change_parameter = range(0.0, 0.1, length = length_range_change_parameter);
 
-params[index_control_parameter] = range_change_parameter[1]; # k1
+params[index_change_parameter] = range_change_parameter[1]; # k1
 
 ds = DeterministicIteratedMap(rulkov_two_coupled_chem_mem, SVector{7}(u0), params);
 
@@ -60,7 +55,7 @@ end
 fig, ax = scatter(x, y; axis = (xlabel = L"k_1", ylabel = L"x_1"),
     markersize = 0.8, color = ("black", 0.05),
 )
-
+display(GLMakie.Screen(), fig);
 #= array_probs = [deepcopy(prob) for _ in 1:Threads.nthreads()-1];
 array_ds = [deepcopy(ds) for _ in 1:Threads.nthreads()-1];
 pushfirst!(array_probs, prob);

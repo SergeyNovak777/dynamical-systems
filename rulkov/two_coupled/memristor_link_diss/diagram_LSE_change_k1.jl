@@ -11,24 +11,28 @@ include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version
 
 Hs(x, k) = Statistics.mean(x) + k * Statistics.std(x)
 
-t_sol = (0, 5_000_000);
-t_tr = 2_000_00;
-t_calc_LSE = 500_000;
+t_sol = (0, 3_00_000);
+t_tr = 1_000_00;
+t_calc_LSE = 250_000;
 
 u0 = SVector(-2.083638390440308, -3.9302148554862937, -2.0867818075436624,
             -1.97137793066347, -3.819163877171352, -1.9745518175123469,
             -0.11222999003131551)
 
 params = get_params_rulkov_two_coupled_chem_mem()
+params[1] = 3.9; # α
+params[2] = 1.0; # σ
 params[10] = 5.0; # g1
-params[11] = 2.0; # g2
+params[11] = 4.0; # g2
 
 params[12] = 0.0; # k1
 params[13] = 0.000; # k2
 
-length_range_k1 = 1_000;
+Hs_coeff = 6.0;
+
+length_range_k1 = 3_000;
 index_control_parameter = 12;
-range_k1 = range(0.0, 0.3, length = length_range_k1);
+range_k1 = range(0.0, 0.2, length = length_range_k1);
 
 array_LSEs = zeros(length_range_k1, length(u0));
 array_u0s = zeros(length_range_k1, length(u0)); 
@@ -60,7 +64,7 @@ if Λs[1] >= 0.001
     data_local_min = get_local_min(data);
 
     drop_artifacts(data_local_max, data_local_min)
-    Hs_xsum = Hs(data_local_max[1] ,6);
+    Hs_xsum = Hs(data_local_max[1] ,Hs_coeff);
 
     count_EEs = count(data_local_max[1].>=Hs_xsum)
     array_EEs[1] = count_EEs;
@@ -96,7 +100,7 @@ for index_cycle in range(2, length_range_k1, step = 1)
         data_local_min_lc = get_local_min(data_local);
 
         drop_artifacts(data_local_max_lc, data_local_min_lc)
-        Hs_xsum_lc = Hs(data_local_max_lc[1] ,6);
+        Hs_xsum_lc = Hs(data_local_max_lc[1] ,Hs_coeff);
 
         count_EEs_lc = count(data_local_max_lc[1].>=Hs_xsum_lc)
         array_EEs[index_cycle] = count_EEs_lc;
@@ -131,9 +135,9 @@ jldsave(path_to_save*file_name_EEs; array_EEs);
 window_height, window_width = 400, 1000;
 xlabel = L"k_1";
 ylabel_LSEs, ylabelEEs = L"LSE", L"EE_{count}"
-label_size = 35;
-tickssize = 25;
-linewidth = 2.0;
+label_size = 30;
+tickssize = 15;
+linewidth = 1.5;
 color_LLE1 = :red;
 color_LLE2 = :green;
 color_LLE3 = :blue;
@@ -154,8 +158,8 @@ ax_EE = Axis(figure[2, 1],
 );
 
 lines!(ax_LSE, range_k1, array_LSEs[:, 1], linewidth = linewidth, color = color_LLE1);
-lines!(ax_LSE, range_k1, array_LSEs[:, 2], linewidth = linewidth, color = color_LLE2);
-lines!(ax_LSE, range_k1, array_LSEs[:, 3], linewidth = linewidth, color = color_LLE3);
+#= lines!(ax_LSE, range_k1, array_LSEs[:, 2], linewidth = linewidth, color = color_LLE2);
+lines!(ax_LSE, range_k1, array_LSEs[:, 3], linewidth = linewidth, color = color_LLE3); =#
 
-lines!(ax_EE, range_k1, array_EEs, linewidth = linewidth, color = color_LLE1);
+lines!(ax_EE, range_k1, array_EEs, linewidth = linewidth, color = :black);
 display(GLMakie.Screen(), figure);
