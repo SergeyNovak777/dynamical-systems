@@ -35,11 +35,11 @@ function left_right(prob, ds, u0, params,
     index_p1, index_p2;
     flag_print = false)
 
-
+    
 
     for index_p1 in range_p1
         for index_p2 in range_p2
-
+            
         end
     end
 end

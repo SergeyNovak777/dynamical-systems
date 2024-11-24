@@ -111,3 +111,5 @@ xticklabelsize = ticksize, yticklabelsize = ticksize)#,
 scatter!(tr[tstartpo:tendpo, 1], tr[tstartpo:tendpo, 3], color = :red, markersize = 1.0)
 #xlims!(1.7954, 1.7956)
 display(GLMakie.Screen(), f); =#
+
+

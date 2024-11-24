@@ -72,10 +72,10 @@ ax = Axis(f[1, 1])
 lines!(ax, sol.t[t_start:t_end], sol[1, t_start:t_end], linewidth = 1.0, color = :blue)
 display(GLMakie.Screen(), f)
 
-#= f = Figure()
+f = Figure()
 ax = Axis(f[1, 1])
 scatter!(ax, sol[1, t_start:t_end], sol[2, t_start:t_end], markersize = 5.0, color = :blue)
-display(GLMakie.Screen(), f) =#
+display(GLMakie.Screen(), f)
 
 ds = DeterministicIteratedMap(two_coupled_rulkov, sol[end], params)
 Λs = lyapunovspectrum(ds, 50_000);
