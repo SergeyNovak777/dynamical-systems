@@ -17,11 +17,11 @@ params = get_params_rulkov_two_coupled_chem_mem()
 
 params[1] = 3.9; # α
 params[2] = 1.0; # σ
-params[10] = 4.5; # g1
-params[11] = 4.5; # g2
+params[10] = 5.0; # g1
+params[11] = 4.0; # g2
 
-params[12] = 0.0; # k1
-params[13] = 0.0; # k2
+params[12] = 0.1; # k1
+params[13] = 0.052; # k2
 
 u0 = SVector(-1.953578330045283, -3.991607526888279, -1.9574210901468836,
             -1.97137793066347, -3.819163877171352, -1.9745518175123469,
@@ -51,7 +51,7 @@ data_local_max = get_local_max(data)
 data_local_min = get_local_min(data)
 
 drop_artifacts(data_local_max, data_local_min)
-Hs_xsum = Hs(data_local_max[1] ,6);
+Hs_xsum = Hs(data_local_max[1], 8);
 
 print("count EEs: $(count(data_local_max[1].>=Hs_xsum))");
 
@@ -66,20 +66,14 @@ scatter!(ax, sol[1, t_tr:t_window_plot], sol[4, t_tr:t_window_plot], sol[2, t_tr
 markersize = 2.0, color = :black)
 display(GLMakie.Screen(), f);
 
-#= f = Figure(size = (400, 400))
-ax = Axis(f[1, 1])
-scatter!(ax, sol[index_x, t_tr:t_window_plot], sol[index_y, t_tr:t_window_plot], markersize = 5.0, color = :green)
-scatter!(ax, sol[4, t_tr:t_window_plot], sol[5, t_tr:t_window_plot], markersize = 5.0, color = :blue)
-display(GLMakie.Screen(), f); =#
-
-f = Figure(size = (1000, 700))
-ax1 = Axis(f[1, 1])
-ax2 = Axis(f[2, 1])
-axsum = Axis(f[3, 1])
-t_start = t_tr;
-t_end = t_start + 1_000;
-lines!(ax1, sol.t[t_start:t_end], sol[1, t_start:t_end], linewidth = 1.0, color = :green)
-lines!(ax2, sol.t[t_start:t_end], sol[4, t_start:t_end], linewidth = 1.0, color = :blue)
-lines!(axsum, t_range[1:end], x_sum[1:end], linewidth = 1.0, color = :black)
-
+f = Figure(size = (1000, 400))
+axx1 = Axis(f[1, 1])
+axx2 = Axis(f[2, 1])
+axxsum = Axis(f[3, 1])
+lines!(axx1, sol.t[t_tr:t_window_plot], sol[1, t_tr:t_window_plot], linewidth = 1.0, color = :green)
+lines!(axx2, sol.t[t_tr:t_window_plot], sol[4, t_tr:t_window_plot], linewidth = 1.0, color = :blue)
+lines!(axxsum, t_range[1:t_window_plot], x_sum[1:t_window_plot], linewidth = 1.0, color = :black)
+#scatter!(axxsum, data_local_max[2], data_local_max[1], markersize = 2.5, color = :red)
+#xlims!(axxsum, t_range[1], t_range[t_window_plot])
+hlines!(axxsum, Hs_xsum, linestyle = :dash, color = :red, linewidth = 3.0);
 display(GLMakie.Screen(), f);
