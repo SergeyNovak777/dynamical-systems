@@ -28,16 +28,18 @@ mn, mx =  -absmax, absmax
 CairoMakie.activate!()  
 f = Figure()    
 ticksize = 35
+labelsize = 45;
 tickpad = 10.0
 textsize = 25
 textsizecurve = 30
 lw = 3.5
 mksize = 12
 
-ax = Axis(f[1, 1], xlabel = L"g_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 50,
+ax = Axis(f[1, 1], xlabel = L"g_2",ylabel = L"k_2", xlabelsize = labelsize, ylabelsize = labelsize,
             xticklabelsize = ticksize, yticklabelsize = ticksize,
             xgridvisible  = false, ygridvisible = false,
-            xticklabelpad = tickpad, yticklabelpad = tickpad)
+            xticklabelpad = tickpad, yticklabelpad = tickpad, xtickformat = "{:.0f}", ytickformat = "{:.2f}",
+            xticks = [0, 2, 4, 6, 8.5], yticks = [0, 0.02, 0.04, 0.06, 0.085])
 
 hm = heatmap!(ax, range_p1, range_p2, Λs[:, :, index], colormap = :seismic,
                 colorrange = (-0.05, 0.05))
@@ -47,4 +49,4 @@ display(GLMakie.Screen(), f);
 pathtosave = "/home/sergey/MEGA/dynamical-systems/rulkov_2_elements_with_mem_chem/images/"
 filename = "/fix_g1=5_k1=0.1_map_k1_g2.pdf"
 fullpath = pathtosave * filename 
-#save(fullpath, f)
+save(fullpath, f)

@@ -11,7 +11,7 @@ include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version
 
 tspan = (0, 2_500_000);
 t_tr = 1_000_000;
-t_window_plot = t_tr + 1_500_000;
+t_window_plot = 1_500_000;
 
 params = get_params_rulkov_two_coupled_chem_mem()
 
@@ -21,7 +21,7 @@ params[10] = 5.0; # g1
 params[11] = 4.0; # g2
 
 params[12] = 0.1; # k1
-params[13] = 0.052; # k2
+params[13] = 0.05; # k2
 
 u0 = SVector(-1.953578330045283, -3.991607526888279, -1.9574210901468836,
             -1.97137793066347, -3.819163877171352, -1.9745518175123469,
