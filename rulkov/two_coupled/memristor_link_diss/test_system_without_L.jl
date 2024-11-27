@@ -9,7 +9,7 @@ include("/home/sergey/work/repo/dynamical-systems/system.jl");
 include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/detect_spike.jl");
 include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/IEI.jl");
 
-tspan = (0, 2_500_000);
+tspan = (0, 3_500_000);
 t_tr = 1_000_000;
 t_window_plot = 1_500_000;
 
@@ -18,28 +18,21 @@ params = get_params_rulkov_two_coupled_chem_mem()
 params[1] = 3.9; # α
 params[2] = 1.0; # σ
 params[10] = 5.0; # g1
-params[11] = 4.0; # g2
+params[11] = 3.0; # g2
 
 params[12] = 0.1; # k1
-params[13] = 0.05; # k2
+params[13] = 0.075; # k2
 
 u0 = SVector(-1.953578330045283, -3.991607526888279, -1.9574210901468836,
-            -1.97137793066347, -3.819163877171352, -1.9745518175123469, -0.11222999003131551);
-    #= -1.953578330045283, -3.991607526888279, -1.9574210901468836,
- -1.46916966508604, -3.5865593516810397, -1.4738167754245777,
-  -0.4836043147223059); =#
+            -1.97137793066347, -3.819163877171352, -1.9745518175123469);
 
-#= 1.0, 0.3, 0.01,
-            1.5, 0.4, 0.5,
-            1.0-1.5 =#
-
-prob = DiscreteProblem(rulkov_two_coupled_chem_mem, SVector{7}(u0), tspan, params);
+            prob = DiscreteProblem(rulkov_two_coupled_chem_mem_without_L, SVector{6}(u0), tspan, params);
 sol = solve(prob);
 
-x_sum = sol[1, t_tr:tspan[2]] + sol[4, t_tr:tspan[2]]
+x_sum = (sol[1, t_tr:tspan[2]] + sol[4, t_tr:tspan[2]]) / 2
 t_range = sol.t[t_tr:tspan[2]]
 
-ds = DeterministicIteratedMap(rulkov_two_coupled_chem_mem, sol[end], params)
+ds = DeterministicIteratedMap(rulkov_two_coupled_chem_mem_without_L, sol[end], params)
 Λs = lyapunovspectrum(ds, 200_000)
 println("LSE: $Λs");
 
@@ -50,7 +43,7 @@ data_local_max = get_local_max(data)
 data_local_min = get_local_min(data)
 
 drop_artifacts(data_local_max, data_local_min)
-Hs_xsum = Hs(data_local_max[1], 8);
+Hs_xsum = Hs(data_local_max[1], 6);
 
 print("count EEs: $(count(data_local_max[1].>=Hs_xsum))");
 
