@@ -11,7 +11,8 @@ else
     include("/home/sergey/work/repo/dynamical-systems/system.jl")
 end
 
-using StaticArrays, DifferentialEquations, DynamicalSystems, CairoMakie, GLMakie
+using StaticArrays, DifferentialEquations, DynamicalSystems, BenchmarkTools
+#, CairoMakie, GLMakie
 
 function get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters)
     integrator_setting = (alg = alg, adaptive = adaptive, abstol = abs_tol, reltol = rel_tol, maxiters = max_iters);
@@ -36,35 +37,36 @@ end
 
 t_truncate(t) = floor(Int64, t / 2)
 
-alg = Vern9();
-adaptive = true;
-abs_tol = 1e-13;
-rel_tol = 1e-13;
+alg = Vern9()
+abs_tol = 1e-10;
+rel_tol = 1e-10;
 max_iters = 1e8;
+adaptive = true;
 
 integrator_setting = get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters);
 
 parameters = FHN2_try3_params();
 parameters[3] = 0.1;
-parameters[7] = 0.09353383;
-parameters[8] = 87.0;
+parameters[7] = 0.085;
+parameters[8] = 60.0;
 
 u0_start = [-0.9816946043747945, -0.6320919525134647, -1.0342265829731392, -0.638226338524071];
 u0_start = SVector{4}(u0_start);
 
-t_end = 10_000;
+t_end = 100_000;
 tspan = (0.0, t_end);
 
 prob = ODEProblem(FHN2_4d, u0_start, tspan, parameters)
-sol = solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive,
+
+@btime solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive,
                 abstol = integrator_setting.abstol, reltol = integrator_setting.reltol, 
                 maxiters = integrator_setting.maxiters);
 
-ds = CoupledODEs(FHN2_4d, sol[end], parameters,
-diffeq = integrator_setting);
+#= ds = CoupledODEs(FHN2_4d, sol[end], parameters,
+diffeq = integrator_setting); =#
 
-LSE = lyapunovspectrum(ds, 50000);
-println(LSE);
+#= LSE = lyapunovspectrum(ds, 50000);
+println(LSE); =#
 
 labelsize = 50;
 ticksize = 25;

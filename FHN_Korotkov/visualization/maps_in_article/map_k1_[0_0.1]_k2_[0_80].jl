@@ -70,7 +70,7 @@ display(GLMakie.Screen(), f);
 pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
 filename = "/k1_k2_extended.eps"
 fullpath = pathtosave * filename 
-save(fullpath, f)
+#save(fullpath, f)
 
 #= index_p1 = 324
 index_p2 = 324
