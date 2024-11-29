@@ -35,8 +35,9 @@ index_parameter_2 = 8;
 name_parameter_1 = "k_1";
 name_parameter_2 = "k_2";
 
-abstl = 1e-11; reltl = 1e-11;
-integrator_setting = (alg = DP8(), adaptive = true, abstol = abstl, reltol = reltl, maxiters = 10e6);
+abstl = 1e-11; reltl = 1e-11; maxiters = 10e6;
+integrator_setting = (alg = DP8(), adaptive = true, abstol = abstl, reltol = reltl, maxiters = );
+abstl = nothing; reltl = nothing; maxiters = nothing;
 
 prob = ODEProblem(sys, SVector{length(u0)}(u0), t_span, params)
 
@@ -47,7 +48,7 @@ function calculate_map_EEs()
         for (index_p1_cycle, value_p1) in enumerate(k1range)
 
                 u0 = last_point[index_p1_cycle, index_p2_cycle, :];
-                prob = reinit_prob(prob, value_p1, value_p2, index_parameter_1, index_parameter_2, u0)
+                prob = reinit_prob(prob, value_p1, value_p2, index_parameter_1, index_parameter_2, params, u0)
 
         end
     end
@@ -62,4 +63,18 @@ function reinit_prob(prob, value_p1, value_p2, index_parameter_1, index_paramete
     copyparams[index_parameter_2] = value_p2;
     probcopy = remake(prob, u0 = u0, p = copyparams);
     return probcopy;
+end
+
+function get_solve(prob, integrator_setting, t_sol)
+    if integrator_setting.adaptive == true
+        sol = solve(prob, alg = integrator_setting.alg, adaptive = true,
+        abstol = integrator_setting.abstol, reltol = integrator_setting.reltol,
+        maxiters = integrator_setting.maxiters)
+    else
+        sol = solve(prob, alg = integrator_setting.alg, adaptive = false,
+        dt = integrator_setting.dt,
+        maxiters = integrator_setting.maxiters)
+    end
+
+    
 end

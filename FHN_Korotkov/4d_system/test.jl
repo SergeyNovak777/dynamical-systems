@@ -53,12 +53,12 @@ parameters[8] = 60.0;
 u0_start = [-0.9816946043747945, -0.6320919525134647, -1.0342265829731392, -0.638226338524071];
 u0_start = SVector{4}(u0_start);
 
-t_end = 100_000;
+t_end = 50_000;
 tspan = (0.0, t_end);
 
 prob = ODEProblem(FHN2_4d, u0_start, tspan, parameters)
 
-@btime solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive,
+sol = solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive,
                 abstol = integrator_setting.abstol, reltol = integrator_setting.reltol, 
                 maxiters = integrator_setting.maxiters);
 
