@@ -13,30 +13,30 @@ else
     include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/IEI.jl")
 end
 
-using StaticArrays, DifferentialEquations, JLD2, Statistics, CairoMakie, GLMakie
+using StaticArrays, DifferentialEquations, BenchmarkTools, JLD2, Statistics, CairoMakie, GLMakie
 
-t_truncate(t) = floor(Int64, t / 2)
-Hs(x, k) = Statistics.mean(x) + k * Statistics.std(x)
+t_truncate(t) = floor(Int64, t / 2);
+Hs(x, k) = Statistics.mean(x) + k * Statistics.std(x);
 
-alg = DP8();
-abs_tol = 1e-10;
-rel_tol = 1e-10;
+alg = Vern9();
+abs_tol = 1e-7;
+rel_tol = 1e-7;
 max_iters = 1e8;
 #println("alg: $alg"); println("abstol: $abs_tol; reltol: $(rel_tol)")
-integrator_setting = (alg = alg, abs_tol = abs_tol, rel_tol = rel_tol,  max_iters = max_iters)
+integrator_setting = (alg = alg, abs_tol = abs_tol, rel_tol = rel_tol,  max_iters = max_iters);
 
-path_to_save = "/home/sergey/timeseries_k2_75_74_save_x1_x2/"
-parameters = FHN2_try3_params()
-parameters[7] = 0.09
-parameters[8] = 75.74
+parameters = FHN2_try3_params();
+parameters[7] = 0.09;
+parameters[8] = 75.74;
 
-u0_start = [1.7, 0.7, -1.4, 0.35, 0.7 - 0.35]; 
-u0_start = SVector{5}(u0_start)
+u0_start = [1.7, 0.7, -1.4, 0.35]; 
+u0_start = SVector{4}(u0_start);
 
-t_point = 1_500_000
-tspan = (0.0, t_point)
+t_point = 3_000_000;
+tspan = (0.0, t_point);
 
-prob = ODEProblem(FHN2_try3, u0_start, tspan, parameters)
+prob = ODEProblem(FHN2_4d, u0_start, tspan, parameters);
+
 sol = solve(prob, integrator_setting.alg, adaptive = true,
     abstol = integrator_setting.abs_tol, reltol = integrator_setting.rel_tol,
     maxiters = integrator_setting.max_iters, save_idxs = [1], dense = false);

@@ -36,7 +36,7 @@ name_parameter_1 = "k_1";
 name_parameter_2 = "k_2";
 
 abstl = 1e-11; reltl = 1e-11; maxiters = 10e6;
-integrator_setting = (alg = DP8(), adaptive = true, abstol = abstl, reltol = reltl, maxiters = );
+integrator_setting = (alg = DP8(), adaptive = true, abstol = abstl, reltol = reltl, maxiters = maxiters);
 abstl = nothing; reltl = nothing; maxiters = nothing;
 
 prob = ODEProblem(sys, SVector{length(u0)}(u0), t_span, params)
@@ -65,16 +65,18 @@ function reinit_prob(prob, value_p1, value_p2, index_parameter_1, index_paramete
     return probcopy;
 end
 
-function get_solve(prob, integrator_setting, t_sol)
+function get_solve(prob, integrator_setting)
     if integrator_setting.adaptive == true
         sol = solve(prob, alg = integrator_setting.alg, adaptive = true,
         abstol = integrator_setting.abstol, reltol = integrator_setting.reltol,
-        maxiters = integrator_setting.maxiters)
+        maxiters = integrator_setting.maxiters,
+        save_idxs = integrator_setting.save_idxs)
     else
         sol = solve(prob, alg = integrator_setting.alg, adaptive = false,
         dt = integrator_setting.dt,
-        maxiters = integrator_setting.maxiters)
+        maxiters = integrator_setting.maxiters,
+        save_idxs = integrator_setting.save_idxs)
     end
 
-    
+    return sol;    
 end

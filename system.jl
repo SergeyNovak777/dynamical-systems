@@ -499,6 +499,28 @@ function FHN2_try3(u, p)
     return [dx1dt, dy1dt, dx2dt, dy2dt, dzdt]
 end
 
+#----------------------------------------------------------------------------------------
+# FHN two coupled element 4d 
+
+function FHN2_4d(u, p ,t)
+    x1, y1, x2, y2 = u
+    ϵ, a, g, k, σ, α, k1, k2 = p
+
+    cos_σ_half = cos(σ/2.0);
+    link = (k1 + k2 * (y1 - y2)^2.0);
+
+    I(ϕ_i, cos_σ_half) = g * (1.0/(1.0 + exp(k*( cos_σ_half - cos(ϕ_i - α - σ/2.0)))))
+
+    ϕ2 = atan(y2, x2)
+    ϕ1 = atan(y1, x1)
+    
+    dx1dt = (x1 - x1 ^ 3.0 / 3.0 - y1 + I(ϕ2, cos_σ_half) + link * (x2 - x1) ) / ϵ
+    dy1dt = x1 - a
+    dx2dt = (x2 - x2 ^ 3.0 / 3.0 - y2 + I(ϕ1, cos_σ_half) + link * (x1 - x2) ) / ϵ
+    dy2dt = x2 - a
+    return SVector(dx1dt, dy1dt, dx2dt, dy2dt)
+end
+
 function jac_FHN(u, p, t)
     x1, y1, x2, y2, z = u
     ϵ, a, g, k, σ, α, k1, k2 = p
@@ -763,24 +785,6 @@ function rulkov_two_coupled_chem_mem_without_L(u, p, t)
     return SVector{6}(x1n, y1n, z1n, x2n, y2n, z2n)
 end
 
-#----------------------------------------------------------------------------------------
-# FHN two coupled element 4d 
-
-function FHN2_4d(u, p ,t)
-    x1, y1, x2, y2 = u
-    ϵ, a, g, k, σ, α, k1, k2 = p
-
-    I(ϕ_i) = g * (1.0/(1.0 + exp(k*(cos(σ/2) - cos(ϕ_i - α - σ/2)))))
-
-    ϕ2 = atan(y2, x2)
-    ϕ1 = atan(y1, x1)
-
-    dx1dt = (x1 - x1 ^ 3 / 3 - y1 + I(ϕ2) + (k1 + k2 * (y1 - y2)^2) * (x2 - x1) ) / ϵ
-    dy1dt = x1 - a
-    dx2dt = (x2 - x2 ^ 3 / 3 - y2 + I(ϕ1) + (k1 + k2 * (y1 - y2)^2) * (x1 - x2) ) / ϵ
-    dy2dt = x2 - a
-    return SVector(dx1dt, dy1dt, dx2dt, dy2dt)
-end
 #= 
 function jac_FHN_4d(u, p, t)
     x1, y1, x2, y2, z = u

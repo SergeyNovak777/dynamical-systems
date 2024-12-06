@@ -68,7 +68,6 @@ println("length local mins: $(length(data_local_min[1]))")
 
 all_amplitudes = get_amplitudes_all_events(data_local_max[1], data_local_min[1])
 mean_amplitudes = Statistics.mean(all_amplitudes)
-
 peaks_spikes, t_peaks_spikes, amplitudes_above_mean = select_spikes(data_local_min[1], data_local_max, mean_amplitudes) # Statistics.std(all_amplitudes))
 println("count spikes: $(length(peaks_spikes))")
 Hs_x = Hs(amplitudes_above_mean, 8)
