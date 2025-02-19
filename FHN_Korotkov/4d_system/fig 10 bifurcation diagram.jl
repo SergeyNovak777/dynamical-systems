@@ -4,11 +4,11 @@ if Sys.iswindows()
     using Pkg
     Pkg.activate(pathtorepo * "dynamical-systems\\env\\integrate\\")
 else
-    username = "sergey"
+    username = "irrito"
     pathtorepo = "/home/" *username *"/work/repo/dynamical-systems"
     using Pkg
     Pkg.activate(pathtorepo * "/env/integrate/")
-    include("/home/sergey/work/repo/dynamical-systems/system.jl")
+    include("/home/irrito/work/repo/dynamical-systems/system.jl")
 end
 
 #= if Sys.iswindows()
