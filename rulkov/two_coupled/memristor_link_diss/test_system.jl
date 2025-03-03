@@ -4,6 +4,7 @@ using Pkg
 Pkg.activate(pathtorepo * "/env/integrate/")
 
 using StaticArrays, Statistics, DifferentialEquations, DynamicalSystems, CairoMakie, GLMakie
+using BenchmarkTools
 
 include("/home/sergey/work/repo/dynamical-systems/system.jl");
 include("/home/sergey/work/repo/dynamical-systems/FHN_Korotkov/PDF_clear_version/detect_spike.jl");
@@ -18,10 +19,10 @@ params = get_params_rulkov_two_coupled_chem_mem()
 params[1] = 3.9; # α
 params[2] = 1.0; # σ
 params[10] = 5.0; # g1
-params[11] = 4.0; # g2
+params[11] = 1.0; # g2
 
 params[12] = 0.1; # k1
-params[13] = 0.05; # k2
+params[13] = 0.00; # k2
 
 u0 = SVector(-1.953578330045283, -3.991607526888279, -1.9574210901468836,
             -1.97137793066347, -3.819163877171352, -1.9745518175123469, -0.11222999003131551);
@@ -35,6 +36,7 @@ u0 = SVector(-1.953578330045283, -3.991607526888279, -1.9574210901468836,
 
 prob = DiscreteProblem(rulkov_two_coupled_chem_mem, SVector{7}(u0), tspan, params);
 sol = solve(prob);
+
 
 x_sum = sol[1, t_tr:tspan[2]] + sol[4, t_tr:tspan[2]]
 t_range = sol.t[t_tr:tspan[2]]
@@ -76,3 +78,13 @@ lines!(axxsum, t_range[1:t_window_plot], x_sum[1:t_window_plot], linewidth = 1.0
 #xlims!(axxsum, t_range[1], t_range[t_window_plot])
 hlines!(axxsum, Hs_xsum, linestyle = :dash, color = :red, linewidth = 3.0);
 display(GLMakie.Screen(), f);
+
+
+CairoMakie.activate!();
+f = Figure(size = (900, 600))
+ax = Axis3(f[1, 1], xlabel = L"x_1", ylabel = L"x_2", zlabel = L"y_1", xlabelsize = 50, ylabelsize = 50, zlabelsize = 50)
+scatter!(ax, sol[1, t_tr:t_window_plot], sol[4, t_tr:t_window_plot], sol[2, t_tr:t_window_plot],
+markersize = 2.0, color = :black)
+display(GLMakie.Screen(), f);
+
+sol = sol[:, t_tr:end]

@@ -757,8 +757,6 @@ function rulkov_two_coupled_chem_mem_without_L(u, p, t)
         end
     end
 
-    ρ(L, k1 ,k2) = k1 + k2 * L^2;
-
     x1, y1, z1, x2, y2, z2 = u
     α, σ, μ, β_syn, σ_syn, x_rp, x_th, γ_1, γ_2, g1, g2, k1, k2 = p
 
@@ -768,20 +766,18 @@ function rulkov_two_coupled_chem_mem_without_L(u, p, t)
         k = 1
     end
 
-    L = x1 - x2;
+    ρ = k1 + k2 * (x1 - x2)^2
 
     I21 = g2 * ( x_rp - x1 ) * xi(x2, x_th)
-    x1n = right_part_x(x1, y1 + (β_syn/k) * I21 + ρ(L, k1, k2) * (x2 - x1), z1, α)
+    x1n = right_part_x(x1, y1 + (β_syn/k) * I21 + ρ * (x2 - x1), z1, α)
     y1n = right_part_y(x1, y1, (σ_syn/k) * I21, μ, σ)
     z1n = x1
 
     I12 = g1 * ( x_rp - x2 ) * xi(x1, x_th)
-    x2n = right_part_x(x2, y2 + (β_syn/k) * I12 + ρ(L, k1, k2) * (x1 - x2), z2, α)
+    x2n = right_part_x(x2, y2 + (β_syn/k) * I12 + ρ * (x1 - x2), z2, α)
     y2n = right_part_y(x2, y2, (σ_syn/k) * I12, μ, σ)
     z2n = x2
 
-    
-    
     return SVector{6}(x1n, y1n, z1n, x2n, y2n, z2n)
 end
 

@@ -48,12 +48,12 @@ parameters = FHN2_try3_params();
 parameters[3] = 0.1;
 parameters[7] = 0.09;
 parameters[8] = 75.74;
-filename_hist = "fig_14_f.eps"
+filename_hist = "fig_14_f.png"
 
 u0_start = [-0.9816946043747945, -0.6320919525134647, -1.0342265829731392, -0.638226338524071];
 u0_start = SVector{4}(u0_start);
 
-t_end = 10_000;
+t_end = 30_000;
 tspan = (0.0, t_end);
 
 prob = ODEProblem(FHN2_4d, u0_start, tspan, parameters)
@@ -69,8 +69,8 @@ ticksize = 50;
 CairoMakie.activate!();
 length_sol = length(sol);
 ttr = t_truncate(length_sol)
-t_plot_start =  ttr
-t_plot_end = t_plot_start + 80_000;
+t_plot_start =  ttr;
+t_plot_end = t_plot_start +120_000; # 150_000
                 
 indexx = 1; indexy  = 3; indexz = 4;
 f = Figure(size = (1000 ,600));

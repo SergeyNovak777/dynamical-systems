@@ -16,29 +16,28 @@ t_tr = 2_000_00;
 t_calc_LSE = 500_000;
 
 u0 = SVector(-2.083638390440308, -3.9302148554862937, -2.0867818075436624,
-            -1.97137793066347, -3.819163877171352, -1.9745518175123469,
-            -0.11222999003131551)
+            -1.97137793066347, -3.819163877171352, -1.9745518175123469)
 
 params = get_params_rulkov_two_coupled_chem_mem()
 params[1] = 3.9; # α
 params[2] = 1.0; # σ
 params[10] = 5.0; # g1
-params[11] = 1.0; # g2
+params[11] = 6.0; # g2
 
 params[12] = 0.1; # k1
-params[13] = 0.000; # k2
+params[13] = 0.0; # k2
 
 index_save_variable = 1;
 index_change_parameter = 13;
-length_range_change_parameter = 8000;
+length_range_change_parameter = 10000;
 range_change_parameter = range(0.0, 0.1, length = length_range_change_parameter);
 
 params[index_change_parameter] = range_change_parameter[1]; # k1
 
-ds = DeterministicIteratedMap(rulkov_two_coupled_chem_mem, SVector{7}(u0), params);
+ds = DeterministicIteratedMap(rulkov_two_coupled_chem_mem_without_L, SVector{6}(u0), params);
 
-amount_saved_points = 2500; # amount saved points for each value parameter
-Ttr = 100_000;
+amount_saved_points = 3000; # amount saved points for each value parameter
+Ttr = 10_000;
 
 output = orbitdiagram(ds, index_save_variable, index_change_parameter, range_change_parameter,
         n = amount_saved_points, Ttr = Ttr);
@@ -52,7 +51,7 @@ for j in 1:L
     y[(1 + (j-1)*amount_saved_points):j*amount_saved_points] .= output[j]
 end
 
-fig, ax = scatter(x, y; axis = (xlabel = L"k_2", ylabel = L"x_1"),
+fig, ax = scatter(x, y; axis = (xlabel = L"k_1", ylabel = L"x_1"),
     markersize = 0.8, color = ("black", 0.05),
 )
 display(GLMakie.Screen(), fig);

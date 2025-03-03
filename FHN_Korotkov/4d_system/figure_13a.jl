@@ -31,7 +31,7 @@ integrator_setting = get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_
 parameters = FHN2_try3_params();
 parameters[3] = 0.1;
 parameters[7] = 0.09; #0.09;
-parameters[8] = 85;   ; # 75.7;
+parameters[8] = 100.0;
 
 u0_start = [-0.9816946043747945, -0.6320919525134647, -1.0342265829731392, -0.638226338524071];
 u0_start = SVector{4}(u0_start);
@@ -90,9 +90,9 @@ fp, eig, _ = fixedpoints(ds, box, tol = 1e-12); =#
 
 pmap = PoincareMap(ds, (4, -0.625));#0.0))
 
-tr, trange = trajectory(pmap, 200_000)
+tr, trange = trajectory(pmap, 500_000)
 
-tstartpo = 100_000; tendpo= 200_000;
+tstartpo = 200_000; tendpo= 500_000;
 
 f = Figure(size = (1000, 600))
 ax = Axis(f[1, 1], xgridvisible = false, ygridvisible = false,

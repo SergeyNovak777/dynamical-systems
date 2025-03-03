@@ -4,7 +4,7 @@ if Sys.iswindows()
     using Pkg
     Pkg.activate(pathtorepo * "dynamical-systems\\env\\integrate\\")
 else
-    username = "sergey"
+    username = "irrito"
     pathtorepo = "/home/" *username *"/work/repo/dynamical-systems"
     using Pkg
     Pkg.activate(pathtorepo * "/env/integrate/")
@@ -46,7 +46,7 @@ ttr = 2000
 
 k2_start = 100.0
 k2_end = 0.0
-len = 2000
+len = 1000
 rangek2 = range(k2_start, k2_end, length = len)
 index_control_param = 8
 
@@ -83,3 +83,5 @@ scatter!(axis, fill(p, length(output[j])), output[j]; color = ("black", 0.5), ma
 end
 display(GLMakie.Screen(), fig)
 #save(full_path, fig)
+
+#save(path_to_save*filename, fig)
