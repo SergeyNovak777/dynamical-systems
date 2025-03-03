@@ -41,9 +41,31 @@ ax = Axis(f[1, 1], xlabel = L"g",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 
 hm = heatmap!(ax, grange, k1range, transpose(Λs[:, :, index]), colormap = :seismic,
                 colorrange = (mn, mx))
 
+# curve of hopf
+path_to_hopf_curve_for = "/home/sergey/MEGA/MatCont7p5/Systems/FHN/diagram/hopf_curve_control_params:g_k1_forward.mat"
+file_hopf_curve_for = matopen(path_to_hopf_curve_for)
+hopf_curve_for = read(file_hopf_curve_for, "x")
+close(file_hopf_curve_for)
+
+path_to_hopf_curve_back = "/home/sergey/MEGA/MatCont7p5/Systems/FHN/diagram/hopf_curve_control_params:g_k1_backward.mat"
+file_hopf_curve_back = matopen(path_to_hopf_curve_back)
+hopf_curve_back = read(file_hopf_curve_back, "x")
+close(file_hopf_curve_back)
+
+# hopf
+lines!(ax, hopf_curve_for[5, :], hopf_curve_for[6, :], linewidth = 3.0, color = :green3)
+lines!(ax, hopf_curve_back[5, :], hopf_curve_back[6, :], linewidth = 3.0, color = :green3)
+
+# GH
+scatter!(ax, 0.1225, 0.1268, markersize = 12.0, color = :black)
+text!(ax, 0.1225, 0.1268, text = L"GH", fontsize = 30, color = :black, align = (:left, :top))
+
+xlims!(ax, 0.01109, 0.25);
+ylims!(ax, 0.0, 0.14);
+
 display(GLMakie.Screen(), f);
 
 pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
-filename = "/k2=1_k1_g.pdf"
+filename = "/k2=1_k1_g_with_curve.pdf"
 fullpath = pathtosave * filename 
 save(fullpath, f)

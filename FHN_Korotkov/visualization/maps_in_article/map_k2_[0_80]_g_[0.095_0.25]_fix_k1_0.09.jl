@@ -19,6 +19,17 @@ init_point = u0s["init_points"]
 last_point = u0s["last_points"]
 
 
+# curve of hopf
+path_to_hopf_curve_for = "/home/sergey/MEGA/MatCont7p5/Systems/FHN/diagram/hopf_curve_control_params:k2_g_forward.mat"
+file_hopf_curve_for = matopen(path_to_hopf_curve_for)
+hopf_curve_for = read(file_hopf_curve_for, "x")
+close(file_hopf_curve_for)
+
+path_to_hopf_curve_back = "/home/sergey/MEGA/MatCont7p5/Systems/FHN/diagram/hopf_curve_control_params:k2_g_backward.mat"
+file_hopf_curve_back = matopen(path_to_hopf_curve_back)
+hopf_curve_back = read(file_hopf_curve_back, "x")
+close(file_hopf_curve_back)
+
 length_range = 350;
 grange = range( 0.095, 0.25, length = length_range);
 k2range = range(0.0, 80.0, length = length_range);
@@ -29,13 +40,13 @@ index = 1
 mn, mx =  minimum((Λs[:, :, index])), maximum((Λs[:, :, index]))
 CairoMakie.activate!()  
 
-index_p1 = 262
+#= index_p1 = 262
 index_p2 = 324
 println("g: $(grange[index_p1]); g index: $index_p1")
 println("k2: $(k2range[index_p2]); k2 index: $index_p2")
 println("u0: $(init_point[index_p1, index_p2, :])")
 println("λs: $(Λs[index_p1, index_p2, index]) ")
-println("last pont: $(last_point[index_p1,index_p2,:])")
+println("last pont: $(last_point[index_p1,index_p2,:])") =#
 
 ticksize = 35
 tickpad = 10.0
@@ -53,14 +64,23 @@ ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"g", xlabelsize = 50, ylabelsize = 
 hm = heatmap!(ax, k2range, grange, transpose(Λs[:, :, index]), colormap = :seismic,
                 colorrange = (-0.3, 0.3))
 
-#scatter!(ax, k2range[index_p2], grange[index_p1], markersize = 5, color = :lime)
+# hopf
+lines!(ax, hopf_curve_for[6, :], hopf_curve_for[5, :], linewidth = 3.0, color = :magenta)
+lines!(ax, hopf_curve_back[6, :], hopf_curve_back[5, :], linewidth = 3.0, color = :magenta)
+
+# GH
+scatter!(ax, 43.373919, 0.23276985, markersize = 12.0, color = :black)
+text!(ax, 43.373919, 0.23276985, text = L"GH", fontsize = 30, color = :black, align = (:center, :top), offset = (0, -10))
+
+xlims!(ax, 0.0, 80);
+ylims!(ax, 0.095, 0.25);
 
 display(GLMakie.Screen(), f);
 
-#= pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
-filename = "/map_k2_g_fix_k1_extended.pdf"
+pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
+filename = "/map_k2_g_fix_k1_extended_with_curve.pdf"
 fullpath = pathtosave * filename 
-save(fullpath, f) =#
+#save(fullpath, f)
 
 
 
