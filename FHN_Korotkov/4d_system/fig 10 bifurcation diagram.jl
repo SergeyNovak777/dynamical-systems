@@ -1,4 +1,4 @@
-#= if Sys.iswindows()
+if Sys.iswindows()
     username = "Alex"
     pathtorepo = "C:\\Users\\" *username *  "\\Desktop\\"
     using Pkg
@@ -9,19 +9,6 @@ else
     using Pkg
     Pkg.activate(pathtorepo * "/env/integrate/")
     include("/home/sergey/work/repo/dynamical-systems/system.jl")
-end =#
-
-if Sys.iswindows()
-    username = "Alex"
-    pathtorepo = "C:\\Users\\" *username *  "\\Desktop\\"
-    using Pkg
-    Pkg.activate(pathtorepo * "dynamical-systems\\env\\integrate\\")
-else
-    username = "sergey"
-    pathtorepo = "/home/" *username *"/repositories/dynamical-systems"
-    using Pkg
-    Pkg.activate(pathtorepo * "/env/integrate/")
-    include("/home/sergey/repositories/dynamical-systems/system.jl");
 end
 
 using StaticArrays, DifferentialEquations, DynamicalSystems, CairoMakie, GLMakie
@@ -54,13 +41,8 @@ integ_set = (alg = Vern9(), adaptive = true, abstol=1e-13, reltol=1e-13, maxiter
 
 ds = CoupledODEs(FHN2_4d, u0, params, diffeq = integ_set)
 
-<<<<<<< Updated upstream:FHN_Korotkov/4d_system/fig 10 bifurcation diagram.jl
-t = 2500
-ttr = 5000
-=======
 t = 1000
 ttr = 2000
->>>>>>> Stashed changes:FHN_Korotkov/4d_system/bifurcation_diagram.jl
 
 k2_start = 100.0
 k2_end = 0.0
@@ -90,27 +72,14 @@ ticksize = 35;
 CairoMakie.activate!();
 fig = Figure(size = (1200, 350))
 axis = Axis(fig[1,1],
-<<<<<<< Updated upstream:FHN_Korotkov/4d_system/fig 10 bifurcation diagram.jl
-xlabel = L"k_2",  ylabel = L"x_1",
-xlabelsize = lbsize, ylabelsize = lbsize,
-xticklabelsize = ticksize,yticklabelsize = ticksize,
-xgridvisible = false, ygridvisible = false)
-=======
         xlabel = L"k_2",  ylabel = L"x_1",
         xlabelsize = lbsize, ylabelsize = lbsize,
         xticklabelsize = ticksize,yticklabelsize = ticksize,
         xgridvisible = false, ygridvisible = false);
->>>>>>> Stashed changes:FHN_Korotkov/4d_system/bifurcation_diagram.jl
 
 CairoMakie.activate!();
 for (j, p) in enumerate(rangek2)
 scatter!(axis, fill(p, length(output[j])), output[j]; color = ("black", 0.5), markersize = markersize)
 end
-<<<<<<< Updated upstream:FHN_Korotkov/4d_system/fig 10 bifurcation diagram.jl
 display(GLMakie.Screen(), fig)
-display(fig);
-save(path_to_save*filename, fig)
-=======
-#display(GLMakie.Screen(), fig)
-save(full_path, fig)
->>>>>>> Stashed changes:FHN_Korotkov/4d_system/bifurcation_diagram.jl
+#save(full_path, fig)
