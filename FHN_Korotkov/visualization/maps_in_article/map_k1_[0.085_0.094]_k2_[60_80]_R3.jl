@@ -47,8 +47,36 @@ ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize 
 
 hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :seismic,
                 colorrange = (mn, mx))
-
+Colorbar(f[:, end+1], hm)
 display(GLMakie.Screen(), f);
+
+
+index = 2
+absmax = maximum(abs.(Λs[:, :, index]))
+
+mn, mx = -0.01, 0.01 #-absmax, absmax
+CairoMakie.activate!()  
+
+ticksize = 35
+tickpad = 10.0
+textsize = 25
+textsizecurve = 30
+lw = 3.5
+mksize = 12
+
+f = Figure()
+ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize = 50,
+            xticklabelsize = ticksize, yticklabelsize = ticksize,
+            xgridvisible  = false, ygridvisible = false,
+            xticklabelpad = tickpad, yticklabelpad = tickpad)#,
+            #xticks = [63, 70, 79],
+            #yticks = [0.086, 0.090, 0.093])
+
+hm = heatmap!(ax, k2range, k1range, transpose(Λs[:, :, index]), colormap = :cyclic_tritanopic_wrwc_70_100_c20_n256,
+                colorrange = (mn, mx))
+Colorbar(f[:, end+1], hm)
+display(GLMakie.Screen(), f);
+
 
 #= pathtosave = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/maps"
 filename = "/map_R3.pdf"
@@ -87,6 +115,7 @@ ax = Axis(f[1, 1], xlabel = L"k_2",ylabel = L"k_1", xlabelsize = 50, ylabelsize 
             #xticks = [63, 70, 79],
             #yticks = [0.086, 0.090, 0.093])
 
-hm = heatmap!(ax, k2range, k1range, transpose(color_matrix00), colormap = :RdBu_6)
+#hm = heatmap!(ax, k2range, k1range, transpose(color_matrix00), colormap = :RdBu_6)
+hm = heatmap!(ax, k1range, k2range, color_matrix00, colormap = :RdBu_6)
 Colorbar(f[:, end+1], hm)
 display(GLMakie.Screen(), f);

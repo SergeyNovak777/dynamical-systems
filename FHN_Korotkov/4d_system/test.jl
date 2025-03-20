@@ -1,8 +1,8 @@
-username = "sergey"
+username = "irrito"
 pathtorepo = "/home/" *username *"/work/repo/dynamical-systems"
 using Pkg
 Pkg.activate(pathtorepo * "/env/integrate/")
-include("/home/sergey/work/repo/dynamical-systems/system.jl")
+include("/home/irrito/work/repo/dynamical-systems/system.jl")
 
 
 using StaticArrays, DifferentialEquations, DynamicalSystems
@@ -24,11 +24,10 @@ adaptive = true;
 integrator_setting = get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters);
 
 parameters = FHN2_try3_params();
-parameters[7] =  0.09
-parameters[8] = 75.7
+parameters[7] =  0.0968
+parameters[8] = 64.76190476190476
 
-u0_start = sol[end]
-# [-1.0836728460611933, -0.6318417392022484, -0.9017528537331925, -0.624049721609583];
+u0_start = [-1.0836728460611933, -0.6318417392022484, -0.9017528537331925, -0.624049721609583];
 u0_start = SVector{4}(u0_start);
 
 t_end = 15_000;
