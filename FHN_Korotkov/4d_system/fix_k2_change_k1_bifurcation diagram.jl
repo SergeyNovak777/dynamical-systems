@@ -11,7 +11,7 @@ else
     include("/home/irrito/work/repo/dynamical-systems/system.jl")
 end
 
-using StaticArrays, DifferentialEquations, DynamicalSystems, CairoMakie, GLMakie, JLD2
+using StaticArrays, DifferentialEquations, DynamicalSystems, CairoMakie, GLMakie
 
 function get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters)
     integrator_setting = (alg = alg, adaptive = adaptive, abstol = abs_tol, reltol = rel_tol, maxiters = max_iters);
@@ -36,23 +36,23 @@ end
 
 u0 = [-0.9816946043747945, -0.6320919525134647, -1.0342265829731392, -0.638226338524071];
 params = FHN2_try3_params()
-params[7] = 0.09; 
+params[8] = 64.76190476190476; 
 integ_set = (alg = Vern9(), adaptive = true, abstol=1e-13, reltol=1e-13, maxiters = 1e8)
 
 ds = CoupledODEs(FHN2_4d, u0, params, diffeq = integ_set)
 
 t = 1000
-ttr = 2000
+ttr = 1500
 
-k2_start = 0.0
-k2_end = 100.0
-len = 1000
+k2_start = 0.0; #0.0968;
+k2_end = 0.03
+len = 50
 rangek2 = range(k2_start, k2_end, length = len)
 index_control_param = 8
 
 index_saving_var = 1
 index_fixed_var = 3
-value_fixed_var = -1.01
+value_fixed_var = -1.0
 surface = (index_fixed_var, value_fixed_var)
 setting_root = (xrtol = 1e-11, atol = 1e-11)
 pmap = PoincareMap(ds, surface, rootkw = setting_root)
@@ -63,9 +63,9 @@ output = orbitdiagram(pmap, index_saving_var, index_control_param, rangek2;
 filename= "fig_12.eps"
 path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/rewrite_images/"
 
-path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/rewrite_images/";
+#= path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/rewrite_images/";
 file_name_image = "bifurcation_diagram_fig_10.eps";
-full_path = path_to_save * file_name_image;
+full_path = path_to_save * file_name_image; =#
 markersize = 1.5;
 lbsize = 50;
 ticksize = 35;
@@ -85,8 +85,3 @@ display(GLMakie.Screen(), fig)
 #save(full_path, fig)
 
 #save(path_to_save*filename, fig)
-
-file_name_Poincare = "dia_Poincare_k1=0.09_change_k2_from_0_to_100.jld2";
-
-path_to_save_data = "/home/irrito/MEGA2/dynamical_systems/FHN/data/";
-jldsave(path_to_save_data*file_name_Poincare; output);
