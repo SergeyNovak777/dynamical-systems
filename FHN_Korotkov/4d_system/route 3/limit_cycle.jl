@@ -12,7 +12,6 @@ else
 end
 
 using StaticArrays, DifferentialEquations, DynamicalSystems, CairoMakie, GLMakie
-using LinearAlgebra
 
 function get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters)
     integrator_setting = (alg = alg, adaptive = adaptive, abstol = abs_tol, reltol = rel_tol, maxiters = max_iters);
@@ -28,11 +27,11 @@ max_iters = 1e8;
 integrator_setting = get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters);
 
 parameters = FHN2_try3_params();
-parameters[7] = 0.1
+parameters[7] = 0.0935
 parameters[8] = 64.76190476190476
 
 u0_start = [-1.0836728460611933, -0.6318417392022484, -0.9017528537331925, -0.624049721609583]
-#fixed_point = [-1.01, -0.6367552038435214, -1.01, -0.6367552038435204]
+
 u0_start = SVector{4}(u0_start);
 
 t_end = 50_000;
@@ -50,8 +49,8 @@ x1 = x2 = interval(-1.5, 1.5)
 y1 = y2 = interval(-1.5, 1.5)
 box = [x1, y1, x2, y2]
 
-fixed_point, eigs, stable = fixedpoints(ds, box)
-fixed_point = fixed_point[1]
+fixed_point, eigs, _ = fixedpoints(ds, box)
+fixed_point = fixed_point[1];
 labelsize = 85;
 ticksize = 50;
 
