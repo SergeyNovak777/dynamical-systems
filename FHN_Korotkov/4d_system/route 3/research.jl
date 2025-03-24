@@ -1,17 +1,11 @@
-if Sys.iswindows()
-    username = "Alex"
-    pathtorepo = "C:\\Users\\" *username *  "\\Desktop\\"
-    using Pkg
-    Pkg.activate(pathtorepo * "dynamical-systems\\env\\integrate\\")
-else
-    username = "irrito"
-    pathtorepo = "/home/" *username *"/work/repo/dynamical-systems"
-    using Pkg
-    Pkg.activate(pathtorepo * "/env/integrate/")
-    include("/home/irrito/work/repo/dynamical-systems/system.jl")
-end
+username = "irrito"
+pathtorepo = "/home/" *username *"/work/repo/dynamical-systems"
+using Pkg
+Pkg.activate(pathtorepo * "/env/integrate/")
+include(pathtorepo * "/system.jl")
 
-using StaticArrays, DifferentialEquations, DynamicalSystems, CairoMakie, GLMakie
+using StaticArrays, SciMLBase, OrdinaryDiffEqVerner, ChaosTools, CairoMakie, GLMakie
+
 t_truncate(t) = floor(Int64, t / 2)
 function get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters)
     integrator_setting = (alg = alg, adaptive = adaptive, abstol = abs_tol, reltol = rel_tol, maxiters = max_iters);
@@ -27,14 +21,15 @@ max_iters = 1e8;
 integrator_setting = get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters);
 
 parameters = FHN2_try3_params();
-parameters[7] =  0.091
+parameters[7] = 0.0926
 parameters[8] = 64.76190476190476
 
-u0_start = sol[end] #[-1.0291087137589996, -0.6377856460828853, -0.9950653327912196, -0.6176674546439458];
+u0_start =  sol[end] ;
+#[-1.0836728460611933, -0.6318417392022484, -0.9017528537331925, -0.624049721609583];
 
 u0_start = SVector{4}(u0_start);
 
-t_end = 10_000;
+t_end = 1500;
 tspan = (0.0, t_end);
 
 prob = ODEProblem(FHN2_4d, u0_start, tspan, parameters)
@@ -42,10 +37,9 @@ sol = solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive
                 abstol = integrator_setting.abstol, reltol = integrator_setting.reltol, 
                 maxiters = integrator_setting.maxiters);
 
-ds = CoupledODEs(FHN2_4d, sol[end], parameters,
-diffeq = integrator_setting);
+ds = CoupledODEs(FHN2_4d, sol[end], parameters, diffeq = integrator_setting);
 
-LSE = lyapunovspectrum(ds, 50_000);
+LSE = lyapunovspectrum(ds, 5_000);
 println("LSE: $(LSE)")
 
 x1 = x2 = interval(-1.5, 1.5)
@@ -54,18 +48,17 @@ box = [x1, y1, x2, y2]
 
 fixed_point, eigs, _ = fixedpoints(ds, box)
 fixed_point = fixed_point[1];
+
 labelsize = 20 #85;
 ticksize = 15 #50;
-
-t_plot_start = 200_000;
-t_plot_end = t_plot_start + 15_000; #len_sol;
+t_plot_start = 30_000;
+t_plot_end = t_plot_start+20_000; #len_sol;
 
 path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/scenario/"
 
 CairoMakie.activate!();
 
 indexx = 2; indexy = 4; indexz = 1;
-
 f = Figure(size = (1200 ,600));
 ax = Axis3(f[1, 1], xlabel = L"y_1", ylabel = L"y_2", zlabel = L"x_1",
     xlabelsize = labelsize, ylabelsize = labelsize, zlabelsize = labelsize,
@@ -84,13 +77,13 @@ display(GLMakie.Screen(), f);
 
 
 pmap = PoincareMap(ds, (1,  -1.01))
-tr, trange = trajectory(pmap, 500_000)
+tr, trange = trajectory(pmap, 400_000)
 
 len_tr_map = length(trange);
 ttr_map = t_truncate(len_tr_map);
 
 t_plot_start_map = ttr_map;
-t_plot_end_map = t_plot_start_map + 250_000;
+t_plot_end_map = t_plot_start_map + 200_000;
 
 indexx = 2; indexy = 4; indexz = 4
 #= f = Figure(size = (1200 ,600));

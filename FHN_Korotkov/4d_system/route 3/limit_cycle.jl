@@ -11,7 +11,7 @@ else
     include("/home/irrito/work/repo/dynamical-systems/system.jl")
 end
 
-using StaticArrays, DifferentialEquations, DynamicalSystems, CairoMakie, GLMakie
+using StaticArrays, SciMLBase, OrdinaryDiffEqVerner, ChaosTools, CairoMakie, GLMakie
 
 function get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters)
     integrator_setting = (alg = alg, adaptive = adaptive, abstol = abs_tol, reltol = rel_tol, maxiters = max_iters);
