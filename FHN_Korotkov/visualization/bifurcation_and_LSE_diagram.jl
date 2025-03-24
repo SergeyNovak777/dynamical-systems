@@ -2,7 +2,6 @@ username = "irrito"
 pathtorepo = "/home/" *username *"/work/repo/dynamical-systems"
 using Pkg
 Pkg.activate(pathtorepo * "/env/integrate/")
-include(pathtorepo * "/system.jl")
 
 using JLD2, CairoMakie, GLMakie;
 
@@ -13,18 +12,20 @@ file_name_matrix_LSE = "matrix_LSE_fix_k1=0.09_change_k2_from_0_to_100.jld2";
 poincare_diagram = load(path_to_load*file_name_dia_Poincare)["output"];
 matrix_LSE = load(path_to_load*file_name_matrix_LSE)["matrix_LSE"];
 
+LSE3 = replace!(x -> x == -Inf ? -1.0 : x, matrix_LSE[:, 3])
+
 k2_start = 0.0
 k2_end = 100.0
 len = 1000
 rangek2 = range(k2_start, k2_end, length = len)
 
-markersize = 1.25;
+markersize = 1.5;
 lbsize = 50;
 ticksize = 28;
-
+line_width = 2.5;
 CairoMakie.activate!();
 
-fig = Figure(size = (1200, 350))
+fig = Figure(size = (1200, 550))
 
 axis_poincare = Axis(fig[1,1],
         ylabel = L"x_1",
@@ -39,14 +40,14 @@ axis_LSE = Axis(fig[2,1],
         xgridvisible = true, ygridvisible = true, xticks = [0, 25, 50, 75, 100]);
 
 
-
 for (j, p) in enumerate(rangek2)
 scatter!(axis_poincare, fill(p, length(poincare_diagram[j])), poincare_diagram[j]; color = ("black", 0.25), markersize = markersize)
 end
 
-lines!(axis_LSE, rangek2, matrix_LSE[:, 1], linewidth = 1.5, color = :red);
-lines!(axis_LSE, rangek2, matrix_LSE[:, 2], linewidth = 1.5, color = :blue);
-hlines!(axis_LSE, 0, rangek2, linestyle = :dash, linewidth = 1.5, color = :black)
+lines!(axis_LSE, rangek2, matrix_LSE[:, 1], linewidth = line_width, color = :red);
+lines!(axis_LSE, rangek2, matrix_LSE[:, 2], linewidth = line_width, color = :green);
+lines!(axis_LSE, rangek2, LSE3, linewidth = line_width, color = :blue);
+hlines!(axis_LSE, 0, rangek2, linestyle = :dash, linewidth = line_width, color = :black)
 
 display(GLMakie.Screen(), fig)
 
