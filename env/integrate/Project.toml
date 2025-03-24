@@ -1,9 +1,10 @@
 [deps]
 BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
 CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
-DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
-DynamicalSystems = "61744808-ddfa-5f27-97ff-6e42cc95d634"
+ChaosTools = "608a59af-f2a3-5ad4-90b4-758bdf3122a7"
 GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 MAT = "23992714-dd62-5051-b70f-ba57cb901cac"
+OrdinaryDiffEqVerner = "79d7bb75-1356-48c1-b8c0-6832512096c2"
+SciMLBase = "0bca4576-84f4-4d90-8ffe-ffa030f20462"
 StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
