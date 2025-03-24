@@ -63,7 +63,7 @@ len_tr_map = length(trange);
 ttr_map = t_truncate(len_tr_map);
 
 t_plot_start_map = ttr_map;
-t_plot_end_map = t_plot_start_map + 10_000
+t_plot_end_map = t_plot_start_map + 20_000
 f = Figure(size = (600 ,600));
 ax = Axis(f[1, 1], xlabel = L"x_2", ylabel = L"y_2", xlabelsize = labelsize, ylabelsize = labelsize,
     xticklabelsize = ticksize, yticklabelsize = ticksize,
