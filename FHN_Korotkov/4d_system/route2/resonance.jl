@@ -1,4 +1,4 @@
-username = "irrito"
+username = "sergey"
 pathtorepo = "/home/" *username *"/work/repo/dynamical-systems"
 using Pkg
 Pkg.activate(pathtorepo * "/env/integrate/")
@@ -21,15 +21,14 @@ max_iters = 1e8;
 integrator_setting = get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters);
 
 parameters = FHN2_try3_params();
-parameters[7] = 0.0926
+parameters[7] = 0.09238
 parameters[8] = 64.76190476190476
 
-u0_start =  sol[end] ;
-#[-1.0836728460611933, -0.6318417392022484, -0.9017528537331925, -0.624049721609583];
+u0_start =  [-1.031180725783351, -0.6275927492692263, -1.0013184201159342, -0.6389736989923238];
 
 u0_start = SVector{4}(u0_start);
 
-t_end = 1500;
+t_end = 2_000;
 tspan = (0.0, t_end);
 
 prob = ODEProblem(FHN2_4d, u0_start, tspan, parameters)
@@ -37,9 +36,10 @@ sol = solve(prob, integrator_setting.alg, adaptive = integrator_setting.adaptive
                 abstol = integrator_setting.abstol, reltol = integrator_setting.reltol, 
                 maxiters = integrator_setting.maxiters);
 
-ds = CoupledODEs(FHN2_4d, sol[end], parameters, diffeq = integrator_setting);
+ds = CoupledODEs(FHN2_4d, sol[end], parameters,
+diffeq = integrator_setting);
 
-LSE = lyapunovspectrum(ds, 5_000);
+LSE = lyapunovspectrum(ds, 50_000);
 println("LSE: $(LSE)")
 
 x1 = x2 = interval(-1.5, 1.5)
@@ -48,17 +48,18 @@ box = [x1, y1, x2, y2]
 
 fixed_point, eigs, _ = fixedpoints(ds, box)
 fixed_point = fixed_point[1];
+labelsize = 75 #85;
+ticksize = 30 #50;
 
-labelsize = 20 #85;
-ticksize = 15 #50;
-t_plot_start = 30_000;
-t_plot_end = t_plot_start+20_000; #len_sol;
+t_plot_start = t_truncate(length(sol.t));
+t_plot_end = t_plot_start + 15_000; #len_sol;
 
 path_to_save = "/home/sergey/MEGA/dynamical-systems/FHN_Korotkov/images/scenario/"
 
 CairoMakie.activate!();
 
-indexx = 2; indexy = 4; indexz = 1;
+indexx = 1; indexy = 3; indexz = 2;
+
 f = Figure(size = (1200 ,600));
 ax = Axis3(f[1, 1], xlabel = L"y_1", ylabel = L"y_2", zlabel = L"x_1",
     xlabelsize = labelsize, ylabelsize = labelsize, zlabelsize = labelsize,
@@ -73,40 +74,24 @@ scatter!(ax, fixed_point[indexx], fixed_point[indexy], fixed_point[indexz], mark
 text!(ax, fixed_point[indexx], fixed_point[indexy], fixed_point[indexz], text = L"O_1", fontsize = labelsize, align = (:center, :top), offset = (0, -23))
 display(GLMakie.Screen(), f);
 
-#save(path_to_save * "stable_fixed_point.eps", f)
-
-
-pmap = PoincareMap(ds, (1,  -1.01))
-tr, trange = trajectory(pmap, 400_000)
+pmap = PoincareMap(ds, (1,  -1.013))
+tr, trange = trajectory(pmap, 150_000)
 
 len_tr_map = length(trange);
 ttr_map = t_truncate(len_tr_map);
 
 t_plot_start_map = ttr_map;
-t_plot_end_map = t_plot_start_map + 200_000;
+t_plot_end_map = t_plot_start_map + 75_000;
 
-indexx = 2; indexy = 4; indexz = 4
-#= f = Figure(size = (1200 ,600));
-ax = Axis3(f[1, 1], xlabel = L"y_1", ylabel = L"x_2", zlabel = L"y_2",
-    xlabelsize = labelsize, ylabelsize = labelsize, zlabelsize = labelsize,
-    xticklabelsize = ticksize, yticklabelsize = ticksize, zticklabelsize = ticksize,
-    xgridvisible = false, ygridvisible = false, zgridvisible = false,
-    xlabeloffset = 85, ylabeloffset = 85, zlabeloffset = 115,
-    protrusions = (30, 30,120, 30))#,
-    #xticks = [-0.635, -0.622], yticks = [-0.635, -0.622], zticks = [-1.05, -0.95]);
-
-scatter!(ax, tr[t_plot_start_map:t_plot_end_map, indexx], tr[t_plot_start_map:t_plot_end_map, indexy],
-tr[t_plot_start_map:t_plot_end_map, indexz], markersize = 1.0, color = :black);
-
-scatter!(ax, fixed_point[indexx], fixed_point[indexy], fixed_point[indexz], markersize = 15, color = :red)
-text!(ax, fixed_point[indexx], fixed_point[indexy], fixed_point[indexz], text = L"O_1", fontsize = labelsize, align = (:center, :top), offset = (0, -23))
-display(GLMakie.Screen(), f); =#
-
-f = Figure(size = (900 ,900));
+f = Figure(size = (700 ,700));
 ax = Axis(f[1, 1], xlabel = L"x_2", ylabel = L"y_2", xlabelsize = labelsize, ylabelsize = labelsize,
-    xticklabelsize = ticksize/2, yticklabelsize = ticksize/2,
-    xgridvisible = false, ygridvisible = false);
-scatter!(ax, tr[t_plot_start_map:t_plot_end_map, indexx], tr[t_plot_start_map:t_plot_end_map, indexy], markersize = 1.0, color = :black);
+    xticklabelsize = ticksize, yticklabelsize = ticksize,
+    xgridvisible = false, ygridvisible = false,)
+    #xticks = [-1.041, -1.038, -1.035]);
+scatter!(ax, tr[t_plot_start_map:t_plot_end_map, 3], tr[t_plot_start_map:t_plot_end_map, 4], markersize = 3.5, color = :black);
 display(GLMakie.Screen(), f);
 
-#save(path_to_save * "limit_cycle_fluffed_poincare.eps", f)
+filename = "route1_b_k1=$(parameters[7]).eps";
+path_to_save = "/home/sergey/work/images/FHN/route2/"
+#"/home/sergey/MEGA2/dynamical_systems/FHN/images/route1/";
+save(path_to_save * filename, f)

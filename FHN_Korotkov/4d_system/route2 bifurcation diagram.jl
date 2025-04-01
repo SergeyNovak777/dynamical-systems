@@ -1,0 +1,57 @@
+username = "sergey"
+pathtorepo = "/home/" *username *"/work/repo/dynamical-systems"
+using Pkg
+Pkg.activate(pathtorepo * "/env/integrate/")
+include(pathtorepo * "/system.jl")
+
+using StaticArrays, SciMLBase, OrdinaryDiffEqVerner, ChaosTools, CairoMakie, GLMakie
+
+function get_set_integ_setting(alg, adaptive, abs_tol, rel_tol, max_iters)
+    integrator_setting = (alg = alg, adaptive = adaptive, abstol = abs_tol, reltol = rel_tol, maxiters = max_iters);
+    return integrator_setting;
+end
+
+u0 = [-0.9816946043747945, -0.6320919525134647, -1.0342265829731392, -0.638226338524071];
+params = FHN2_try3_params()
+params[7] = 0.0968; 
+integ_set = (alg = Vern9(), adaptive = true, abstol=1e-13, reltol=1e-13, maxiters = 1e8)
+
+ds = CoupledODEs(FHN2_4d, u0, params, diffeq = integ_set)
+
+t = 3000
+ttr = 2000
+
+k2_start = 100.0
+k2_end = 0.0
+len = 1000
+rangek2 = range(k2_start, k2_end, length = len)
+index_control_param = 8
+
+index_saving_var = 1
+index_fixed_var = 3
+value_fixed_var = -1.01
+surface = (index_fixed_var, value_fixed_var)
+setting_root = (xrtol = 1e-11, atol = 1e-11)
+pmap = PoincareMap(ds, surface, rootkw = setting_root)
+
+output = orbitdiagram(pmap, index_saving_var, index_control_param, rangek2;
+        n = t, Ttr = ttr, show_progress = true)
+
+
+markersize = 1.5;
+lbsize = 50;
+ticksize = 35;
+
+CairoMakie.activate!();
+fig = Figure(size = (1200, 350))
+axis = Axis(fig[1,1],
+        xlabel = L"k_2",  ylabel = L"x_1",
+        xlabelsize = lbsize, ylabelsize = lbsize,
+        xticklabelsize = ticksize,yticklabelsize = ticksize,
+        xgridvisible = false, ygridvisible = false);
+ylims!(axis, -1.06, -1.01)
+CairoMakie.activate!();
+for (j, p) in enumerate(rangek2)
+scatter!(axis, fill(p, length(output[j])), output[j]; color = ("black", 0.5), markersize = markersize)
+end
+display(GLMakie.Screen(), fig)
